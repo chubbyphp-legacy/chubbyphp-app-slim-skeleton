@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+
+use Slim\App;
+use Slim\Container;
+use SlimSkeleton\Console\ConsoleApplication;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputOption;
+
+set_time_limit(0);
+
+$loader = require_once __DIR__.'/../app/autoload.php';
+
+$envOption = new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'The Environment name.', 'dev');
+
+$input = new ArgvInput();
+
+$env = $input->getParameterOption([$envOption->getName(), $envOption->getShortcut()], $envOption->getDefault());
+
+/** @var App $app */
+$app = require_once __DIR__ . '/../app/app.php';
+
+/** @var Container $container */
+$container = $app->getContainer();
+
+$console = new ConsoleApplication($container['console.name'], $container['console.version'], [$envOption]);
+$console->addCommands($container['console.commands']);
+$console->run($input);
