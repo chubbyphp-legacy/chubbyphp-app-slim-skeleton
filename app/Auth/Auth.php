@@ -10,19 +10,19 @@ use SlimSkeleton\Auth\Exception\InvalidPasswordException;
 use SlimSkeleton\Auth\Exception\UserNotFoundException;
 use SlimSkeleton\Model\User;
 use SlimSkeleton\Model\UserInterface;
-use SlimSkeleton\Repository\UserRepository;
+use SlimSkeleton\Repository\UserRepositoryInterface;
 
 final class Auth implements AuthInterface
 {
     /**
-     * @var UserRepository
+     * @var UserRepositoryInterface
      */
     private $userRepository;
 
     /**
-     * @param UserRepository $userRepository
+     * @param UserRepositoryInterface $userRepository
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }
@@ -64,7 +64,7 @@ final class Auth implements AuthInterface
      */
     public function isAuthenticated(Request $request): bool
     {
-        return $this->getSession($request)->has(self::USER_KEY);
+        return null !== $this->getAuthenticatedUser($request);
     }
 
     /**
@@ -74,7 +74,7 @@ final class Auth implements AuthInterface
      */
     public function getAuthenticatedUser(Request $request)
     {
-        if (!$this->isAuthenticated($request)) {
+        if (!$this->getSession($request)->has(self::USER_KEY)) {
             return null;
         }
 

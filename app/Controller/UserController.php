@@ -10,7 +10,7 @@ use Slim\Views\Twig;
 use SlimSkeleton\Auth\AuthInterface;
 use SlimSkeleton\Auth\Exception\EmptyPasswordException;
 use SlimSkeleton\Model\User;
-use SlimSkeleton\Repository\UserRepository;
+use SlimSkeleton\Repository\UserRepositoryInterface;
 use SlimSkeleton\Validation\ValidatorInterface;
 
 class UserController
@@ -31,7 +31,7 @@ class UserController
     private $twig;
 
     /**
-     * @var UserRepository
+     * @var UserRepositoryInterface
      */
     private $userRepository;
 
@@ -44,14 +44,14 @@ class UserController
      * @param AuthInterface      $auth
      * @param Router             $router
      * @param Twig               $twig
-     * @param UserRepository     $userRepository
+     * @param UserRepositoryInterface     $userRepository
      * @param ValidatorInterface $validator
      */
     public function __construct(
         AuthInterface $auth,
         Router $router,
         Twig $twig,
-        UserRepository $userRepository,
+        UserRepositoryInterface $userRepository,
         ValidatorInterface $validator
     ) {
         $this->auth = $auth;
@@ -198,6 +198,12 @@ class UserController
         $user = $this->userRepository->find($id);
         if (null === $user) {
             throw new NotFoundException($request, $response);
+        }
+
+        $authenticatedUser = $this->auth->getAuthenticatedUser($request);
+
+        if ($authenticatedUser->getId() === $user->getId()) {
+            throw new \Exception('Cant delete own user!');
         }
 
         $this->userRepository->delete($user);
