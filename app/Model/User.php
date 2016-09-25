@@ -2,6 +2,9 @@
 
 namespace SlimSkeleton\Model;
 
+use Ramsey\Uuid\Uuid;
+use Respect\Validation\Validator;
+
 final class User implements ModelInterface, UserInterface
 {
     /**
@@ -20,15 +23,11 @@ final class User implements ModelInterface, UserInterface
     private $password;
 
     /**
-     * @param string $id
-     * @param string $email
-     * @param string $password
+     * @param string|null $id
      */
-    public function __construct(string $id, string $email, string $password)
+    public function __construct(string $id = null)
     {
-        $this->id = $id;
-        $this->email = $email;
-        $this->password = $password;
+        $this->id = $id ?? Uuid::uuid4();
     }
 
     /**
@@ -73,11 +72,15 @@ final class User implements ModelInterface, UserInterface
 
     /**
      * @param array $data
+     *
      * @return User|ModelInterface
      */
     public static function fromRow(array $data): ModelInterface
     {
-        $user = new self($data['id'], $data['email'], $data['password']);
+        $user = new self($data['id']);
+
+        $user->setEmail($data['email']);
+        $user->setPassword($data['password']);
 
         return $user;
     }
@@ -90,7 +93,7 @@ final class User implements ModelInterface, UserInterface
         return [
             'id' => $this->id,
             'email' => $this->email,
-            'password' => $this->password
+            'password' => $this->password,
         ];
     }
 
@@ -101,7 +104,18 @@ final class User implements ModelInterface, UserInterface
     {
         return [
             'id' => $this->id,
-            'email' => $this->email
+            'email' => $this->email,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getValidators(): array
+    {
+        return [
+            'email' => Validator::email(),
+            'password' => Validator::notBlank(),
         ];
     }
 }

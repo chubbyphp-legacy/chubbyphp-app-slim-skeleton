@@ -22,7 +22,7 @@ class AuthController
 
     /**
      * @param AuthInterface $auth
-     * @param Router $router
+     * @param Router        $router
      */
     public function __construct(AuthInterface $auth, Router $router)
     {
@@ -31,7 +31,7 @@ class AuthController
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
      * @return Response
@@ -40,20 +40,23 @@ class AuthController
     {
         try {
             $this->auth->login($request);
-            return $response->withHeader('Location', $this->router->pathFor('home'));
+
+            return $response->withStatus(302)->withHeader('Location', $this->router->pathFor('home'));
         } catch (AbstractLoginException $e) {
             throw $e;
         }
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
+     *
      * @return Response
      */
     public function logout(Request $request, Response $response)
     {
         $this->auth->logout($request);
-        return $response->withHeader('Location', $this->router->pathFor('home'));
+
+        return $response->withStatus(302)->withHeader('Location', $this->router->pathFor('home'));
     }
 }

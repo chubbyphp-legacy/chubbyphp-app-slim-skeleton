@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-xs-12">
             <h1>Users</h1>
-            <a class="btn btn-default" href="" title="create">
+            <a class="btn btn-default" href="{{ path_for('user_create') }}" title="create">
                 <i class="glyphicon glyphicon-plus"></i>
             </a>
             <table class="table table-striped">
@@ -21,14 +21,14 @@
                             <td>{{ user.id }}</td>
                             <td>{{ user.email }}</td>
                             <td>
-                                <a type="button" class="btn btn-default btn-sm" title="edit">
+                                <a href="{{ path_for('user_edit', {'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="edit">
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
                                 <a href="{{ path_for('user_view', {'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="view">
                                     <i class="glyphicon glyphicon-eye-open"></i>
                                 </a>
-                                <form action="" method="post" class="inline-form">
-                                    <button type="submit" value="{{ user.id }}" class="btn btn-danger btn-sm" title="remove">
+                                <form action="{{ path_for('user_delete', {'id': user.id}) }}" method="post" class="inline-form">
+                                    <button type="submit" class="btn btn-danger btn-sm" title="remove">
                                         <i class="glyphicon glyphicon-remove"></i>
                                     </button>
                                 </form>

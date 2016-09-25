@@ -1,0 +1,27 @@
+{% macro renderInputText(model, property, errorMessages) %}
+    <div class="form-group{% if errorMessages[property] is defined %} has-error{% endif %}">
+        <label class="control-label col-lg-2" for="{{ property }}">{{ property }}</label>
+        <div class="col-lg-10">
+            <input type="text" id="{{ property }}" name="{{ property }}" value="{{ model[property] }}" class="form-control">
+            {% if errorMessages[property] is defined %}
+                {% for message in errorMessages[property] %}
+                    <span class="help-block">{{ message }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro renderInputPassword(model, property, errorMessages) %}
+    <div class="form-group{% if errorMessages[property] is defined %} has-error{% endif %}">
+        <label class="control-label col-lg-2" for="{{ property }}">{{ property }}</label>
+        <div class="col-lg-10">
+            <input type="password" id="{{ property }}" name="{{ property }}" class="form-control">
+            {% if errorMessages[property] is defined %}
+                {% for message in errorMessages[property] %}
+                    <span class="help-block">{{ message }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}

@@ -7,6 +7,7 @@ use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Time\SystemCurrentTime;
 use Slim\Container;
 use Slim\Views\TwigExtension;
+use SlimSkeleton\Auth\Auth;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
@@ -15,7 +16,7 @@ use SlimSkeleton\Provider\ConsoleProvider;
 use SlimSkeleton\Provider\DoctrineServiceProvider;
 use SlimSkeleton\Provider\TwigProvider;
 use SlimSkeleton\Repository\UserRepository;
-use SlimSkeleton\Auth\Auth;
+use SlimSkeleton\Validation\Validator;
 
 /* @var Container $container */
 
@@ -57,7 +58,8 @@ $container[UserController::class] = function () use ($container) {
         $container[Auth::class],
         $container['router'],
         $container['twig'],
-        $container[UserRepository::class]
+        $container[UserRepository::class],
+        $container[Validator::class]
     );
 };
 
@@ -88,4 +90,8 @@ $container[UserRepository::class] = function () use ($container) {
 // services
 $container[Auth::class] = function () use ($container) {
     return new Auth($container[UserRepository::class]);
+};
+
+$container[Validator::class] = function () use ($container) {
+    return new Validator();
 };

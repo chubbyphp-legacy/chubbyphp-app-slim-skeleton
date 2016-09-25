@@ -21,9 +21,10 @@ final class AuthMiddleware
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      * @param callable $next
+     *
      * @return Response
      */
     public function __invoke(Request $request, Response $response, callable $next)
@@ -32,7 +33,7 @@ final class AuthMiddleware
             throw new \Exception('Permission denied');
         }
 
-        $next($request, $response);
+        $response = $next($request, $response);
 
         return $response;
     }

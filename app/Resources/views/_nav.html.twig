@@ -8,7 +8,6 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="{{ path_for('home') }}">Slim Skeleton</a>
-
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -26,7 +25,7 @@
                 </form>
             {% else %}
                 <form action="{{ path_for('logout') }}" method="post" class="navbar-form navbar-right">
-                    <button type="submit" value="{{ authenticatedUser.id }}" class="btn btn-success">Logout</button>
+                    <button type="submit" value="{{ authenticatedUser.id }}" class="btn btn-danger">Logout</button>
                 </form>
             {% endif %}
         </div><!--/.navbar-collapse -->

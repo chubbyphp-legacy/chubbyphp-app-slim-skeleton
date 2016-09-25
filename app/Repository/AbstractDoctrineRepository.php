@@ -22,6 +22,7 @@ abstract class AbstractDoctrineRepository implements RepositoryInterface
 
     /**
      * @param string $id
+     *
      * @return ModelInterface|null
      */
     public function find(string $id)
@@ -42,6 +43,7 @@ abstract class AbstractDoctrineRepository implements RepositoryInterface
 
     /**
      * @param array $criteria
+     *
      * @return null|ModelInterface
      */
     public function findOneBy(array $criteria = [])
@@ -67,6 +69,7 @@ abstract class AbstractDoctrineRepository implements RepositoryInterface
 
     /**
      * @param array $criteria
+     *
      * @return ModelInterface[]|array
      */
     public function findBy(array $criteria = []): array
@@ -110,6 +113,14 @@ abstract class AbstractDoctrineRepository implements RepositoryInterface
     public function update(ModelInterface $model)
     {
         $this->connection->update($this->getTablename(), $model->toRow(), ['id' => $model->getId()]);
+    }
+
+    /**
+     * @param ModelInterface $model
+     */
+    public function delete(ModelInterface $model)
+    {
+        $this->connection->delete($this->getTablename(), ['id' => $model->getId()]);
     }
 
     /**

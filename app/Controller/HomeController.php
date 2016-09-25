@@ -21,7 +21,7 @@ class HomeController
 
     /**
      * @param AuthInterface $auth
-     * @param Twig $twig
+     * @param Twig          $twig
      */
     public function __construct(AuthInterface $auth, Twig $twig)
     {
@@ -30,14 +30,15 @@ class HomeController
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
+     *
      * @return Response
      */
     public function home(Request $request, Response $response)
     {
         return $this->twig->render($response, '@SlimSkeleton/home.html.twig', [
-            'authenticatedUser' => $this->auth->getAuthenticatedUser($request)
+            'authenticatedUser' => prepareForView($this->auth->getAuthenticatedUser($request)),
         ]);
     }
 }

@@ -8,7 +8,10 @@ use Slim\Exception\NotFoundException;
 use Slim\Router;
 use Slim\Views\Twig;
 use SlimSkeleton\Auth\AuthInterface;
+use SlimSkeleton\Auth\Exception\EmptyPasswordException;
+use SlimSkeleton\Model\User;
 use SlimSkeleton\Repository\UserRepository;
+use SlimSkeleton\Validation\ValidatorInterface;
 
 class UserController
 {
@@ -33,22 +36,35 @@ class UserController
     private $userRepository;
 
     /**
-     * @param AuthInterface $auth
-     * @param Router $router
-     * @param Twig $twig
-     * @param UserRepository $userRepository
+     * @var ValidatorInterface
      */
-    public function __construct(AuthInterface $auth, Router $router, Twig $twig, UserRepository $userRepository)
-    {
+    private $validator;
+
+    /**
+     * @param AuthInterface      $auth
+     * @param Router             $router
+     * @param Twig               $twig
+     * @param UserRepository     $userRepository
+     * @param ValidatorInterface $validator
+     */
+    public function __construct(
+        AuthInterface $auth,
+        Router $router,
+        Twig $twig,
+        UserRepository $userRepository,
+        ValidatorInterface $validator
+    ) {
         $this->auth = $auth;
         $this->router = $router;
         $this->twig = $twig;
         $this->userRepository = $userRepository;
+        $this->validator = $validator;
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
+     *
      * @return Response
      */
     public function listAll(Request $request, Response $response)
@@ -56,16 +72,17 @@ class UserController
         $users = $this->userRepository->findBy();
 
         return $this->twig->render($response, '@SlimSkeleton/user/list.html.twig', [
-            'users' => json_decode(json_encode($users), true),
-            'authenticatedUser' => $this->auth->getAuthenticatedUser($request)
+            'users' => prepareForView($users),
+            'authenticatedUser' => prepareForView($this->auth->getAuthenticatedUser($request)),
         ]);
-
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
+     *
      * @return Response
+     *
      * @throws NotFoundException
      */
     public function view(Request $request, Response $response)
@@ -78,8 +95,113 @@ class UserController
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/view.html.twig', [
-            'user' => json_decode(json_encode($user), true),
-            'authenticatedUser' => $this->auth->getAuthenticatedUser($request)
+            'user' => prepareForView($user),
+            'authenticatedUser' => prepareForView($this->auth->getAuthenticatedUser($request)),
         ]);
+    }
+
+    /**
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     */
+    public function create(Request $request, Response $response)
+    {
+        $user = new User();
+
+        if ('POST' === $request->getMethod()) {
+            try {
+                $data = $request->getParsedBody();
+
+                $user->setEmail($data['email']);
+                $user->setPassword($this->auth->hashPassword($data['password']));
+
+                if ([] === $errorMessages = $this->validator->validateModel($user)) {
+                    $this->userRepository->insert($user);
+
+                    return $response
+                        ->withStatus(302)
+                        ->withHeader('Location', $this->router->pathFor('user_edit', ['id' => $user->getId()]))
+                        ;
+                }
+            } catch (EmptyPasswordException $e) {
+                $errorMessages['password'] = [$e->getMessage()];
+            }
+        }
+
+        return $this->twig->render($response, '@SlimSkeleton/user/create.html.twig', [
+            'user' => prepareForView($user),
+            'errorMessages' => $errorMessages ?? [],
+            'authenticatedUser' => prepareForView($this->auth->getAuthenticatedUser($request)),
+        ]);
+    }
+
+    /**
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     *
+     * @throws NotFoundException
+     */
+    public function edit(Request $request, Response $response)
+    {
+        $id = $request->getAttribute('id');
+
+        /** @var User $user */
+        $user = $this->userRepository->find($id);
+        if (null === $user) {
+            throw new NotFoundException($request, $response);
+        }
+
+        if ('POST' === $request->getMethod()) {
+            try {
+                $data = $request->getParsedBody();
+
+                $user->setEmail($data['email']);
+                $user->setPassword($this->auth->hashPassword($data['password']));
+
+                if ([] === $errorMessages = $this->validator->validateModel($user)) {
+                    $this->userRepository->update($user);
+
+                    return $response
+                        ->withStatus(302)
+                        ->withHeader('Location', $this->router->pathFor('user_edit', ['id' => $user->getId()]))
+                    ;
+                }
+            } catch (EmptyPasswordException $e) {
+                $errorMessages['password'] = [$e->getMessage()];
+            }
+        }
+
+        return $this->twig->render($response, '@SlimSkeleton/user/edit.html.twig', [
+            'user' => prepareForView($user),
+            'errorMessages' => $errorMessages ?? [],
+            'authenticatedUser' => prepareForView($this->auth->getAuthenticatedUser($request)),
+        ]);
+    }
+
+    /**
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     *
+     * @throws NotFoundException
+     */
+    public function delete(Request $request, Response $response)
+    {
+        $id = $request->getAttribute('id');
+
+        /** @var User $user */
+        $user = $this->userRepository->find($id);
+        if (null === $user) {
+            throw new NotFoundException($request, $response);
+        }
+
+        $this->userRepository->delete($user);
+
+        return $response->withStatus(302)->withHeader('Location', $this->router->pathFor('user_list'));
     }
 }

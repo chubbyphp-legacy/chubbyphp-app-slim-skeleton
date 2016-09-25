@@ -5,6 +5,7 @@ namespace SlimSkeleton\Auth;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Session\LazySession;
+use SlimSkeleton\Auth\Exception\EmptyPasswordException;
 use SlimSkeleton\Auth\Exception\InvalidPasswordException;
 use SlimSkeleton\Auth\Exception\UserNotFoundException;
 use SlimSkeleton\Model\User;
@@ -28,6 +29,7 @@ final class Auth implements AuthInterface
 
     /**
      * @param Request $request
+     *
      * @throws InvalidPasswordException
      * @throws UserNotFoundException
      */
@@ -57,6 +59,7 @@ final class Auth implements AuthInterface
 
     /**
      * @param Request $request
+     *
      * @return bool
      */
     public function isAuthenticated(Request $request): bool
@@ -66,6 +69,7 @@ final class Auth implements AuthInterface
 
     /**
      * @param Request $request
+     *
      * @return UserInterface|null
      */
     public function getAuthenticatedUser(Request $request)
@@ -81,15 +85,23 @@ final class Auth implements AuthInterface
 
     /**
      * @param string $password
+     *
      * @return string
+     *
+     * @throws EmptyPasswordException
      */
     public function hashPassword(string $password): string
     {
+        if ('' === $password) {
+            throw EmptyPasswordException::create();
+        }
+
         return password_hash($password, PASSWORD_DEFAULT);
     }
 
     /**
      * @param Request $request
+     *
      * @return LazySession
      */
     private function getSession(Request $request): LazySession

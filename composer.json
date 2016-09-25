@@ -4,6 +4,8 @@
     "doctrine/dbal": "^2.5.5",
     "dflydev/fig-cookies": "^1.0.2",
     "psr7-sessions/storageless": "~2.0",
+    "ramsey/uuid": "~3.5",
+    "respect/validation": "^1.1.9",
     "slim/slim": "~3.5",
     "slim/twig-view": "^2.1.1",
     "symfony/console": "~3.1"

@@ -2,10 +2,13 @@
 
 namespace SlimSkeleton\Model;
 
+use Respect\Validation\Validator;
+
 interface ModelInterface extends \JsonSerializable
 {
     /**
      * @param array $data
+     *
      * @return ModelInterface
      */
     public static function fromRow(array $data): ModelInterface;
@@ -19,4 +22,9 @@ interface ModelInterface extends \JsonSerializable
      * @return string
      */
     public function getId(): string;
+
+    /**
+     * @return Validator[]|array
+     */
+    public function getValidators(): array;
 }

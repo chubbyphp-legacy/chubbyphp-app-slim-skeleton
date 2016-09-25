@@ -4,6 +4,7 @@ namespace SlimSkeleton\Auth;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SlimSkeleton\Auth\Exception\AbstractLoginException;
+use SlimSkeleton\Auth\Exception\EmptyPasswordException;
 use SlimSkeleton\Model\UserInterface;
 
 interface AuthInterface
@@ -24,18 +25,23 @@ interface AuthInterface
 
     /**
      * @param Request $request
+     *
      * @return bool
      */
     public function isAuthenticated(Request $request): bool;
 
     /**
      * @param Request $request
+     *
      * @return UserInterface|null
      */
     public function getAuthenticatedUser(Request $request);
 
     /**
      * @param string $password
+     *
+     * @throws EmptyPasswordException
+     *
      * @return string
      */
     public function hashPassword(string $password): string;

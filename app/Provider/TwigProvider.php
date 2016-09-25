@@ -30,7 +30,7 @@ final class TwigProvider implements ServiceProviderInterface
                 $container['twig.namespaces'],
                 [
                     'cache' => $container['cacheDir'].'/twig',
-                    'debug' => $container['debug']
+                    'debug' => $container['debug'],
                 ]
             );
 

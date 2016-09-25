@@ -8,18 +8,21 @@ interface RepositoryInterface
 {
     /**
      * @param string $id
+     *
      * @return ModelInterface|null
      */
     public function find(string $id);
 
     /**
      * @param array $criteria
+     *
      * @return ModelInterface|null
      */
     public function findOneBy(array $criteria = []);
 
     /**
      * @param array $criteria
+     *
      * @return ModelInterface[]array
      */
     public function findBy(array $criteria = []): array;
@@ -33,4 +36,9 @@ interface RepositoryInterface
      * @param ModelInterface $model
      */
     public function update(ModelInterface $model);
+
+    /**
+     * @param ModelInterface $model
+     */
+    public function delete(ModelInterface $model);
 }

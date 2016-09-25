@@ -9,6 +9,8 @@ $container['appDir'] = __DIR__;
 $container['cacheDir'] = $container['appDir'].'/../var/cache';
 $container['configDir'] = $container['appDir'].'/../config';
 
+require_once $container['appDir'].'/functions.php';
+
 $config = array_replace_recursive(
     require_once $container['configDir'].'/config.php',
     require_once $container['configDir'].'/config_'.$env.'.php'

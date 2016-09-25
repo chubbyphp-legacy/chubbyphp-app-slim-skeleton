@@ -6,6 +6,7 @@ final class UserNotFoundException extends AbstractLoginException
 {
     /**
      * @param string $email
+     *
      * @return UserNotFoundException
      */
     public static function create(string $email): self

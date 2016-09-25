@@ -1,0 +1,23 @@
+{% extends "@SlimSkeleton/baselayout.html.twig" %}
+
+{% import "@SlimSkeleton/forms.html.twig" as forms %}
+
+{% block container %}
+    <div class="col-xs-12">
+        <h1>Create user</h1>
+        <form action="{{ path_for('user_create') }}" method="post" class="form-horizontal">
+            {{ forms.renderInputText(user, 'email', errorMessages) }}
+            {{ forms.renderInputPassword(user, 'password', errorMessages) }}
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10">
+                    <button type="submit" class="btn btn-success" name="save" value="save" title="save">
+                        <i class="glyphicon glyphicon-save"></i>
+                    </button>
+                    <a class="btn btn-default" href="{{ path_for('user_list') }}" title="bac to list">
+                        <i class="glyphicon glyphicon-list-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
