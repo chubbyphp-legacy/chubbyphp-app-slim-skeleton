@@ -3,7 +3,7 @@
 namespace SlimSkeleton\Auth;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SlimSkeleton\Auth\Exception\AbstractAuthException;
+use SlimSkeleton\Auth\Exception\AbstractLoginException;
 use SlimSkeleton\Model\UserInterface;
 
 interface AuthInterface
@@ -13,7 +13,7 @@ interface AuthInterface
     /**
      * @param Request $request
      *
-     * @throws AbstractAuthException
+     * @throws AbstractLoginException
      */
     public function login(Request $request);
 

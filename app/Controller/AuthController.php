@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Router;
 use SlimSkeleton\Auth\AuthInterface;
-use SlimSkeleton\Auth\Exception\AbstractAuthException;
+use SlimSkeleton\Auth\Exception\AbstractLoginException;
 
 class AuthController
 {
@@ -41,7 +41,7 @@ class AuthController
         try {
             $this->auth->login($request);
             return $response->withHeader('Location', $this->router->pathFor('home'));
-        } catch (AbstractAuthException $e) {
+        } catch (AbstractLoginException $e) {
             throw $e;
         }
     }

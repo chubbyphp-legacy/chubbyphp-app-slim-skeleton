@@ -2,7 +2,7 @@
 
 namespace SlimSkeleton\Auth\Exception;
 
-final class InvalidPasswordException extends AbstractAuthException
+final class InvalidPasswordException extends AbstractLoginException
 {
     /**
      * @return InvalidPasswordException

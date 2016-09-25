@@ -2,7 +2,7 @@
 
 namespace SlimSkeleton\Auth\Exception;
 
-final class UserNotFoundException extends AbstractAuthException
+final class UserNotFoundException extends AbstractLoginException
 {
     /**
      * @param string $email
