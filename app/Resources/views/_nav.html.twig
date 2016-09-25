@@ -14,15 +14,21 @@
             <ul class="nav navbar-nav">
                 <li><a href="{{ path_for('user_list') }}">Users</a></li>
             </ul>
-            <form action="{{ path_for('authenticate') }}" method="post" class="navbar-form navbar-right">
-                <div class="form-group">
-                    <input type="text" name="email" placeholder="Email" class="form-control">
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password" placeholder="Password" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-success">Sign in</button>
-            </form>
+            {% if not authenticatedUser %}
+                <form action="{{ path_for('login') }}" method="post" class="navbar-form navbar-right">
+                    <div class="form-group">
+                        <input type="text" name="email" placeholder="Email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Password" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-success">Login</button>
+                </form>
+            {% else %}
+                <form action="{{ path_for('logout') }}" method="post" class="navbar-form navbar-right">
+                    <button type="submit" value="{{ authenticatedUser.id }}" class="btn btn-success">Logout</button>
+                </form>
+            {% endif %}
         </div><!--/.navbar-collapse -->
     </div>
 </nav>

@@ -4,10 +4,23 @@ namespace SlimSkeleton\Auth;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SlimSkeleton\Auth\Exception\AbstractAuthException;
+use SlimSkeleton\Model\UserInterface;
 
 interface AuthInterface
 {
     const USER_KEY = 'user';
+
+    /**
+     * @param Request $request
+     *
+     * @throws AbstractAuthException
+     */
+    public function login(Request $request);
+
+    /**
+     * @param Request $request
+     */
+    public function logout(Request $request);
 
     /**
      * @param Request $request
@@ -17,10 +30,9 @@ interface AuthInterface
 
     /**
      * @param Request $request
-     *
-     * @throws AbstractAuthException
+     * @return UserInterface|null
      */
-    public function authenticate(Request $request);
+    public function getAuthenticatedUser(Request $request);
 
     /**
      * @param string $password

@@ -12,7 +12,8 @@ use SlimSkeleton\Auth\AuthMiddleware;
 
 $app->get('/', HomeController::class. ':home')->setName('home');
 
-$app->post('/authenticate', AuthController::class. ':authenticate')->setName('authenticate');
+$app->post('/login', AuthController::class. ':login')->setName('login');
+$app->post('/logout', AuthController::class. ':logout')->setName('logout');
 
 $app->get('/users', UserController::class. ':listAll')->setName('user_list')->add($container[AuthMiddleware::class]);
 $app->get('/users/{id}', UserController::class. ':view')->setName('user_view')->add($container[AuthMiddleware::class]);

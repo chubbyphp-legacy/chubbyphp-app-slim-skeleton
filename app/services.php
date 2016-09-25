@@ -6,6 +6,7 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
 use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Time\SystemCurrentTime;
 use Slim\Container;
+use Slim\Views\TwigExtension;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
@@ -22,15 +23,26 @@ $container->register(new ConsoleProvider());
 $container->register(new DoctrineServiceProvider());
 $container->register(new TwigProvider());
 
+// extend providers
 $container->extend('twig.namespaces', function (array $namespaces) use ($container) {
     $namespaces['SlimSkeleton'] = $container['appDir'].'/Resources/views';
 
     return $namespaces;
 });
 
+$container->extend('twig.extensions', function (array $extensions) use ($container) {
+    $extensions[] = new TwigExtension(
+        $container['router'],
+        rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/')
+    );
+    $extensions[] = new \Twig_Extension_Debug();
+
+    return $extensions;
+});
+
 // controllers
 $container[HomeController::class] = function () use ($container) {
-    return new HomeController($container['twig']);
+    return new HomeController($container[Auth::class], $container['twig']);
 };
 
 $container[AuthController::class] = function () use ($container) {
@@ -42,6 +54,7 @@ $container[AuthController::class] = function () use ($container) {
 
 $container[UserController::class] = function () use ($container) {
     return new UserController(
+        $container[Auth::class],
         $container['router'],
         $container['twig'],
         $container[UserRepository::class]

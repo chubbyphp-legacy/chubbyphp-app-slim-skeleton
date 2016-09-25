@@ -33,14 +33,27 @@ class AuthController
     /**
      * @param Request $request
      * @param Response $response
+     *
+     * @return Response
      */
-    public function authenticate(Request $request, Response $response)
+    public function login(Request $request, Response $response)
     {
         try {
-            $this->auth->authenticate($request);
+            $this->auth->login($request);
             return $response->withHeader('Location', $this->router->pathFor('home'));
         } catch (AbstractAuthException $e) {
             throw $e;
         }
+    }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+    public function logout(Request $request, Response $response)
+    {
+        $this->auth->logout($request);
+        return $response->withHeader('Location', $this->router->pathFor('home'));
     }
 }

@@ -7,10 +7,16 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Exception\NotFoundException;
 use Slim\Router;
 use Slim\Views\Twig;
+use SlimSkeleton\Auth\AuthInterface;
 use SlimSkeleton\Repository\UserRepository;
 
 class UserController
 {
+    /**
+     * @var AuthInterface
+     */
+    private $auth;
+
     /**
      * @var Router
      */
@@ -27,17 +33,18 @@ class UserController
     private $userRepository;
 
     /**
+     * @param AuthInterface $auth
      * @param Router $router
      * @param Twig $twig
      * @param UserRepository $userRepository
      */
-    public function __construct(Router $router, Twig $twig, UserRepository $userRepository)
+    public function __construct(AuthInterface $auth, Router $router, Twig $twig, UserRepository $userRepository)
     {
+        $this->auth = $auth;
         $this->router = $router;
         $this->twig = $twig;
         $this->userRepository = $userRepository;
     }
-
 
     /**
      * @param Request $request
@@ -49,7 +56,8 @@ class UserController
         $users = $this->userRepository->findBy();
 
         return $this->twig->render($response, '@SlimSkeleton/user/list.html.twig', [
-            'users' => json_decode(json_encode($users), true)
+            'users' => json_decode(json_encode($users), true),
+            'authenticatedUser' => $this->auth->getAuthenticatedUser($request)
         ]);
 
     }
@@ -70,7 +78,8 @@ class UserController
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/view.html.twig', [
-            'user' => json_decode(json_encode($user), true)
+            'user' => json_decode(json_encode($user), true),
+            'authenticatedUser' => $this->auth->getAuthenticatedUser($request)
         ]);
     }
 }
