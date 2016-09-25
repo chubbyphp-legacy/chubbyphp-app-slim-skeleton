@@ -16,6 +16,7 @@ use SlimSkeleton\Provider\ConsoleProvider;
 use SlimSkeleton\Provider\DoctrineServiceProvider;
 use SlimSkeleton\Provider\TwigProvider;
 use SlimSkeleton\Repository\UserRepository;
+use SlimSkeleton\Session\Session;
 use SlimSkeleton\Validation\Validator;
 
 /* @var Container $container */
@@ -43,13 +44,20 @@ $container->extend('twig.extensions', function (array $extensions) use ($contain
 
 // controllers
 $container[HomeController::class] = function () use ($container) {
-    return new HomeController($container[Auth::class], $container['twig']);
+    return new HomeController(
+        $container[Auth::class],
+        $container['router'],
+        $container[Session::class],
+        $container['twig']
+    );
 };
 
 $container[AuthController::class] = function () use ($container) {
     return new AuthController(
         $container[Auth::class],
-        $container['router']
+        $container['router'],
+        $container[Session::class],
+        $container['twig']
     );
 };
 
@@ -57,6 +65,7 @@ $container[UserController::class] = function () use ($container) {
     return new UserController(
         $container[Auth::class],
         $container['router'],
+        $container[Session::class],
         $container['twig'],
         $container[UserRepository::class],
         $container[Validator::class]
@@ -65,7 +74,7 @@ $container[UserController::class] = function () use ($container) {
 
 // middlewares
 $container[AuthMiddleware::class] = function () use ($container) {
-    return new AuthMiddleware($container[Auth::class]);
+    return new AuthMiddleware($container[Auth::class], $container['twig']);
 };
 
 $container[SessionMiddleware::class] = function () use ($container) {
@@ -89,7 +98,11 @@ $container[UserRepository::class] = function () use ($container) {
 
 // services
 $container[Auth::class] = function () use ($container) {
-    return new Auth($container[UserRepository::class]);
+    return new Auth($container[Session::class], $container[UserRepository::class]);
+};
+
+$container[Session::class] = function () use ($container) {
+    return new Session();
 };
 
 $container[Validator::class] = function () use ($container) {

@@ -1,0 +1,5 @@
+{% if flashMessage %}
+    <div class="alert alert-{{ flashMessage['t'] }}" role="{{ flashMessage['t'] }}">
+        {{ flashMessage['m'] }}
+    </div>
+{% endif %}

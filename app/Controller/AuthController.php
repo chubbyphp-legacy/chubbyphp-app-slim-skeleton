@@ -4,47 +4,25 @@ namespace SlimSkeleton\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Router;
-use SlimSkeleton\Auth\AuthInterface;
 use SlimSkeleton\Auth\Exception\AbstractLoginException;
 
-class AuthController
+class AuthController extends AbstractController
 {
-    /**
-     * @var AuthInterface
-     */
-    private $auth;
-
-    /**
-     * @var Router
-     */
-    private $router;
-
-    /**
-     * @param AuthInterface $auth
-     * @param Router        $router
-     */
-    public function __construct(AuthInterface $auth, Router $router)
-    {
-        $this->auth = $auth;
-        $this->router = $router;
-    }
-
     /**
      * @param Request  $request
      * @param Response $response
      *
      * @return Response
      */
-    public function login(Request $request, Response $response)
+    public function login(Request $request, Response $response): Response
     {
         try {
             $this->auth->login($request);
-
-            return $response->withStatus(302)->withHeader('Location', $this->router->pathFor('home'));
         } catch (AbstractLoginException $e) {
-            throw $e;
+            $this->session->set($request, 'f', ['t' => 'danger', 'm' => 'Invalid credentials']);
         }
+
+        return $response->withStatus(302)->withHeader('Location', $request->getHeader('Referer')[0]);
     }
 
     /**
@@ -53,10 +31,10 @@ class AuthController
      *
      * @return Response
      */
-    public function logout(Request $request, Response $response)
+    public function logout(Request $request, Response $response): Response
     {
         $this->auth->logout($request);
 
-        return $response->withStatus(302)->withHeader('Location', $this->router->pathFor('home'));
+        return $this->getRedirectResponse($response, 302, 'home');
     }
 }

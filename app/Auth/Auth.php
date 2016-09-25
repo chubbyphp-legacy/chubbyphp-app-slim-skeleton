@@ -3,27 +3,33 @@
 namespace SlimSkeleton\Auth;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use PSR7Session\Http\SessionMiddleware;
-use PSR7Session\Session\LazySession;
 use SlimSkeleton\Auth\Exception\EmptyPasswordException;
 use SlimSkeleton\Auth\Exception\InvalidPasswordException;
 use SlimSkeleton\Auth\Exception\UserNotFoundException;
 use SlimSkeleton\Model\User;
 use SlimSkeleton\Model\UserInterface;
 use SlimSkeleton\Repository\UserRepositoryInterface;
+use SlimSkeleton\Session\SessionInterface;
 
 final class Auth implements AuthInterface
 {
+    /**
+     * @var SessionInterface
+     */
+    private $session;
+
     /**
      * @var UserRepositoryInterface
      */
     private $userRepository;
 
     /**
+     * @param SessionInterface        $session
      * @param UserRepositoryInterface $userRepository
      */
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(SessionInterface $session, UserRepositoryInterface $userRepository)
     {
+        $this->session = $session;
         $this->userRepository = $userRepository;
     }
 
@@ -46,7 +52,7 @@ final class Auth implements AuthInterface
             throw InvalidPasswordException::create();
         }
 
-        $this->getSession($request)->set(self::USER_KEY, $user->getId());
+        $this->session->set($request, self::USER_KEY, $user->getId());
     }
 
     /**
@@ -54,7 +60,7 @@ final class Auth implements AuthInterface
      */
     public function logout(Request $request)
     {
-        $this->getSession($request)->remove(self::USER_KEY);
+        $this->session->remove($request, self::USER_KEY);
     }
 
     /**
@@ -74,11 +80,11 @@ final class Auth implements AuthInterface
      */
     public function getAuthenticatedUser(Request $request)
     {
-        if (!$this->getSession($request)->has(self::USER_KEY)) {
+        if (!$this->session->has($request, self::USER_KEY)) {
             return null;
         }
 
-        $id = $this->getSession($request)->get(self::USER_KEY);
+        $id = $this->session->get($request, self::USER_KEY);
 
         return $this->userRepository->find($id);
     }
@@ -97,15 +103,5 @@ final class Auth implements AuthInterface
         }
 
         return password_hash($password, PASSWORD_DEFAULT);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return LazySession
-     */
-    private function getSession(Request $request): LazySession
-    {
-        return $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
     }
 }
