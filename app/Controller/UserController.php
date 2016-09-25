@@ -41,11 +41,11 @@ class UserController
     private $validator;
 
     /**
-     * @param AuthInterface      $auth
-     * @param Router             $router
-     * @param Twig               $twig
-     * @param UserRepositoryInterface     $userRepository
-     * @param ValidatorInterface $validator
+     * @param AuthInterface           $auth
+     * @param Router                  $router
+     * @param Twig                    $twig
+     * @param UserRepositoryInterface $userRepository
+     * @param ValidatorInterface      $validator
      */
     public function __construct(
         AuthInterface $auth,
