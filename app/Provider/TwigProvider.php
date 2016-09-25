@@ -24,6 +24,7 @@ final class TwigProvider implements ServiceProviderInterface
                 $container['router'],
                 rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/')
             );
+            $extensions[] = new \Twig_Extension_Debug();
 
             return $extensions;
         };

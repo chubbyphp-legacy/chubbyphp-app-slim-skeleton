@@ -1,0 +1,33 @@
+{% extends "@SlimSkeleton/baselayout.html.twig" %}
+
+{% block container %}
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>User</h1>
+            <div class="form-group">
+                <a class="btn btn-default" href="" title="edit">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                </a>
+                <a class="btn btn-default" href="{{ path_for('user_list') }}" title="back to list">
+                    <i class="glyphicon glyphicon-list-alt"></i>
+                </a>
+            </div>
+            <table class="table table-striped">
+                {% for property, value in user %}
+                    <tr>
+                        <td>{{ property }}</td>
+                        <td>{{ value }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <div class="form-group">
+                <a class="btn btn-default" href="" title="edit">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                </a>
+                <a class="btn btn-default" href="{{ path_for('user_list') }}" title="back to list">
+                    <i class="glyphicon glyphicon-list-alt"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

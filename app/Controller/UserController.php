@@ -39,17 +39,24 @@ class UserController
         $users = $this->userRepository->findAll();
 
         return $this->twig->render($response, '@SlimSkeleton/user/list.html.twig', [
-            'users' => json_decode(json_encode($users))
+            'users' => json_decode(json_encode($users), true)
         ]);
 
     }
 
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
     public function view(Request $request, Response $response)
     {
         $id = $request->getAttribute('id');
 
         $user = $this->userRepository->find($id);
 
-        var_dump($user);
+        return $this->twig->render($response, '@SlimSkeleton/user/view.html.twig', [
+            'user' => json_decode(json_encode($user), true)
+        ]);
     }
 }
