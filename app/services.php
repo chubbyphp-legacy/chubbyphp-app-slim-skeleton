@@ -1,12 +1,16 @@
 <?php
 
 use Slim\Container;
+use SlimSkeleton\Controller\UserController;
 use SlimSkeleton\Provider\ConsoleProvider;
+use SlimSkeleton\Provider\DoctrineServiceProvider;
 use SlimSkeleton\Provider\TwigProvider;
+use SlimSkeleton\Repository\UserRepository;
 
 /* @var Container $container */
 
 $container->register(new ConsoleProvider());
+$container->register(new DoctrineServiceProvider());
 $container->register(new TwigProvider());
 
 $container->extend('twig.namespaces', function (array $namespaces) use ($container) {
@@ -14,3 +18,14 @@ $container->extend('twig.namespaces', function (array $namespaces) use ($contain
 
     return $namespaces;
 });
+
+// controllers
+$container[UserController::class] = function () use ($container) {
+    return new UserController($container[UserRepository::class]);
+};
+
+
+// repositories
+$container[UserRepository::class] = function () use ($container) {
+    return new UserRepository($container['db']);
+};
