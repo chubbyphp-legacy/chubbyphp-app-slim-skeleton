@@ -4,15 +4,17 @@ namespace SlimSkeleton\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Exception\NotFoundException;
+use Slim\Router;
 use Slim\Views\Twig;
 use SlimSkeleton\Repository\UserRepository;
 
 class UserController
 {
     /**
-     * @var UserRepository
+     * @var Router
      */
-    private $userRepository;
+    private $router;
 
     /**
      * @var Twig
@@ -20,14 +22,22 @@ class UserController
     private $twig;
 
     /**
-     * @param UserRepository $userRepository
-     * @param Twig $twig
+     * @var UserRepository
      */
-    public function __construct(UserRepository $userRepository, Twig $twig)
+    private $userRepository;
+
+    /**
+     * @param Router $router
+     * @param Twig $twig
+     * @param UserRepository $userRepository
+     */
+    public function __construct(Router $router, Twig $twig, UserRepository $userRepository)
     {
-        $this->userRepository = $userRepository;
+        $this->router = $router;
         $this->twig = $twig;
+        $this->userRepository = $userRepository;
     }
+
 
     /**
      * @param Request $request
@@ -36,7 +46,7 @@ class UserController
      */
     public function listAll(Request $request, Response $response)
     {
-        $users = $this->userRepository->findAll();
+        $users = $this->userRepository->findBy();
 
         return $this->twig->render($response, '@SlimSkeleton/user/list.html.twig', [
             'users' => json_decode(json_encode($users), true)
@@ -48,12 +58,16 @@ class UserController
      * @param Request $request
      * @param Response $response
      * @return Response
+     * @throws NotFoundException
      */
     public function view(Request $request, Response $response)
     {
         $id = $request->getAttribute('id');
 
         $user = $this->userRepository->find($id);
+        if (null === $user) {
+            throw new NotFoundException($request, $response);
+        }
 
         return $this->twig->render($response, '@SlimSkeleton/user/view.html.twig', [
             'user' => json_decode(json_encode($user), true)

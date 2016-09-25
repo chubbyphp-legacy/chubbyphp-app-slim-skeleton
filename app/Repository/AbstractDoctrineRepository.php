@@ -41,12 +41,43 @@ abstract class AbstractDoctrineRepository implements RepositoryInterface
     }
 
     /**
+     * @param array $criteria
+     * @return null|ModelInterface
+     */
+    public function findOneBy(array $criteria = [])
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->select('*')->from($this->getTablename())->setMaxResults(1);
+
+        foreach ($criteria as $field => $value) {
+            $qb->andWhere($qb->expr()->eq($field, ':'.$field));
+            $qb->setParameter($field, $value);
+        }
+
+        $row = $qb->execute()->fetch(\PDO::FETCH_ASSOC);
+        if (false === $row) {
+            return null;
+        }
+
+        /** @var ModelInterface $modelClass */
+        $modelClass = $this->getModelClass();
+
+        return $modelClass::fromRow($row);
+    }
+
+    /**
+     * @param array $criteria
      * @return ModelInterface[]|array
      */
-    public function findAll(): array
+    public function findBy(array $criteria = []): array
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')->from($this->getTablename());
+
+        foreach ($criteria as $field => $value) {
+            $qb->andWhere($qb->expr()->eq($field, ':'.$field));
+            $qb->setParameter($field, $value);
+        }
 
         $rows = $qb->execute()->fetchAll(\PDO::FETCH_ASSOC);
 
