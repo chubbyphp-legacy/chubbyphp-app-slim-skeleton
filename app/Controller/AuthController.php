@@ -21,6 +21,16 @@ class AuthController
     private $router;
 
     /**
+     * @param AuthInterface $auth
+     * @param Router $router
+     */
+    public function __construct(AuthInterface $auth, Router $router)
+    {
+        $this->auth = $auth;
+        $this->router = $router;
+    }
+
+    /**
      * @param Request $request
      * @param Response $response
      */
@@ -28,7 +38,7 @@ class AuthController
     {
         try {
             $this->auth->authenticate($request);
-            $response->withHeader('Location', $this->router->pathFor('home'));
+            return $response->withHeader('Location', $this->router->pathFor('home'));
         } catch (AbstractAuthException $e) {
             throw $e;
         }

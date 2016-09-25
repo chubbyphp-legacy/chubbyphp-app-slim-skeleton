@@ -41,15 +41,14 @@ final class Auth implements AuthInterface
      */
     public function authenticate(Request $request)
     {
-        $email = $request->getAttribute('email');
-        $password = $request->getAttribute('password');
+        $data = $request->getParsedBody();
 
         /** @var User $user */
-        if (null === $user = $this->userRepository->findOneBy(['email' => $email])) {
-            throw UserNotFoundException::create($email);
+        if (null === $user = $this->userRepository->findOneBy(['email' => $data['email']])) {
+            throw UserNotFoundException::create($data['email']);
         }
 
-        if (!password_verify($password, $user->getPassword())) {
+        if (!password_verify($data['password'], $user->getPassword())) {
             throw InvalidPasswordException::create();
         }
 

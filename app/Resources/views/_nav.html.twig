@@ -14,12 +14,12 @@
             <ul class="nav navbar-nav">
                 <li><a href="{{ path_for('user_list') }}">Users</a></li>
             </ul>
-            <form action="" method="post" class="navbar-form navbar-right">
+            <form action="{{ path_for('authenticate') }}" method="post" class="navbar-form navbar-right">
                 <div class="form-group">
-                    <input type="text" placeholder="Email" class="form-control">
+                    <input type="text" name="email" placeholder="Email" class="form-control">
                 </div>
                 <div class="form-group">
-                    <input type="password" placeholder="Password" class="form-control">
+                    <input type="password" name="password" placeholder="Password" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-success">Sign in</button>
             </form>

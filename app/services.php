@@ -1,5 +1,10 @@
 <?php
 
+use Dflydev\FigCookies\SetCookie;
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
+use PSR7Session\Http\SessionMiddleware;
+use PSR7Session\Time\SystemCurrentTime;
 use Slim\Container;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
@@ -37,7 +42,6 @@ $container[AuthController::class] = function () use ($container) {
 
 $container[UserController::class] = function () use ($container) {
     return new UserController(
-        $container[Auth::class],
         $container['router'],
         $container['twig'],
         $container[UserRepository::class]
@@ -47,6 +51,20 @@ $container[UserController::class] = function () use ($container) {
 // middlewares
 $container[AuthMiddleware::class] = function () use ($container) {
     return new AuthMiddleware($container[Auth::class]);
+};
+
+$container[SessionMiddleware::class] = function () use ($container) {
+    return new SessionMiddleware(
+        new Sha256(),
+        $container['session.symmetricKey'],
+        $container['session.symmetricKey'],
+        SetCookie::create(SessionMiddleware::DEFAULT_COOKIE)
+            ->withHttpOnly(true)
+            ->withPath('/'),
+        new Parser(),
+        $container['session.expirationTime'],
+        new SystemCurrentTime()
+    );
 };
 
 // repositories
