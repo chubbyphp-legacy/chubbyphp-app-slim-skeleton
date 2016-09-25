@@ -3,6 +3,7 @@
 use Slim\Container;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
+use SlimSkeleton\Middleware\AuthMiddleware;
 use SlimSkeleton\Provider\ConsoleProvider;
 use SlimSkeleton\Provider\DoctrineServiceProvider;
 use SlimSkeleton\Provider\TwigProvider;
@@ -30,6 +31,11 @@ $container[UserController::class] = function () use ($container) {
         $container[UserRepository::class],
         $container['twig']
     );
+};
+
+// middlewares
+$container[AuthMiddleware::class] = function () {
+    return new AuthMiddleware();
 };
 
 // repositories
