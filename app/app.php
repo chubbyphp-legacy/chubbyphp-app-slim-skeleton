@@ -6,8 +6,8 @@ use Slim\Container;
 
 $container = new Container();
 $container['appDir'] = __DIR__;
-$container['cacheDir'] = realpath($container['appDir'].'/../var/cache');
-$container['configDir'] = realpath($container['appDir'].'/../config');
+$container['cacheDir'] = $container['appDir'].'/../var/cache';
+$container['configDir'] = $container['appDir'].'/../config';
 
 $config = array_replace_recursive(
     require_once $container['configDir'].'/config.php',

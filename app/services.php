@@ -1,6 +1,7 @@
 <?php
 
 use Slim\Container;
+use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
 use SlimSkeleton\Provider\ConsoleProvider;
 use SlimSkeleton\Provider\DoctrineServiceProvider;
@@ -20,10 +21,16 @@ $container->extend('twig.namespaces', function (array $namespaces) use ($contain
 });
 
 // controllers
-$container[UserController::class] = function () use ($container) {
-    return new UserController($container[UserRepository::class]);
+$container[HomeController::class] = function () use ($container) {
+    return new HomeController($container['twig']);
 };
 
+$container[UserController::class] = function () use ($container) {
+    return new UserController(
+        $container[UserRepository::class],
+        $container['twig']
+    );
+};
 
 // repositories
 $container[UserRepository::class] = function () use ($container) {

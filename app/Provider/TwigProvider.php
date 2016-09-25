@@ -29,7 +29,13 @@ final class TwigProvider implements ServiceProviderInterface
         };
 
         $container['twig'] = function () use ($container) {
-            $twig = new Twig($container['twig.namespaces'], ['cache' => $container['cacheDir'].'/twig']);
+            $twig = new Twig(
+                $container['twig.namespaces'],
+                [
+                    'cache' => $container['cacheDir'].'/twig',
+                    'debug' => $container['debug']
+                ]
+            );
 
             foreach ($container['twig.extensions'] as $extension) {
                 $twig->addExtension($extension);
