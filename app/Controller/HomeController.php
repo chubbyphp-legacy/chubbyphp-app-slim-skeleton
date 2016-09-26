@@ -9,7 +9,7 @@ use SlimSkeleton\Auth\AuthInterface;
 use SlimSkeleton\Controller\Traits\TwigDataTrait;
 use SlimSkeleton\Session\SessionInterface;
 
-class HomeController
+final class HomeController
 {
     use TwigDataTrait;
 

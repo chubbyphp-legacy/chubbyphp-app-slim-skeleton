@@ -2,7 +2,7 @@
 
 namespace SlimSkeleton\Session;
 
-class FlashMessage implements \JsonSerializable
+final class FlashMessage implements \JsonSerializable
 {
     /**
      * @var string

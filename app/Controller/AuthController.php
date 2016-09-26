@@ -11,7 +11,7 @@ use SlimSkeleton\Controller\Traits\RedirectForPathTrait;
 use SlimSkeleton\Session\FlashMessage;
 use SlimSkeleton\Session\SessionInterface;
 
-class AuthController
+final class AuthController
 {
     use RedirectForPathTrait;
 

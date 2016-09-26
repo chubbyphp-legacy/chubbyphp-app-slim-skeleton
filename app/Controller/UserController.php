@@ -17,7 +17,7 @@ use SlimSkeleton\Session\FlashMessage;
 use SlimSkeleton\Session\SessionInterface;
 use SlimSkeleton\Validation\ValidatorInterface;
 
-class UserController
+final class UserController
 {
     use RedirectForPathTrait;
     use RenderErrorTrait;

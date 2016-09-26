@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Session\LazySession;
 
-class Session implements SessionInterface
+final class Session implements SessionInterface
 {
     /**
      * @param Request $request
