@@ -29,9 +29,7 @@ trait ErrorResponseTrait
         string $messageTitle,
         string $messageText
     ): Response {
-        return $this->twig->render(
-            $response,
-            '@SlimSkeleton/error.html.twig',
+        return $this->twig->render($response, '@SlimSkeleton/error.html.twig',
             $this->getVariablesForTwig($request, [
                 'messageTitle' => $messageTitle,
                 'messageText' => $messageText,
