@@ -19,7 +19,7 @@ git clone https://github.com/dominikzogg/slim-skeleton.git
 ### Install vagrant
 
 ```{.sh}
-cd slim-demo
+cd slim-skeleton
 git submodule update --init -- vagrant-php
 git submodule update --remote -- vagrant-php
 ```
