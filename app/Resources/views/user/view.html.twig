@@ -3,20 +3,20 @@
 {% block container %}
     <div class="row">
         <div class="col-xs-12">
-            <h1>User</h1>
+            <h1>{{ "user.title.view"|trans(locale) }}</h1>
             <table class="table table-striped">
                 {% for property, value in user %}
                     <tr>
-                        <td>{{ property }}</td>
+                        <td>{{ ("user.label."~property)|trans(locale) }}</td>
                         <td>{{ value }}</td>
                     </tr>
                 {% endfor %}
             </table>
             <div class="form-group">
-                <a class="btn btn-default" href="{{ path_for('user_edit', {'id': user.id}) }}" title="edit">
+                <a class="btn btn-default" href="{{ path_for('user_edit', {'id': user.id}) }}" title="{{ "user.action.edit"|trans(locale) }}">
                     <i class="glyphicon glyphicon-pencil"></i>
                 </a>
-                <a class="btn btn-default" href="{{ path_for('user_list') }}" title="back to list">
+                <a class="btn btn-default" href="{{ path_for('user_list') }}" title="{{ "user.action.list"|trans(locale) }}">
                     <i class="glyphicon glyphicon-list-alt"></i>
                 </a>
             </div>

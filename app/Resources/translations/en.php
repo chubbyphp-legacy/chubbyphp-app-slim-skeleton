@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'error.401.title' => 'Unauthorized',
+    'error.401.text' => 'Please logging in with your credentials.',
+    'home.title' => 'Homepage',
+    'home.text' => 'Welcome on the homepage of the Slim Skeleton.',
+    'login.action.login' => 'Login',
+    'login.action.logout' => 'Logout',
+    'login.flash.invalidcredentials' => 'Unknown email or wrong password!',
+    'login.label.email' => 'E-Mail',
+    'login.label.password' => 'Password',
+    'nav.users' => 'User',
+    'project.title' => 'Slim Skeleton',
+    'user.action.create' => 'Create user',
+    'user.action.edit' => 'Edit user',
+    'user.action.delete' => 'Delete user',
+    'user.action.list' => 'back to userlist',
+    'user.action.view' => 'View user',
+    'user.label.actions' => 'Actions',
+    'user.label.email' => 'E-Mail',
+    'user.label.id' => 'Id',
+    'user.label.password' => 'Password',
+    'user.label.save' => 'Save',
+    'user.title.create' => 'Create user',
+    'user.title.edit' => 'Edit user',
+    'user.title.list' => 'Userlist',
+];

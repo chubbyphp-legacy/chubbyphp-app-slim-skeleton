@@ -1,5 +1,10 @@
 {% extends "@SlimSkeleton/baselayout.html.twig" %}
 
 {% block container %}
-    Home
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>{{ "home.title"|trans(locale) }}</h1>
+            <p>{{ "home.text"|trans(locale) }}</p>
+        </div>
+    </div>
 {% endblock %}

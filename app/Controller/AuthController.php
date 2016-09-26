@@ -49,7 +49,7 @@ class AuthController
         try {
             $this->auth->login($request);
         } catch (AbstractLoginException $e) {
-            $flashMessage = new FlashMessage(FlashMessage::TYPE_DANGER, 'Invalid credentials!');
+            $flashMessage = new FlashMessage(FlashMessage::TYPE_DANGER, 'login.flash.invalidcredentials');
             $this->session->addFlash($request, $flashMessage);
         }
 

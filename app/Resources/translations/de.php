@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'error.401.title' => 'Nicht authorisiert',
+    'error.401.text' => 'Bitte melden Sie sich mit Ihren Benutzerdaten an.',
+    'home.title' => 'Startseite',
+    'home.text' => 'Herzlich Willkommen auf der Startseite des Slim Skeleton.',
+    'login.action.login' => 'Login',
+    'login.action.logout' => 'Logout',
+    'login.flash.invalidcredentials' => 'Unbekannte E-Mail oder falsches Passwort!',
+    'login.label.email' => 'E-Mail',
+    'login.label.password' => 'Passwort',
+    'nav.users' => 'Benutzer',
+    'project.title' => 'Slim Skeleton',
+    'user.action.create' => 'Benutzer erstellen',
+    'user.action.edit' => 'Benutzer bearbeiten',
+    'user.action.delete' => 'Benutzer entfernen',
+    'user.action.list' => 'zurück zur Benutzerliste',
+    'user.action.view' => 'Benutzer anschauen',
+    'user.label.actions' => 'Aktionen',
+    'user.label.email' => 'E-Mail',
+    'user.label.id' => 'Id',
+    'user.label.password' => 'Passwort',
+    'user.label.save' => 'Speichern',
+    'user.title.create' => 'Benutzer erstellen',
+    'user.title.edit' => 'Benutzer bearbeiten',
+    'user.title.list' => 'Benutzerliste',
+];

@@ -3,16 +3,16 @@
 {% block container %}
     <div class="row">
         <div class="col-xs-12">
-            <h1>Users</h1>
-            <a class="btn btn-default" href="{{ path_for('user_create') }}" title="create">
+            <h1>{{ "user.title.list"|trans(locale) }}</h1>
+            <a class="btn btn-default btn-sm" href="{{ path_for('user_create') }}" title="{{ "user.action.create"|trans(locale) }}">
                 <i class="glyphicon glyphicon-plus"></i>
             </a>
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Email</th>
-                        <th>Actions</th>
+                        <th>{{ "user.label.id"|trans(locale) }}</th>
+                        <th>{{ "user.label.email"|trans(locale) }}</th>
+                        <th>{{ "user.label.actions"|trans(locale) }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -21,14 +21,14 @@
                             <td>{{ user.id }}</td>
                             <td>{{ user.email }}</td>
                             <td>
-                                <a href="{{ path_for('user_edit', {'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="edit">
+                                <a href="{{ path_for('user_edit', {'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.edit"|trans(locale) }}">
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
-                                <a href="{{ path_for('user_view', {'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="view">
+                                <a href="{{ path_for('user_view', {'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.view"|trans(locale) }}">
                                     <i class="glyphicon glyphicon-eye-open"></i>
                                 </a>
                                 <form action="{{ path_for('user_delete', {'id': user.id}) }}" method="post" class="inline-form">
-                                    <button type="submit" class="btn btn-danger btn-sm" title="remove">
+                                    <button type="submit" class="btn btn-danger btn-sm" title="{{ "user.action.delete"|trans(locale) }}">
                                         <i class="glyphicon glyphicon-remove"></i>
                                     </button>
                                 </form>

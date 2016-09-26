@@ -12,8 +12,8 @@ $container['configDir'] = $container['appDir'].'/../config';
 require_once $container['appDir'].'/functions.php';
 
 $config = array_replace_recursive(
-    require_once $container['configDir'].'/config.php',
-    require_once $container['configDir'].'/config_'.$env.'.php'
+    require $container['configDir'].'/config.php',
+    require $container['configDir'].'/config_'.$env.'.php'
 );
 
 // slim settings

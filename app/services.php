@@ -6,7 +6,6 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
 use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Time\SystemCurrentTime;
 use Slim\Container;
-use Slim\Views\TwigExtension;
 use SlimSkeleton\Auth\Auth;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
@@ -14,18 +13,30 @@ use SlimSkeleton\Controller\UserController;
 use SlimSkeleton\Auth\AuthMiddleware;
 use SlimSkeleton\Provider\ConsoleProvider;
 use SlimSkeleton\Provider\DoctrineServiceProvider;
+use SlimSkeleton\Provider\TranslationProvider;
 use SlimSkeleton\Provider\TwigProvider;
 use SlimSkeleton\Repository\UserRepository;
 use SlimSkeleton\Session\Session;
+use SlimSkeleton\Translation\LocaleTranslationProvider;
+use SlimSkeleton\Translation\TranslatorTwigExtension;
 use SlimSkeleton\Validation\Validator;
 
 /* @var Container $container */
 
 $container->register(new ConsoleProvider());
 $container->register(new DoctrineServiceProvider());
+$container->register(new TranslationProvider());
 $container->register(new TwigProvider());
 
 // extend providers
+$container->extend('translator.providers', function (array $providers) use ($container) {
+    $translationDir = $container['appDir'].'/Resources/translations';
+    $providers[] = new LocaleTranslationProvider('de', require $translationDir.'/de.php');
+    $providers[] = new LocaleTranslationProvider('en', require $translationDir.'/en.php');
+
+    return $providers;
+});
+
 $container->extend('twig.namespaces', function (array $namespaces) use ($container) {
     $namespaces['SlimSkeleton'] = $container['appDir'].'/Resources/views';
 
@@ -33,30 +44,21 @@ $container->extend('twig.namespaces', function (array $namespaces) use ($contain
 });
 
 $container->extend('twig.extensions', function (array $extensions) use ($container) {
-    $extensions[] = new TwigExtension(
-        $container['router'],
-        rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/')
-    );
-    $extensions[] = new \Twig_Extension_Debug();
+    $extensions[] = new TranslatorTwigExtension($container['translator']);
+    if ($container['debug']) {
+        $extensions[] = new \Twig_Extension_Debug();
+    }
 
     return $extensions;
 });
 
 // controllers
 $container[HomeController::class] = function () use ($container) {
-    return new HomeController(
-        $container[Auth::class],
-        $container[Session::class],
-        $container['twig']
-    );
+    return new HomeController($container[Auth::class], $container[Session::class], $container['twig']);
 };
 
 $container[AuthController::class] = function () use ($container) {
-    return new AuthController(
-        $container[Auth::class],
-        $container['router'],
-        $container[Session::class]
-    );
+    return new AuthController($container[Auth::class], $container['router'], $container[Session::class]);
 };
 
 $container[UserController::class] = function () use ($container) {
@@ -72,7 +74,7 @@ $container[UserController::class] = function () use ($container) {
 
 // middlewares
 $container[AuthMiddleware::class] = function () use ($container) {
-    return new AuthMiddleware($container[Auth::class], $container['twig']);
+    return new AuthMiddleware($container[Auth::class], $container[Session::class], $container['twig']);
 };
 
 $container[SessionMiddleware::class] = function () use ($container) {

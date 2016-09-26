@@ -18,6 +18,11 @@ class FlashMessage implements \JsonSerializable
     /**
      * @var string
      */
+    private $longType;
+
+    /**
+     * @var string
+     */
     private $message;
 
     /**
@@ -27,7 +32,26 @@ class FlashMessage implements \JsonSerializable
     public function __construct(string $type, string $message)
     {
         $this->type = $type;
+        $this->longType = $this->getLongTypeFromType($type);
         $this->message = $message;
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    private function getLongTypeFromType(string $type): string
+    {
+        $reflection = new \ReflectionObject($this);
+        foreach ($reflection->getConstants() as $const => $value) {
+            if (0 === strpos($const, 'TYPE_')) {
+                if ($type === $value) {
+                    return strtolower(substr($const, 5));
+                }
+            }
+        }
+
+        return 'info';
     }
 
     /**
@@ -41,18 +65,9 @@ class FlashMessage implements \JsonSerializable
     /**
      * @return string
      */
-    public function getBootstrapType(): string
+    public function getLongType(): string
     {
-        $reflection = new \ReflectionObject($this);
-        foreach ($reflection->getConstants() as $const => $value) {
-            if (0 === strpos($const, 'TYPE_')) {
-                if ($value === $this->type) {
-                    return strtolower(substr($const, 5));
-                }
-            }
-        }
-
-        return 'unknown';
+        return $this->longType;
     }
 
     /**

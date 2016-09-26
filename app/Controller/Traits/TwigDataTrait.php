@@ -29,6 +29,7 @@ trait TwigDataTrait
         return array_replace_recursive([
             'authenticatedUser' => prepareForView($this->auth->getAuthenticatedUser($request)),
             'flashMessage' => $this->session->getFlash($request),
+            'locale' => 'de'
         ], $variables);
     }
 }
