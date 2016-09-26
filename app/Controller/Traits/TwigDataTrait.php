@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SlimSkeleton\Auth\AuthInterface;
 use SlimSkeleton\Session\SessionInterface;
 
-trait TwigVariablesTrait
+trait TwigDataTrait
 {
     /**
      * @var AuthInterface
@@ -24,7 +24,7 @@ trait TwigVariablesTrait
      *
      * @return array
      */
-    private function getVariablesForTwig(Request $request, array $variables = []): array
+    private function getTwigData(Request $request, array $variables = []): array
     {
         return array_replace_recursive([
             'authenticatedUser' => prepareForView($this->auth->getAuthenticatedUser($request)),

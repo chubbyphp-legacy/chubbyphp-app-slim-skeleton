@@ -7,13 +7,13 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Router;
 use SlimSkeleton\Auth\AuthInterface;
 use SlimSkeleton\Auth\Exception\AbstractLoginException;
-use SlimSkeleton\Controller\Traits\RedirectResponseTrait;
+use SlimSkeleton\Controller\Traits\RedirectForPathTrait;
 use SlimSkeleton\Session\FlashMessage;
 use SlimSkeleton\Session\SessionInterface;
 
 class AuthController
 {
-    use RedirectResponseTrait;
+    use RedirectForPathTrait;
 
     /**
      * @var AuthInterface
@@ -66,6 +66,6 @@ class AuthController
     {
         $this->auth->logout($request);
 
-        return $this->getRedirectResponse($response, 302, 'home');
+        return $this->getRedirectForPath($response, 302, 'home');
     }
 }

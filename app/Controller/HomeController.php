@@ -6,12 +6,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
 use SlimSkeleton\Auth\AuthInterface;
-use SlimSkeleton\Controller\Traits\TwigVariablesTrait;
+use SlimSkeleton\Controller\Traits\TwigDataTrait;
 use SlimSkeleton\Session\SessionInterface;
 
 class HomeController
 {
-    use TwigVariablesTrait;
+    use TwigDataTrait;
 
     /**
      * @var Twig
@@ -38,6 +38,6 @@ class HomeController
      */
     public function home(Request $request, Response $response)
     {
-        return $this->twig->render($response, '@SlimSkeleton/home.html.twig', $this->getVariablesForTwig($request));
+        return $this->twig->render($response, '@SlimSkeleton/home.html.twig', $this->getTwigData($request));
     }
 }

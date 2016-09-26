@@ -5,7 +5,7 @@ namespace SlimSkeleton\Controller\Traits;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Router;
 
-trait RedirectResponseTrait
+trait RedirectForPathTrait
 {
     /**
      * @var Router
@@ -20,7 +20,7 @@ trait RedirectResponseTrait
      *
      * @return Response
      */
-    private function getRedirectResponse(
+    private function getRedirectForPath(
         Response $response,
         int $statusCode,
         string $path,

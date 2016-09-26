@@ -8,9 +8,9 @@ use Slim\Router;
 use Slim\Views\Twig;
 use SlimSkeleton\Auth\AuthInterface;
 use SlimSkeleton\Auth\Exception\EmptyPasswordException;
-use SlimSkeleton\Controller\Traits\ErrorResponseTrait;
-use SlimSkeleton\Controller\Traits\RedirectResponseTrait;
-use SlimSkeleton\Controller\Traits\TwigVariablesTrait;
+use SlimSkeleton\Controller\Traits\RenderErrorTrait;
+use SlimSkeleton\Controller\Traits\RedirectForPathTrait;
+use SlimSkeleton\Controller\Traits\TwigDataTrait;
 use SlimSkeleton\Model\User;
 use SlimSkeleton\Repository\UserRepositoryInterface;
 use SlimSkeleton\Session\SessionInterface;
@@ -18,9 +18,9 @@ use SlimSkeleton\Validation\ValidatorInterface;
 
 class UserController
 {
-    use ErrorResponseTrait;
-    use RedirectResponseTrait;
-    use TwigVariablesTrait;
+    use RedirectForPathTrait;
+    use RenderErrorTrait;
+    use TwigDataTrait;
 
     /**
      * @var UserRepositoryInterface
@@ -67,7 +67,7 @@ class UserController
         $users = $this->userRepository->findBy();
 
         return $this->twig->render($response, '@SlimSkeleton/user/list.html.twig',
-            $this->getVariablesForTwig($request, [
+            $this->getTwigData($request, [
                 'users' => prepareForView($users),
             ])
         );
@@ -85,7 +85,7 @@ class UserController
 
         $user = $this->userRepository->find($id);
         if (null === $user) {
-            return $this->getErrorResponse(
+            return $this->renderError(
                 $request,
                 $response,
                 404,
@@ -95,7 +95,7 @@ class UserController
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/view.html.twig',
-            $this->getVariablesForTwig($request, [
+            $this->getTwigData($request, [
                 'user' => prepareForView($user),
             ])
         );
@@ -121,7 +121,7 @@ class UserController
                 if ([] === $errorMessages = $this->validator->validateModel($user)) {
                     $this->userRepository->insert($user);
 
-                    return $this->getRedirectResponse($response, 302, 'user_edit', ['id' => $user->getId()]);
+                    return $this->getRedirectForPath($response, 302, 'user_edit', ['id' => $user->getId()]);
                 }
             } catch (EmptyPasswordException $e) {
                 $errorMessages['password'] = [$e->getMessage()];
@@ -129,7 +129,7 @@ class UserController
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/create.html.twig',
-            $this->getVariablesForTwig($request, [
+            $this->getTwigData($request, [
                 'errorMessages' => $errorMessages ?? [],
                 'user' => prepareForView($user),
             ])
@@ -149,7 +149,7 @@ class UserController
         /** @var User $user */
         $user = $this->userRepository->find($id);
         if (null === $user) {
-            return $this->getErrorResponse(
+            return $this->renderError(
                 $request,
                 $response,
                 404,
@@ -168,7 +168,7 @@ class UserController
                 if ([] === $errorMessages = $this->validator->validateModel($user)) {
                     $this->userRepository->update($user);
 
-                    return $this->getRedirectResponse($response, 302, 'user_edit', ['id' => $user->getId()]);
+                    return $this->getRedirectForPath($response, 302, 'user_edit', ['id' => $user->getId()]);
                 }
             } catch (EmptyPasswordException $e) {
                 $errorMessages['password'] = [$e->getMessage()];
@@ -176,7 +176,7 @@ class UserController
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/edit.html.twig',
-            $this->getVariablesForTwig($request, [
+            $this->getTwigData($request, [
                 'errorMessages' => $errorMessages ?? [],
                 'user' => prepareForView($user),
             ])
@@ -196,7 +196,7 @@ class UserController
         /** @var User $user */
         $user = $this->userRepository->find($request->getAttribute('id'));
         if (null === $user) {
-            return $this->getErrorResponse(
+            return $this->renderError(
                 $request,
                 $response,
                 404,
@@ -208,7 +208,7 @@ class UserController
         $authenticatedUser = $this->auth->getAuthenticatedUser($request);
 
         if ($authenticatedUser->getId() === $user->getId()) {
-            return $this->getErrorResponse(
+            return $this->renderError(
                 $request,
                 $response,
                 403,
@@ -219,6 +219,6 @@ class UserController
 
         $this->userRepository->delete($user);
 
-        return $this->getRedirectResponse($response, 302, 'user_list');
+        return $this->getRedirectForPath($response, 302, 'user_list');
     }
 }
