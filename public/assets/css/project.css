@@ -6,3 +6,11 @@
 form.inline-form {
     display: inline;
 }
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.button-bar {
+    margin-bottom: 20px;
+}

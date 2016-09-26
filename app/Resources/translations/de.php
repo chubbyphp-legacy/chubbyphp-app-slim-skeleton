@@ -17,6 +17,10 @@ return [
     'user.action.delete' => 'Benutzer entfernen',
     'user.action.list' => 'zurück zur Benutzerliste',
     'user.action.view' => 'Benutzer anschauen',
+    'user.flash.create.failed' => 'Benutzer konnte nicht erstellt werden!',
+    'user.flash.create.success' => 'Benutzer erfolgreich erstellt.',
+    'user.flash.edit.failed' => 'Benutzer konnte nicht aktualisiert werden!',
+    'user.flash.edit.success' => 'Benutzer erfolgreiche aktualisiert.',
     'user.label.actions' => 'Aktionen',
     'user.label.email' => 'E-Mail',
     'user.label.id' => 'Id',
@@ -25,4 +29,6 @@ return [
     'user.title.create' => 'Benutzer erstellen',
     'user.title.edit' => 'Benutzer bearbeiten',
     'user.title.list' => 'Benutzerliste',
+    'validation.error.mustbevalidemail' => 'Dieses Feld erwartet eine gültige E-Mail!',
+    'validation.error.nullmustnotbeblank' => 'Dieses Feld darf nicht leer sein!',
 ];

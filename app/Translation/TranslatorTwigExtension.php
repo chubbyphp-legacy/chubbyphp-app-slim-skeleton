@@ -24,6 +24,7 @@ final class TranslatorTwigExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFilter('trans', [$this, 'trans']),
+            new \Twig_SimpleFilter('textToTransKey', [$this, 'textToTransKey']),
         ];
     }
 
@@ -37,6 +38,19 @@ final class TranslatorTwigExtension extends \Twig_Extension
     public function trans(string $key, string $locale, array $args = []): string
     {
         return $this->translator->translate($locale, $key, $args);
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
+    public function textToTransKey(string $string): string
+    {
+        $string = strtolower($string);
+        $string = preg_replace('/[^a-zA-Z0-9]/i', '', $string);
+
+        return $string;
     }
 
     /**

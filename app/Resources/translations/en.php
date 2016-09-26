@@ -17,6 +17,10 @@ return [
     'user.action.delete' => 'Delete user',
     'user.action.list' => 'back to userlist',
     'user.action.view' => 'View user',
+    'user.flash.create.failed' => 'Could not create user!',
+    'user.flash.create.success' => 'User successfully created.',
+    'user.flash.edit.failed' => 'Could not update user!',
+    'user.flash.edit.success' => 'User successfully updated.',
     'user.label.actions' => 'Actions',
     'user.label.email' => 'E-Mail',
     'user.label.id' => 'Id',
@@ -25,4 +29,6 @@ return [
     'user.title.create' => 'Create user',
     'user.title.edit' => 'Edit user',
     'user.title.list' => 'Userlist',
+    'validation.error.mustbevalidemail' => 'This field expects a valid E-Mail!',
+    'validation.error.nullmustnotbeblank' => 'This field expects to be not blank!',
 ];

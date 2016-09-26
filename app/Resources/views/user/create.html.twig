@@ -7,8 +7,8 @@
         <div class="col-xs-12">
             <h1>{{ "user.title.create"|trans(locale) }}</h1>
             <form action="{{ path_for('user_create') }}" method="post" class="form-horizontal">
-                {{ forms.renderInputText(user, 'email', 'user.label.email'|trans(locale), errorMessages) }}
-                {{ forms.renderInputPassword(user, 'password', 'user.label.password'|trans(locale), errorMessages) }}
+                {{ forms.renderInputText(user, 'email', 'user.label.email', errorMessages, locale) }}
+                {{ forms.renderInputPassword(user, 'password', 'user.label.password', errorMessages, locale) }}
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         <button type="submit" class="btn btn-success" name="save" value="save" title="{{ "user.label.save"|trans(locale) }}">

@@ -13,6 +13,7 @@ use SlimSkeleton\Controller\Traits\RedirectForPathTrait;
 use SlimSkeleton\Controller\Traits\TwigDataTrait;
 use SlimSkeleton\Model\User;
 use SlimSkeleton\Repository\UserRepositoryInterface;
+use SlimSkeleton\Session\FlashMessage;
 use SlimSkeleton\Session\SessionInterface;
 use SlimSkeleton\Validation\ValidatorInterface;
 
@@ -112,20 +113,29 @@ class UserController
         $user = new User();
 
         if ('POST' === $request->getMethod()) {
+            $data = $request->getParsedBody();
+
+            $user->setEmail($data['email']);
+
             try {
-                $data = $request->getParsedBody();
-
-                $user->setEmail($data['email']);
                 $user->setPassword($this->auth->hashPassword($data['password']));
-
-                if ([] === $errorMessages = $this->validator->validateModel($user)) {
-                    $this->userRepository->insert($user);
-
-                    return $this->getRedirectForPath($response, 302, 'user_edit', ['id' => $user->getId()]);
-                }
             } catch (EmptyPasswordException $e) {
-                $errorMessages['password'] = [$e->getMessage()];
             }
+
+            if ([] === $errorMessages = $this->validator->validateModel($user)) {
+                $this->userRepository->insert($user);
+                $this->session->addFlash(
+                    $request,
+                    new FlashMessage(FlashMessage::TYPE_SUCCESS, 'user.flash.create.success')
+                );
+
+                return $this->getRedirectForPath($response, 302, 'user_edit', ['id' => $user->getId()]);
+            }
+
+            $this->session->addFlash(
+                $request,
+                new FlashMessage(FlashMessage::TYPE_DANGER, 'user.flash.create.failed')
+            );
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/create.html.twig',
@@ -159,20 +169,27 @@ class UserController
         }
 
         if ('POST' === $request->getMethod()) {
-            try {
-                $data = $request->getParsedBody();
+            $data = $request->getParsedBody();
 
-                $user->setEmail($data['email']);
+            $user->setEmail($data['email']);
+            if ($data['password']) {
                 $user->setPassword($this->auth->hashPassword($data['password']));
-
-                if ([] === $errorMessages = $this->validator->validateModel($user)) {
-                    $this->userRepository->update($user);
-
-                    return $this->getRedirectForPath($response, 302, 'user_edit', ['id' => $user->getId()]);
-                }
-            } catch (EmptyPasswordException $e) {
-                $errorMessages['password'] = [$e->getMessage()];
             }
+
+            if ([] === $errorMessages = $this->validator->validateModel($user)) {
+                $this->userRepository->update($user);
+                $this->session->addFlash(
+                    $request,
+                    new FlashMessage(FlashMessage::TYPE_SUCCESS, 'user.flash.edit.success')
+                );
+
+                return $this->getRedirectForPath($response, 302, 'user_edit', ['id' => $user->getId()]);
+            }
+
+            $this->session->addFlash(
+                $request,
+                new FlashMessage(FlashMessage::TYPE_DANGER, 'user.flash.edit.failed')
+            );
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/edit.html.twig',

@@ -1,25 +1,25 @@
-{% macro renderInputText(model, property, propertyLabel, errorMessages) %}
+{% macro renderInputText(model, property, propertyLabel, errorMessages, locale) %}
     <div class="form-group{% if errorMessages[property] is defined %} has-error{% endif %}">
-        <label class="control-label col-lg-2" for="{{ property }}">{{ propertyLabel}}</label>
+        <label class="control-label col-lg-2" for="{{ property }}">{{ propertyLabel|trans(locale) }}</label>
         <div class="col-lg-10">
-            <input type="text" id="{{ property }}" name="{{ property }}" value="{{ model[property] }}" class="form-control">
+            <input type="text" id="{{ property }}" name="{{ property }}" class="form-control">
             {% if errorMessages[property] is defined %}
                 {% for message in errorMessages[property] %}
-                    <span class="help-block">{{ message|trans(locale) }}</span>
+                    <span class="help-block">{{ ("validation.error."~(message|textToTransKey))|trans(locale) }}</span>
                 {% endfor %}
             {% endif %}
         </div>
     </div>
 {% endmacro %}
 
-{% macro renderInputPassword(model, property, propertyLabel, errorMessages) %}
+{% macro renderInputPassword(model, property, propertyLabel, errorMessages, locale) %}
     <div class="form-group{% if errorMessages[property] is defined %} has-error{% endif %}">
-        <label class="control-label col-lg-2" for="{{ property }}">{{ propertyLabel }}</label>
+        <label class="control-label col-lg-2" for="{{ property }}">{{ propertyLabel|trans(locale) }}</label>
         <div class="col-lg-10">
             <input type="password" id="{{ property }}" name="{{ property }}" class="form-control">
             {% if errorMessages[property] is defined %}
                 {% for message in errorMessages[property] %}
-                    <span class="help-block">{{ message|trans(locale) }}</span>
+                    <span class="help-block">{{ ("validation.error."~(message|textToTransKey))|trans(locale) }}</span>
                 {% endfor %}
             {% endif %}
         </div>

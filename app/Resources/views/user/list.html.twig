@@ -4,9 +4,12 @@
     <div class="row">
         <div class="col-xs-12">
             <h1>{{ "user.title.list"|trans(locale) }}</h1>
-            <a class="btn btn-default btn-sm" href="{{ path_for('user_create') }}" title="{{ "user.action.create"|trans(locale) }}">
-                <i class="glyphicon glyphicon-plus"></i>
-            </a>
+            <div class="button-bar">
+                <a class="btn btn-default btn-sm" href="{{ path_for('user_create') }}" title="{{ "user.action.create"|trans(locale) }}">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    {{ "user.action.create"|trans(locale) }}
+                </a>
+            </div>
             <table class="table table-striped">
                 <thead>
                     <tr>
