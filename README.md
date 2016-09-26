@@ -36,3 +36,21 @@ vagrant up
 ```{.sh}
 vagrant ssh -c "composer.phar install"
 ```
+
+### Create MYSQL database
+
+```{.sh}
+vagrant ssh -c "echo 'CREATE DATABASE slim_demo;' | mysql"
+```
+
+### Create table(s)
+
+```{.sql}
+CREATE TABLE `users` (
+  `id` char(36) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email_idx` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
