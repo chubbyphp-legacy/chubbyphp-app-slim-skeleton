@@ -5,6 +5,7 @@ namespace SlimSkeleton\Controller;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use SlimSkeleton\Auth\Exception\AbstractLoginException;
+use SlimSkeleton\Session\FlashMessage;
 
 class AuthController extends AbstractController
 {
@@ -19,7 +20,8 @@ class AuthController extends AbstractController
         try {
             $this->auth->login($request);
         } catch (AbstractLoginException $e) {
-            $this->session->set($request, 'f', ['t' => 'danger', 'm' => 'Invalid credentials']);
+            $flashMessage = new FlashMessage(FlashMessage::TYPE_DANGER, 'Invalid credentials!');
+            $this->session->addFlashMessage($request, $flashMessage);
         }
 
         return $response->withStatus(302)->withHeader('Location', $request->getHeader('Referer')[0]);

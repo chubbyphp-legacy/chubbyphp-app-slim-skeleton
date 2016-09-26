@@ -11,19 +11,12 @@ class Session implements SessionInterface
     /**
      * @param Request $request
      * @param string  $key
-     * @param bool    $remove
      *
      * @return mixed
      */
-    public function get(Request $request, string $key, $remove = false)
+    public function get(Request $request, string $key)
     {
-        $data = json_decode($this->getSession($request)->get($key), true);
-
-        if (true === $remove) {
-            $this->remove($request, $key);
-        }
-
-        return $data;
+        return json_decode($this->getSession($request)->get($key), true);
     }
 
     /**
@@ -54,6 +47,32 @@ class Session implements SessionInterface
     public function remove(Request $request, string $key)
     {
         $this->getSession($request)->remove($key);
+    }
+
+    /**
+     * @param Request      $request
+     * @param FlashMessage $flashMessage
+     */
+    public function addFlashMessage(Request $request, FlashMessage $flashMessage)
+    {
+        $this->set($request, 'f', $flashMessage);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return FlashMessage|null
+     */
+    public function getFlashMessage(Request $request)
+    {
+        if (!$this->has($request, 'f')) {
+            return null;
+        }
+
+        $data = $this->get($request, 'f');
+        $this->remove($request, 'f');
+
+        return new FlashMessage($data['t'], $data['m']);
     }
 
     /**

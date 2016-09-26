@@ -9,11 +9,10 @@ interface SessionInterface
     /**
      * @param Request $request
      * @param string  $key
-     * @param bool    $remove
      *
      * @return mixed
      */
-    public function get(Request $request, string $key, $remove = false);
+    public function get(Request $request, string $key);
 
     /**
      * @param Request $request
@@ -35,4 +34,17 @@ interface SessionInterface
      * @param string  $key
      */
     public function remove(Request $request, string $key);
+
+    /**
+     * @param Request      $request
+     * @param FlashMessage $flashMessage
+     */
+    public function addFlashMessage(Request $request, FlashMessage $flashMessage);
+
+    /**
+     * @param Request $request
+     *
+     * @return FlashMessage|null
+     */
+    public function getFlashMessage(Request $request);
 }

@@ -94,7 +94,7 @@ abstract class AbstractController
     {
         return [
             'authenticatedUser' => prepareForView($this->auth->getAuthenticatedUser($request)),
-            'flashMessage' => $this->session->get($request, 'f', true),
+            'flashMessage' => $this->session->getFlashMessage($request),
         ];
     }
 }
