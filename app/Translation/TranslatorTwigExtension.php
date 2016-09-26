@@ -23,14 +23,15 @@ final class TranslatorTwigExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('trans', [$this, 'trans'])
+            new \Twig_SimpleFilter('trans', [$this, 'trans']),
         ];
     }
 
     /**
      * @param string $key
      * @param string $locale
-     * @param array $args
+     * @param array  $args
+     *
      * @return string
      */
     public function trans(string $key, string $locale, array $args = []): string

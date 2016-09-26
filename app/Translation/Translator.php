@@ -11,6 +11,7 @@ final class Translator implements TranslatorInterface
 
     /**
      * Translator constructor.
+     *
      * @param array $localeTranslationProviders
      */
     public function __construct(array $localeTranslationProviders)
@@ -31,7 +32,8 @@ final class Translator implements TranslatorInterface
     /**
      * @param string $locale
      * @param string $key
-     * @param array $args
+     * @param array  $args
+     *
      * @return string
      */
     public function translate(string $locale, string $key, array $args = []): string

@@ -38,6 +38,7 @@ class FlashMessage implements \JsonSerializable
 
     /**
      * @param string $type
+     *
      * @return string
      */
     private function getLongTypeFromType(string $type): string

@@ -11,7 +11,8 @@ interface LocaleTranslationProviderInterface
 
     /**
      * @param string $key
-     * @param array $args
+     * @param array  $args
+     *
      * @return string
      */
     public function translate(string $key, array $args): string;

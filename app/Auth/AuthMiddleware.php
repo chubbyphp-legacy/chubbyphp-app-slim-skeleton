@@ -20,9 +20,9 @@ final class AuthMiddleware
     private $auth;
 
     /**
-     * @param AuthInterface $auth
+     * @param AuthInterface    $auth
      * @param SessionInterface $session
-     * @param Twig $twig
+     * @param Twig             $twig
      */
     public function __construct(AuthInterface $auth, SessionInterface $session, Twig $twig)
     {
