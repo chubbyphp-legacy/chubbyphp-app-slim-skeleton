@@ -2,7 +2,7 @@
 
 ## Description
 
-A slim skeleton to build web applications (not apis) with authentication, crud, locale.
+A slim 3 skeleton to build web applications (not apis) with authentication, crud, locale.
 
 ## Requirements
 
