@@ -54,3 +54,13 @@ CREATE TABLE `users` (
   UNIQUE KEY `email_idx` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
+
+### Add default user
+
+```{.sql}
+INSERT INTO `users` VALUES ('e450f557-f911-446a-8657-fbc801b2be37', 'admin@admin.admin', '$2y$10$zXfRRDa2u9WxgB0noAnk1u281vVwNwjNcH5WCRdu8I70aBk23TS6G');
+```
+
+### Login
+
+admin // admin@admin.admin
