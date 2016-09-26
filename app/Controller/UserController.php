@@ -86,13 +86,7 @@ class UserController
 
         $user = $this->userRepository->find($id);
         if (null === $user) {
-            return $this->renderError(
-                $request,
-                $response,
-                404,
-                'User not found',
-                sprintf('There is not user with id %s', $id)
-            );
+            return $this->renderError($request, $response, 404);
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/view.html.twig',
@@ -159,13 +153,7 @@ class UserController
         /** @var User $user */
         $user = $this->userRepository->find($id);
         if (null === $user) {
-            return $this->renderError(
-                $request,
-                $response,
-                404,
-                'User not found',
-                sprintf('There is not user with id %s', $id)
-            );
+            return $this->renderError($request, $response, 404);
         }
 
         if ('POST' === $request->getMethod()) {
@@ -213,25 +201,13 @@ class UserController
         /** @var User $user */
         $user = $this->userRepository->find($request->getAttribute('id'));
         if (null === $user) {
-            return $this->renderError(
-                $request,
-                $response,
-                404,
-                'User not found',
-                sprintf('There is not user with id %s', $id)
-            );
+            return $this->renderError($request, $response, 404);
         }
 
         $authenticatedUser = $this->auth->getAuthenticatedUser($request);
 
         if ($authenticatedUser->getId() === $user->getId()) {
-            return $this->renderError(
-                $request,
-                $response,
-                403,
-                'User not deletable',
-                sprintf('You can\'t delete your logged in user with id %s', $id)
-            );
+            return $this->renderError($request, $response, 403);
         }
 
         $this->userRepository->delete($user);

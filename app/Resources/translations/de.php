@@ -3,6 +3,10 @@
 return [
     'error.401.title' => 'Nicht authorisiert',
     'error.401.text' => 'Bitte melden Sie sich mit Ihren Benutzerdaten an.',
+    'error.403.title' => 'Verboten',
+    'error.403.text' => 'Diese Aktion wurde Ihnen aus Gründen fehldender Rechte untersagt.',
+    'error.404.title' => 'Nicht gefunden',
+    'error.404.text' => 'Das gewünschte Element konnte nicht gefunden werden.',
     'home.title' => 'Startseite',
     'home.text' => 'Herzlich Willkommen auf der Startseite des Slim Skeleton.',
     'login.action.login' => 'Login',

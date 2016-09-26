@@ -3,6 +3,10 @@
 return [
     'error.401.title' => 'Unauthorized',
     'error.401.text' => 'Please logging in with your credentials.',
+    'error.403.title' => 'Forbidden',
+    'error.403.text' => 'This action was prevented cause missing permissions.',
+    'error.404.title' => 'Not Found',
+    'error.404.text' => 'The wished element could not be found.',
     'home.title' => 'Homepage',
     'home.text' => 'Welcome on the homepage of the Slim Skeleton.',
     'login.action.login' => 'Login',

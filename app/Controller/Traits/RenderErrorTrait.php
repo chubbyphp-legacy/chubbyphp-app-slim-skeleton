@@ -17,18 +17,13 @@ trait RenderErrorTrait
      * @param Request  $request
      * @param Response $response
      * @param int      $code
-     * @param string   $title
-     * @param string   $body
      *
      * @return Response
      */
-    private function renderError(Request $request, Response $response, int $code, string $title, string $body): Response
+    private function renderError(Request $request, Response $response, int $code): Response
     {
         return $this->twig->render($response, '@SlimSkeleton/error.html.twig',
-            $this->getTwigData($request, [
-                'messageTitle' => $title,
-                'messageText' => $body,
-            ])
+            $this->getTwigData($request, ['code' => $code])
         )->withStatus($code);
     }
 }

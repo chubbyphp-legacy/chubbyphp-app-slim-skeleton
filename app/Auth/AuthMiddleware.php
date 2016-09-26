@@ -41,7 +41,7 @@ final class AuthMiddleware
     public function __invoke(Request $request, Response $response, callable $next)
     {
         if (!$this->auth->isAuthenticated($request)) {
-            return $this->renderError($request, $response, 401, 'error.401.title', 'error.401.text');
+            return $this->renderError($request, $response, 401);
         }
 
         $response = $next($request, $response);
