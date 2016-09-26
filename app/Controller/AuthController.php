@@ -66,6 +66,6 @@ class AuthController
     {
         $this->auth->logout($request);
 
-        return $this->getRedirectForPath($response, 302, 'home');
+        return $this->getRedirectForPath($response, 302, 'home', ['locale' => $request->getAttribute('locale')]);
     }
 }

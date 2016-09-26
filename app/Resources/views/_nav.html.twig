@@ -7,14 +7,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ path_for('home') }}">{{ "project.title"|trans(locale) }}</a>
+            <a class="navbar-brand" href="{{ path_for('home', {'locale': locale}) }}">{{ "project.title"|trans(locale) }}</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="{{ path_for('user_list') }}">{{ "nav.users"|trans(locale) }}</a></li>
+                <li><a href="{{ path_for('user_list', {'locale': locale}) }}">{{ "nav.users"|trans(locale) }}</a></li>
             </ul>
             {% if not authenticatedUser %}
-                <form action="{{ path_for('login') }}" method="post" class="navbar-form navbar-right">
+                <form action="{{ path_for('login', {'locale': locale}) }}" method="post" class="navbar-form navbar-right">
                     <div class="form-group">
                         <input type="text" name="email" placeholder="{{ "login.label.email"|trans(locale) }}" class="form-control">
                     </div>
@@ -24,7 +24,7 @@
                     <button type="submit" class="btn btn-success">{{ "login.action.login"|trans(locale) }}</button>
                 </form>
             {% else %}
-                <form action="{{ path_for('logout') }}" method="post" class="navbar-form navbar-right">
+                <form action="{{ path_for('logout', {'locale': locale}) }}" method="post" class="navbar-form navbar-right">
                     <button type="submit" value="{{ authenticatedUser.id }}" class="btn btn-danger">{{ "login.action.logout"|trans(locale) }}</button>
                 </form>
             {% endif %}

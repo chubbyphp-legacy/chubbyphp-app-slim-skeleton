@@ -6,5 +6,5 @@ return [
     ],
     'projectSettings' => [
         'debug' => true,
-    ]
+    ],
 ];

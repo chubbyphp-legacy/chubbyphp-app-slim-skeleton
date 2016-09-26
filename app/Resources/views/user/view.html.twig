@@ -13,10 +13,10 @@
                 {% endfor %}
             </table>
             <div class="form-group">
-                <a class="btn btn-default" href="{{ path_for('user_edit', {'id': user.id}) }}" title="{{ "user.action.edit"|trans(locale) }}">
+                <a class="btn btn-default" href="{{ path_for('user_edit', {'locale': locale, 'id': user.id}) }}" title="{{ "user.action.edit"|trans(locale) }}">
                     <i class="glyphicon glyphicon-pencil"></i>
                 </a>
-                <a class="btn btn-default" href="{{ path_for('user_list') }}" title="{{ "user.action.list"|trans(locale) }}">
+                <a class="btn btn-default" href="{{ path_for('user_list', {'locale': locale}) }}" title="{{ "user.action.list"|trans(locale) }}">
                     <i class="glyphicon glyphicon-list-alt"></i>
                 </a>
             </div>

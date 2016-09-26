@@ -123,7 +123,10 @@ class UserController
                     new FlashMessage(FlashMessage::TYPE_SUCCESS, 'user.flash.create.success')
                 );
 
-                return $this->getRedirectForPath($response, 302, 'user_edit', ['id' => $user->getId()]);
+                return $this->getRedirectForPath($response, 302, 'user_edit', [
+                    'locale' => $request->getAttribute('locale'),
+                    'id' => $user->getId(),
+                ]);
             }
 
             $this->session->addFlash(
@@ -171,7 +174,10 @@ class UserController
                     new FlashMessage(FlashMessage::TYPE_SUCCESS, 'user.flash.edit.success')
                 );
 
-                return $this->getRedirectForPath($response, 302, 'user_edit', ['id' => $user->getId()]);
+                return $this->getRedirectForPath($response, 302, 'user_edit', [
+                    'locale' => $request->getAttribute('locale'),
+                    'id' => $user->getId(),
+                ]);
             }
 
             $this->session->addFlash(
@@ -212,6 +218,6 @@ class UserController
 
         $this->userRepository->delete($user);
 
-        return $this->getRedirectForPath($response, 302, 'user_list');
+        return $this->getRedirectForPath($response, 302, 'user_list', ['locale' => $request->getAttribute('locale')]);
     }
 }

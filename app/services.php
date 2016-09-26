@@ -3,14 +3,16 @@
 use Dflydev\FigCookies\SetCookie;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Negotiation\LanguageNegotiator;
 use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Time\SystemCurrentTime;
 use Slim\Container;
 use SlimSkeleton\Auth\Auth;
+use SlimSkeleton\Auth\AuthMiddleware;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
-use SlimSkeleton\Auth\AuthMiddleware;
+use SlimSkeleton\Middleware\LocaleMiddleware;
 use SlimSkeleton\Provider\ConsoleProvider;
 use SlimSkeleton\Provider\DoctrineServiceProvider;
 use SlimSkeleton\Provider\TranslationProvider;
@@ -99,6 +101,18 @@ $container[UserRepository::class] = function () use ($container) {
 // services
 $container[Auth::class] = function () use ($container) {
     return new Auth($container[Session::class], $container[UserRepository::class]);
+};
+
+$container[LocaleMiddleware::class] = function () use ($container) {
+    return new LocaleMiddleware(
+        $container[LanguageNegotiator::class],
+        $container['localeFallback'],
+        $container['locales']
+    );
+};
+
+$container[LanguageNegotiator::class] = function () use ($container) {
+    return new LanguageNegotiator();
 };
 
 $container[Session::class] = function () use ($container) {

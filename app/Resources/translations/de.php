@@ -33,6 +33,7 @@ return [
     'user.title.create' => 'Benutzer erstellen',
     'user.title.edit' => 'Benutzer bearbeiten',
     'user.title.list' => 'Benutzerliste',
+    'user.title.view' => 'Benutzer anschauen',
     'validation.error.mustbevalidemail' => 'Dieses Feld erwartet eine gültige E-Mail!',
     'validation.error.nullmustnotbeblank' => 'Dieses Feld darf nicht leer sein!',
 ];

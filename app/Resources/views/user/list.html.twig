@@ -5,7 +5,7 @@
         <div class="col-xs-12">
             <h1>{{ "user.title.list"|trans(locale) }}</h1>
             <div class="button-bar">
-                <a class="btn btn-default btn-sm" href="{{ path_for('user_create') }}" title="{{ "user.action.create"|trans(locale) }}">
+                <a class="btn btn-default btn-sm" href="{{ path_for('user_create', {'locale': locale}) }}" title="{{ "user.action.create"|trans(locale) }}">
                     <i class="glyphicon glyphicon-plus"></i>
                     {{ "user.action.create"|trans(locale) }}
                 </a>
@@ -24,13 +24,13 @@
                             <td>{{ user.id }}</td>
                             <td>{{ user.email }}</td>
                             <td>
-                                <a href="{{ path_for('user_edit', {'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.edit"|trans(locale) }}">
+                                <a href="{{ path_for('user_edit', {'locale': locale, 'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.edit"|trans(locale) }}">
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
-                                <a href="{{ path_for('user_view', {'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.view"|trans(locale) }}">
+                                <a href="{{ path_for('user_view', {'locale': locale, 'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.view"|trans(locale) }}">
                                     <i class="glyphicon glyphicon-eye-open"></i>
                                 </a>
-                                <form action="{{ path_for('user_delete', {'id': user.id}) }}" method="post" class="inline-form">
+                                <form action="{{ path_for('user_delete', {'locale': locale, 'id': user.id}) }}" method="post" class="inline-form">
                                     <button type="submit" class="btn btn-danger btn-sm" title="{{ "user.action.delete"|trans(locale) }}">
                                         <i class="glyphicon glyphicon-remove"></i>
                                     </button>
