@@ -46,7 +46,6 @@ $container->extend('twig.extensions', function (array $extensions) use ($contain
 $container[HomeController::class] = function () use ($container) {
     return new HomeController(
         $container[Auth::class],
-        $container['router'],
         $container[Session::class],
         $container['twig']
     );
@@ -56,8 +55,7 @@ $container[AuthController::class] = function () use ($container) {
     return new AuthController(
         $container[Auth::class],
         $container['router'],
-        $container[Session::class],
-        $container['twig']
+        $container[Session::class]
     );
 };
 

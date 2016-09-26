@@ -8,13 +8,20 @@ use Slim\Router;
 use Slim\Views\Twig;
 use SlimSkeleton\Auth\AuthInterface;
 use SlimSkeleton\Auth\Exception\EmptyPasswordException;
+use SlimSkeleton\Controller\Traits\ErrorResponseTrait;
+use SlimSkeleton\Controller\Traits\RedirectResponseTrait;
+use SlimSkeleton\Controller\Traits\TwigVariablesTrait;
 use SlimSkeleton\Model\User;
 use SlimSkeleton\Repository\UserRepositoryInterface;
 use SlimSkeleton\Session\SessionInterface;
 use SlimSkeleton\Validation\ValidatorInterface;
 
-class UserController extends AbstractController
+class UserController
 {
+    use ErrorResponseTrait;
+    use RedirectResponseTrait;
+    use TwigVariablesTrait;
+
     /**
      * @var UserRepositoryInterface
      */
@@ -41,8 +48,10 @@ class UserController extends AbstractController
         UserRepositoryInterface $userRepository,
         ValidatorInterface $validator
     ) {
-        parent::__construct($auth, $router, $session, $twig);
-
+        $this->auth = $auth;
+        $this->router = $router;
+        $this->session = $session;
+        $this->twig = $twig;
         $this->userRepository = $userRepository;
         $this->validator = $validator;
     }
@@ -58,12 +67,9 @@ class UserController extends AbstractController
         $users = $this->userRepository->findBy();
 
         return $this->twig->render($response, '@SlimSkeleton/user/list.html.twig',
-            array_replace_recursive(
-                $this->getGenericTwigVariables($request),
-                [
-                    'users' => prepareForView($users),
-                ]
-            )
+            $this->getVariablesForTwig($request, [
+                'users' => prepareForView($users),
+            ])
         );
     }
 
@@ -89,12 +95,9 @@ class UserController extends AbstractController
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/view.html.twig',
-            array_replace_recursive(
-                $this->getGenericTwigVariables($request),
-                [
-                    'user' => prepareForView($user),
-                ]
-            )
+            $this->getVariablesForTwig($request, [
+                'user' => prepareForView($user),
+            ])
         );
     }
 
@@ -126,13 +129,10 @@ class UserController extends AbstractController
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/create.html.twig',
-            array_replace_recursive(
-                $this->getGenericTwigVariables($request),
-                [
-                    'user' => prepareForView($user),
-                    'errorMessages' => $errorMessages ?? [],
-                ]
-            )
+            $this->getVariablesForTwig($request, [
+                'errorMessages' => $errorMessages ?? [],
+                'user' => prepareForView($user),
+            ])
         );
     }
 
@@ -176,13 +176,10 @@ class UserController extends AbstractController
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/edit.html.twig',
-            array_replace_recursive(
-                $this->getGenericTwigVariables($request),
-                [
-                    'user' => prepareForView($user),
-                    'errorMessages' => $errorMessages ?? [],
-                ]
-            )
+            $this->getVariablesForTwig($request, [
+                'errorMessages' => $errorMessages ?? [],
+                'user' => prepareForView($user),
+            ])
         );
     }
 

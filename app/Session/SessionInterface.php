@@ -39,12 +39,12 @@ interface SessionInterface
      * @param Request      $request
      * @param FlashMessage $flashMessage
      */
-    public function addFlashMessage(Request $request, FlashMessage $flashMessage);
+    public function addFlash(Request $request, FlashMessage $flashMessage);
 
     /**
      * @param Request $request
      *
      * @return FlashMessage|null
      */
-    public function getFlashMessage(Request $request);
+    public function getFlash(Request $request);
 }

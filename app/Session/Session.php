@@ -53,7 +53,7 @@ class Session implements SessionInterface
      * @param Request      $request
      * @param FlashMessage $flashMessage
      */
-    public function addFlashMessage(Request $request, FlashMessage $flashMessage)
+    public function addFlash(Request $request, FlashMessage $flashMessage)
     {
         $this->set($request, 'f', $flashMessage);
     }
@@ -63,7 +63,7 @@ class Session implements SessionInterface
      *
      * @return FlashMessage|null
      */
-    public function getFlashMessage(Request $request)
+    public function getFlash(Request $request)
     {
         if (!$this->has($request, 'f')) {
             return null;
