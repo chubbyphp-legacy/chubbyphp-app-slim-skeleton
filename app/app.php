@@ -7,7 +7,7 @@ use Slim\Container;
 $container = new Container();
 $container['appDir'] = __DIR__;
 $container['cacheDir'] = $container['appDir'].'/../var/cache';
-$container['configDir'] = $container['appDir'].'/../config';
+$container['configDir'] = $container['appDir'].'/Resources/config';
 
 require_once $container['appDir'].'/functions.php';
 
