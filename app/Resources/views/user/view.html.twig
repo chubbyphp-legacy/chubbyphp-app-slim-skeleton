@@ -4,14 +4,6 @@
     <div class="row">
         <div class="col-xs-12">
             <h1>User</h1>
-            <div class="form-group">
-                <a class="btn btn-default" href="" title="edit">
-                    <i class="glyphicon glyphicon-pencil"></i>
-                </a>
-                <a class="btn btn-default" href="{{ path_for('user_list') }}" title="back to list">
-                    <i class="glyphicon glyphicon-list-alt"></i>
-                </a>
-            </div>
             <table class="table table-striped">
                 {% for property, value in user %}
                     <tr>
@@ -21,7 +13,7 @@
                 {% endfor %}
             </table>
             <div class="form-group">
-                <a class="btn btn-default" href="" title="edit">
+                <a class="btn btn-default" href="{{ path_for('user_edit', {'id': user.id}) }}" title="edit">
                     <i class="glyphicon glyphicon-pencil"></i>
                 </a>
                 <a class="btn btn-default" href="{{ path_for('user_list') }}" title="back to list">
