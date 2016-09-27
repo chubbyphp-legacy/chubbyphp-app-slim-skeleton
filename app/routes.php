@@ -10,7 +10,7 @@ use SlimSkeleton\Auth\AuthMiddleware;
 /* @var App $app */
 /* @var Container $container */
 
-$app->group('/{locale:[a-z]{2}}', function () use ($app, $container) {
+$app->group('/{locale:' . implode('|', $container['locales']) .'}', function () use ($app, $container) {
     $app->get('', HomeController::class.':home')->setName('home');
 
     $app->post('/login', AuthController::class.':login')->setName('login');
