@@ -40,17 +40,64 @@ final class Validator implements ValidatorInterface
      */
     public function validateModel(ModelInterface $model): array
     {
+        $errorMessagesFromProperties = $this->assertModelProperties($model);
+        $errorMessagesFromModel = $this->assertValidateModel($model);
+
+        return array_merge_recursive($errorMessagesFromProperties, $errorMessagesFromModel);
+    }
+
+    /**
+     * @return array
+     */
+    private function assertModelProperties(ModelInterface $model): array
+    {
         $reflectionClass = new \ReflectionObject($model);
 
         $errorMessages = [];
-        foreach ($model->getValidators() as $field => $validator) {
+        foreach ($model->getPropertyValidators() as $field => $validator) {
             try {
-                $this->assignRepositoryToRules($validator->getRules());
                 $reflectionProperty = $reflectionClass->getProperty($field);
                 $reflectionProperty->setAccessible(true);
                 $validator->assert($reflectionProperty->getValue($model));
             } catch (NestedValidationException $exception) {
                 $errorMessages[$field] = $exception->getMessages();
+            }
+        }
+
+        return $errorMessages;
+    }
+
+    /**
+     * @param ModelInterface $model
+     *
+     * @return array
+     */
+    private function assertValidateModel(ModelInterface $model): array
+    {
+        if (null === $modelValidator = $model->getModelValidator()) {
+            return [];
+        }
+
+        $errorMessages = [];
+
+        try {
+            $this->assignRepositoryToRules(get_class($model), $modelValidator->getRules());
+            $modelValidator->assert($model);
+        } catch (NestedValidationException $exception) {
+            foreach ($exception as $ruleException) {
+                if ($ruleException->hasParam('properties')) {
+                    foreach ($ruleException->getParam('properties') as $property) {
+                        if (!isset($errorMessages[$property])) {
+                            $errorMessages[$property] = [];
+                        }
+                        $errorMessages[$property][] = $ruleException->getMainMessage();
+                    }
+                } else {
+                    if (!isset($errorMessages['__model'])) {
+                        $errorMessages['__model'] = [];
+                    }
+                    $errorMessages['__model'] = $ruleException->getMainMessage();
+                }
             }
         }
 
@@ -78,22 +125,24 @@ final class Validator implements ValidatorInterface
     }
 
     /**
-     * @param array $rules
+     * @param string $modelClass
+     * @param array  $rules
      */
-    private function assignRepositoryToRules(array $rules)
+    private function assignRepositoryToRules(string $modelClass, array $rules)
     {
         foreach ($rules as $rule) {
-            $this->assignRepositoryToRule($rule);
+            $this->assignRepositoryToRule($modelClass, $rule);
         }
     }
 
     /**
+     * @param string      $modelClass
      * @param Validatable $rule
      */
-    private function assignRepositoryToRule(Validatable $rule)
+    private function assignRepositoryToRule(string $modelClass, Validatable $rule)
     {
-        if ($rule instanceof UniqueModelRule && isset($this->repositories[$rule->getModelClass()])) {
-            $rule->setRepository($this->repositories[$rule->getModelClass()]);
+        if ($rule instanceof UniqueModelRule && isset($this->repositories[$modelClass])) {
+            $rule->setRepository($this->repositories[$modelClass]);
         }
     }
 }

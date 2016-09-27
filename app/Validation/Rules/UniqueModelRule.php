@@ -9,14 +9,9 @@ use SlimSkeleton\Repository\RepositoryInterface;
 class UniqueModelRule extends AbstractRule
 {
     /**
-     * @var ModelInterface
+     * @var string[]|array
      */
-    private $model;
-
-    /**
-     * @var string
-     */
-    private $field;
+    protected $properties; // needs to be protected (copy within exception)
 
     /**
      * @var RepositoryInterface
@@ -25,21 +20,12 @@ class UniqueModelRule extends AbstractRule
 
     /**
      * @param ModelInterface $model
-     * @param string         $field
+     * @param string[]|array $properties
      */
-    public function __construct(ModelInterface $model, string $field)
+    public function __construct(ModelInterface $model, array $properties)
     {
-        $this->model = $model;
-        $this->field = $field;
-        $this->setName($field);
-    }
-
-    /**
-     * @return string
-     */
-    public function getModelClass(): string
-    {
-        return get_class($this->model);
+        $this->properties = $properties;
+        $this->setName(implode(', ', $properties));
     }
 
     /**
@@ -51,11 +37,11 @@ class UniqueModelRule extends AbstractRule
     }
 
     /**
-     * @param mixed $input
+     * @param ModelInterface $model
      *
      * @return bool
      */
-    public function validate($input): bool
+    public function validate($model): bool
     {
         if (null === $this->repository) {
             throw new \RuntimeException(
@@ -65,8 +51,17 @@ class UniqueModelRule extends AbstractRule
             );
         }
 
-        $model = $this->repository->findOneBy([$this->field => $input]);
-        if (null !== $model && $model->getId() !== $this->model->getId()) {
+        $reflectionClass = new \ReflectionObject($model);
+
+        $criteria = [];
+        foreach ($this->properties as $property) {
+            $reflectionProperty = $reflectionClass->getProperty($property);
+            $reflectionProperty->setAccessible(true);
+            $criteria[$property] = $reflectionProperty->getValue($model);
+        }
+
+        $modelFromRepository = $this->repository->findOneBy($criteria);
+        if (null !== $modelFromRepository && $modelFromRepository->getId() !== $model->getId()) {
             return false;
         }
 

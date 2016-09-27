@@ -24,7 +24,12 @@ interface ModelInterface extends \JsonSerializable
     public function getId(): string;
 
     /**
+     * @return Validator|null
+     */
+    public function getModelValidator();
+
+    /**
      * @return Validator[]|array
      */
-    public function getValidators(): array;
+    public function getPropertyValidators(): array;
 }

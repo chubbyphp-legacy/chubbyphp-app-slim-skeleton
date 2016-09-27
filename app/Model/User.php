@@ -110,12 +110,20 @@ final class User implements ModelInterface, UserInterface
     }
 
     /**
+     * @return Validator|null
+     */
+    public function getModelValidator()
+    {
+        return Validator::create()->addRule(new UniqueModelRule($this, ['email']));
+    }
+
+    /**
      * @return array
      */
-    public function getValidators(): array
+    public function getPropertyValidators(): array
     {
         return [
-            'email' => Validator::email()->addRule(new UniqueModelRule($this, 'email')),
+            'email' => Validator::email(),
             'password' => Validator::notBlank(),
         ];
     }
