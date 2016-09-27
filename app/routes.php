@@ -17,10 +17,10 @@ $app->group('/{locale:' . implode('|', $container['locales']) .'}', function () 
     $app->post('/logout', AuthController::class.':logout')->setName('logout');
 
     $app->group('/users', function () use ($app, $container) {
-        $app->get('', UserController::class.':listAll')->setName('user_list')->add($container[AuthMiddleware::class]);
-        $app->map(['GET', 'POST'], '/create', UserController::class.':create')->setName('user_create')->add($container[AuthMiddleware::class]);
-        $app->map(['GET', 'POST'], '/{id}/edit', UserController::class.':edit')->setName('user_edit')->add($container[AuthMiddleware::class]);
-        $app->get('/{id}/view', UserController::class.':view')->setName('user_view')->add($container[AuthMiddleware::class]);
-        $app->post('/{id}/delete', UserController::class.':delete')->setName('user_delete')->add($container[AuthMiddleware::class]);
-    });
+        $app->get('', UserController::class.':listAll')->setName('user_list');
+        $app->map(['GET', 'POST'], '/create', UserController::class.':create')->setName('user_create');
+        $app->map(['GET', 'POST'], '/{id}/edit', UserController::class.':edit')->setName('user_edit');
+        $app->get('/{id}/view', UserController::class.':view')->setName('user_view');
+        $app->post('/{id}/delete', UserController::class.':delete')->setName('user_delete');
+    })->add($container[AuthMiddleware::class]);
 });
