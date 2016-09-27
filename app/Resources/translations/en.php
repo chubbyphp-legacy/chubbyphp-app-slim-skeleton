@@ -34,6 +34,7 @@ return [
     'user.title.edit' => 'Edit user',
     'user.title.list' => 'Userlist',
     'user.title.view' => 'View user',
+    'validation.error.fieldemailisnotunique' => 'The E-Mail address is already in use!',
     'validation.error.mustbevalidemail' => 'This field expects a valid E-Mail!',
     'validation.error.nullmustnotbeblank' => 'This field expects to be not blank!',
 ];

@@ -9,16 +9,16 @@ final class UserRepository extends AbstractDoctrineRepository implements UserRep
     /**
      * @return string
      */
-    protected function getTablename(): string
+    public function getModelClass(): string
     {
-        return 'users';
+        return User::class;
     }
 
     /**
      * @return string
      */
-    protected function getModelClass(): string
+    protected function getTablename(): string
     {
-        return User::class;
+        return 'users';
     }
 }

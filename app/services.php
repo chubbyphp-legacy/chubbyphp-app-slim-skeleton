@@ -17,11 +17,11 @@ use SlimSkeleton\Provider\ConsoleProvider;
 use SlimSkeleton\Provider\DoctrineServiceProvider;
 use SlimSkeleton\Provider\TranslationProvider;
 use SlimSkeleton\Provider\TwigProvider;
+use SlimSkeleton\Provider\ValidationProvider;
 use SlimSkeleton\Repository\UserRepository;
 use SlimSkeleton\Session\Session;
 use SlimSkeleton\Translation\LocaleTranslationProvider;
 use SlimSkeleton\Translation\TranslatorTwigExtension;
-use SlimSkeleton\Validation\Validator;
 
 /* @var Container $container */
 
@@ -29,6 +29,7 @@ $container->register(new ConsoleProvider());
 $container->register(new DoctrineServiceProvider());
 $container->register(new TranslationProvider());
 $container->register(new TwigProvider());
+$container->register(new ValidationProvider());
 
 // extend providers
 $container->extend('translator.providers', function (array $providers) use ($container) {
@@ -54,6 +55,12 @@ $container->extend('twig.extensions', function (array $extensions) use ($contain
     return $extensions;
 });
 
+$container->extend('validator.repositories', function (array $repositories) use ($container) {
+    $repositories[] = $container[UserRepository::class];
+
+    return $repositories;
+});
+
 // controllers
 $container[HomeController::class] = function () use ($container) {
     return new HomeController($container[Auth::class], $container[Session::class], $container['twig']);
@@ -70,7 +77,7 @@ $container[UserController::class] = function () use ($container) {
         $container[Session::class],
         $container['twig'],
         $container[UserRepository::class],
-        $container[Validator::class]
+        $container['validator']
     );
 };
 
@@ -117,8 +124,4 @@ $container[LanguageNegotiator::class] = function () use ($container) {
 
 $container[Session::class] = function () use ($container) {
     return new Session();
-};
-
-$container[Validator::class] = function () use ($container) {
-    return new Validator();
 };

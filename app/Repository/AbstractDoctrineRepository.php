@@ -127,9 +127,4 @@ abstract class AbstractDoctrineRepository implements RepositoryInterface
      * @return string
      */
     abstract protected function getTablename(): string;
-
-    /**
-     * @return string
-     */
-    abstract protected function getModelClass(): string;
 }

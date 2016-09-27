@@ -4,6 +4,7 @@ namespace SlimSkeleton\Model;
 
 use Ramsey\Uuid\Uuid;
 use Respect\Validation\Validator;
+use SlimSkeleton\Validation\Rules\UniqueModelRule;
 
 final class User implements ModelInterface, UserInterface
 {
@@ -114,7 +115,7 @@ final class User implements ModelInterface, UserInterface
     public function getValidators(): array
     {
         return [
-            'email' => Validator::email(),
+            'email' => Validator::email()->addRule(new UniqueModelRule($this, 'email')),
             'password' => Validator::notBlank(),
         ];
     }
