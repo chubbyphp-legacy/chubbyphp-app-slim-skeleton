@@ -4,7 +4,7 @@ namespace SlimSkeleton\Controller\Traits;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Route;
-use SlimSkeleton\Auth\AuthInterface;
+use SlimSkeleton\Security\AuthInterface;
 use SlimSkeleton\Session\SessionInterface;
 
 trait TwigDataTrait

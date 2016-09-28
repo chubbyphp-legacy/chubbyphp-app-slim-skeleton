@@ -3,7 +3,7 @@
 use PSR7Session\Http\SessionMiddleware;
 use Slim\App;
 use Slim\Container;
-use SlimSkeleton\Auth\CsrfTokenMiddleware;
+use SlimSkeleton\Security\CsrfTokenMiddleware;
 use SlimSkeleton\Middleware\LocaleMiddleware;
 
 /* @var App $app */

@@ -1,6 +1,6 @@
 <?php
 
-namespace SlimSkeleton\Auth\Exception;
+namespace SlimSkeleton\Security\Exception;
 
 final class UserNotFoundException extends AbstractLoginException
 {

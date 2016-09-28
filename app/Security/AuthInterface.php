@@ -1,10 +1,10 @@
 <?php
 
-namespace SlimSkeleton\Auth;
+namespace SlimSkeleton\Security;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SlimSkeleton\Auth\Exception\AbstractLoginException;
-use SlimSkeleton\Auth\Exception\EmptyPasswordException;
+use SlimSkeleton\Security\Exception\AbstractLoginException;
+use SlimSkeleton\Security\Exception\EmptyPasswordException;
 use SlimSkeleton\Model\UserInterface;
 
 interface AuthInterface

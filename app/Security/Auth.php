@@ -1,11 +1,11 @@
 <?php
 
-namespace SlimSkeleton\Auth;
+namespace SlimSkeleton\Security;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use SlimSkeleton\Auth\Exception\EmptyPasswordException;
-use SlimSkeleton\Auth\Exception\InvalidPasswordException;
-use SlimSkeleton\Auth\Exception\UserNotFoundException;
+use SlimSkeleton\Security\Exception\EmptyPasswordException;
+use SlimSkeleton\Security\Exception\InvalidPasswordException;
+use SlimSkeleton\Security\Exception\UserNotFoundException;
 use SlimSkeleton\Model\User;
 use SlimSkeleton\Model\UserInterface;
 use SlimSkeleton\Repository\UserRepositoryInterface;

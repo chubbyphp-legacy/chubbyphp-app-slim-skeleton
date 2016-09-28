@@ -5,7 +5,7 @@ use Slim\Container;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
-use SlimSkeleton\Auth\AuthMiddleware;
+use SlimSkeleton\Security\AuthMiddleware;
 
 /* @var App $app */
 /* @var Container $container */

@@ -1,6 +1,6 @@
 <?php
 
-namespace SlimSkeleton\Auth;
+namespace SlimSkeleton\Security;
 
 interface CsrfTokenGeneratorInterface
 {
