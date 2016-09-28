@@ -9,6 +9,8 @@ use PSR7Session\Time\SystemCurrentTime;
 use Slim\Container;
 use SlimSkeleton\Auth\Auth;
 use SlimSkeleton\Auth\AuthMiddleware;
+use SlimSkeleton\Auth\CsrfTokenMiddleware;
+use SlimSkeleton\Auth\CsrfTokenGenerator;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
@@ -86,6 +88,15 @@ $container[AuthMiddleware::class] = function () use ($container) {
     return new AuthMiddleware($container[Auth::class], $container[Session::class], $container['twig']);
 };
 
+$container[CsrfTokenMiddleware::class] = function () use ($container) {
+    return new CsrfTokenMiddleware(
+        $container[Auth::class],
+        $container[CsrfTokenGenerator::class],
+        $container[Session::class],
+        $container['twig']
+    );
+};
+
 $container[SessionMiddleware::class] = function () use ($container) {
     return new SessionMiddleware(
         new Sha256(),
@@ -108,6 +119,10 @@ $container[UserRepository::class] = function () use ($container) {
 // services
 $container[Auth::class] = function () use ($container) {
     return new Auth($container[Session::class], $container[UserRepository::class]);
+};
+
+$container[CsrfTokenGenerator::class] = function () use ($container) {
+    return new CsrfTokenGenerator();
 };
 
 $container[LocaleMiddleware::class] = function () use ($container) {

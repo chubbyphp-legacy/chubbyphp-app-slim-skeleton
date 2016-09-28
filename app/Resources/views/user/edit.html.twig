@@ -9,6 +9,7 @@
             <form action="{{ path_for('user_edit', {'locale': locale, 'id': user.id}) }}" method="post" class="form-horizontal">
                 {{ forms.renderInputText(user, 'email', 'user.label.email', errorMessages, locale) }}
                 {{ forms.renderInputPassword(user, 'password', 'user.label.password', errorMessages, locale) }}
+                <input type="hidden" name="csrf" value="{{ csrf }}">
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         <button type="submit" class="btn btn-success" name="save" value="save" title="{{ "user.label.save"|trans(locale) }}">

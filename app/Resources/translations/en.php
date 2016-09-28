@@ -7,6 +7,8 @@ return [
     'error.403.text' => 'This action was prevented cause missing permissions.',
     'error.404.title' => 'Not Found',
     'error.404.text' => 'The wished element could not be found.',
+    'error.424.title' => 'Failed Dependency',
+    'error.424.text' => 'This error occurs for example, when a CSRF token is missing.',
     'home.title' => 'Homepage',
     'home.text' => 'Welcome on the homepage of the Slim Skeleton.',
     'login.action.login' => 'Login',

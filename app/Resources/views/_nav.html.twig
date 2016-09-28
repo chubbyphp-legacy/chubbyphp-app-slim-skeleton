@@ -21,10 +21,12 @@
                     <div class="form-group">
                         <input type="password" name="password" placeholder="{{ "login.label.password"|trans(locale) }}" class="form-control">
                     </div>
+                    <input type="hidden" name="csrf" value="{{ csrf }}">
                     <button type="submit" class="btn btn-success">{{ "login.action.login"|trans(locale) }}</button>
                 </form>
             {% else %}
                 <form action="{{ path_for('logout', {'locale': locale}) }}" method="post" class="navbar-form navbar-right">
+                    <input type="hidden" name="csrf" value="{{ csrf }}">
                     <button type="submit" value="{{ authenticatedUser.id }}" class="btn btn-danger">{{ "login.action.logout"|trans(locale) }}</button>
                 </form>
             {% endif %}

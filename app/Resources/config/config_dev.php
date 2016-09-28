@@ -3,6 +3,7 @@
 return [
     'settings' => [
         'displayErrorDetails' => true,
+        'routerCacheFile' => false,
     ],
     'projectSettings' => [
         'debug' => true,
