@@ -1,5 +1,6 @@
 <?php
 
+use Chubbyphp\Validation\ValidationProvider;
 use Dflydev\FigCookies\SetCookie;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
@@ -19,7 +20,6 @@ use SlimSkeleton\Provider\ConsoleProvider;
 use SlimSkeleton\Provider\DoctrineServiceProvider;
 use SlimSkeleton\Provider\TranslationProvider;
 use SlimSkeleton\Provider\TwigProvider;
-use SlimSkeleton\Provider\ValidationProvider;
 use SlimSkeleton\Repository\UserRepository;
 use SlimSkeleton\Session\Session;
 use SlimSkeleton\Translation\LocaleTranslationProvider;
