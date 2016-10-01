@@ -2,8 +2,9 @@
 
 namespace SlimSkeleton\Repository;
 
+use Chubbyphp\Model\ModelInterface;
+use Chubbyphp\Model\RepositoryInterface;
 use Doctrine\DBAL\Connection;
-use SlimSkeleton\Model\ModelInterface;
 
 abstract class AbstractDoctrineRepository implements RepositoryInterface
 {

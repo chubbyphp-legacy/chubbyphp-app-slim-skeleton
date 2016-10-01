@@ -2,6 +2,7 @@
 
 namespace SlimSkeleton\Controller;
 
+use Chubbyphp\Validation\ValidatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Router;
@@ -15,7 +16,6 @@ use SlimSkeleton\Model\User;
 use SlimSkeleton\Repository\UserRepositoryInterface;
 use SlimSkeleton\Session\FlashMessage;
 use SlimSkeleton\Session\SessionInterface;
-use SlimSkeleton\Validation\ValidatorInterface;
 
 final class UserController
 {

@@ -2,11 +2,13 @@
 
 namespace SlimSkeleton\Model;
 
+use Chubbyphp\Model\ModelInterface;
+use Chubbyphp\Validation\Rules\UniqueModelRule;
+use Chubbyphp\Validation\ValidatableModelInterface;
 use Ramsey\Uuid\Uuid;
-use Respect\Validation\Validator;
-use SlimSkeleton\Validation\Rules\UniqueModelRule;
+use Respect\Validation\Validator as RespectValidator;
 
-final class User implements ModelInterface, UserInterface
+final class User implements \JsonSerializable, ModelInterface, UserInterface, ValidatableModelInterface
 {
     /**
      * @var string
@@ -110,21 +112,21 @@ final class User implements ModelInterface, UserInterface
     }
 
     /**
-     * @return Validator|null
+     * @return RespectValidator|null
      */
     public function getModelValidator()
     {
-        return Validator::create()->addRule(new UniqueModelRule($this, ['email']));
+        return RespectValidator::create()->addRule(new UniqueModelRule($this, ['email']));
     }
 
     /**
-     * @return array
+     * @return RespectValidator[]|array
      */
     public function getPropertyValidators(): array
     {
         return [
-            'email' => Validator::email(),
-            'password' => Validator::notBlank(),
+            'email' => RespectValidator::notBlank()->email(),
+            'password' => RespectValidator::notBlank(),
         ];
     }
 }

@@ -1,8 +1,10 @@
 {
   "require": {
     "php": "~7.0",
-    "doctrine/dbal": "^2.5.5",
+    "chubbyphp/chubbyphp-model": "~1.0@dev",
+    "chubbyphp/chubbyphp-validation": "~1.0@dev",
     "dflydev/fig-cookies": "^1.0.2",
+    "doctrine/dbal": "^2.5.5",
     "psr7-sessions/storageless": "~2.0",
     "ramsey/uuid": "~3.5",
     "respect/validation": "^1.1.9",

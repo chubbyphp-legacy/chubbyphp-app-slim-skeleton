@@ -2,9 +2,9 @@
 
 namespace SlimSkeleton\Provider;
 
+use Chubbyphp\Validation\Validator;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use SlimSkeleton\Validation\Validator;
 
 final class ValidationProvider implements ServiceProviderInterface
 {
