@@ -116,7 +116,7 @@ final class User implements \JsonSerializable, ModelInterface, UserInterface, Va
      */
     public function getModelValidator()
     {
-        return RespectValidator::create()->addRule(new UniqueModelRule($this, ['email']));
+        return RespectValidator::create()->addRule(new UniqueModelRule(['email']));
     }
 
     /**
