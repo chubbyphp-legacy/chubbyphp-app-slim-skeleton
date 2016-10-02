@@ -2,33 +2,30 @@
 
 namespace SlimSkeleton\Security;
 
+use Chubbyphp\ErrorHandler\ErrorHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
-use SlimSkeleton\Controller\Traits\RenderErrorTrait;
-use SlimSkeleton\Controller\Traits\TwigDataTrait;
-use Chubbyphp\Session\SessionInterface;
 
 final class AuthMiddleware
 {
-    use RenderErrorTrait;
-    use TwigDataTrait;
-
     /**
      * @var AuthInterface
      */
     private $auth;
 
     /**
-     * @param AuthInterface    $auth
-     * @param SessionInterface $session
-     * @param Twig             $twig
+     * @var ErrorHandlerInterface
      */
-    public function __construct(AuthInterface $auth, SessionInterface $session, Twig $twig)
+    private $errorHandler;
+
+    /**
+     * @param AuthInterface         $auth
+     * @param ErrorHandlerInterface $errorHandler
+     */
+    public function __construct(AuthInterface $auth, ErrorHandlerInterface $errorHandler)
     {
         $this->auth = $auth;
-        $this->session = $session;
-        $this->twig = $twig;
+        $this->errorHandler = $errorHandler;
     }
 
     /**
@@ -41,7 +38,7 @@ final class AuthMiddleware
     public function __invoke(Request $request, Response $response, callable $next)
     {
         if (!$this->auth->isAuthenticated($request)) {
-            return $this->renderError($request, $response, 401);
+            return $this->errorHandler->error($request, $response, 401);
         }
 
         $response = $next($request, $response);

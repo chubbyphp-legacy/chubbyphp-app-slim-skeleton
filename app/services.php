@@ -1,5 +1,6 @@
 <?php
 
+use Chubbyphp\Csrf\CsrfProvider;
 use Chubbyphp\Session\SessionProvider;
 use Chubbyphp\Translation\LocaleTranslationProvider;
 use Chubbyphp\Translation\TranslationProvider;
@@ -7,10 +8,9 @@ use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\ValidationProvider;
 use Negotiation\LanguageNegotiator;
 use Slim\Container;
+use SlimSkeleton\Error\ErrorHandler;
 use SlimSkeleton\Security\Auth;
 use SlimSkeleton\Security\AuthMiddleware;
-use SlimSkeleton\Security\CsrfTokenMiddleware;
-use SlimSkeleton\Security\CsrfTokenGenerator;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
@@ -22,6 +22,7 @@ use SlimSkeleton\Repository\UserRepository;
 
 /* @var Container $container */
 $container->register(new ConsoleProvider());
+$container->register(new CsrfProvider());
 $container->register(new DoctrineServiceProvider());
 $container->register(new TranslationProvider());
 $container->register(new SessionProvider());
@@ -58,6 +59,8 @@ $container->extend('validator.repositories', function (array $repositories) use 
     return $repositories;
 });
 
+$container['csrf.errorHandler.key'] = ErrorHandler::class;
+
 // controllers
 $container[HomeController::class] = function () use ($container) {
     return new HomeController($container[Auth::class], $container['session'], $container['twig']);
@@ -70,6 +73,7 @@ $container[AuthController::class] = function () use ($container) {
 $container[UserController::class] = function () use ($container) {
     return new UserController(
         $container[Auth::class],
+        $container[ErrorHandler::class],
         $container['router'],
         $container['session'],
         $container['twig'],
@@ -80,16 +84,7 @@ $container[UserController::class] = function () use ($container) {
 
 // middlewares
 $container[AuthMiddleware::class] = function () use ($container) {
-    return new AuthMiddleware($container[Auth::class], $container['session'], $container['twig']);
-};
-
-$container[CsrfTokenMiddleware::class] = function () use ($container) {
-    return new CsrfTokenMiddleware(
-        $container[Auth::class],
-        $container[CsrfTokenGenerator::class],
-        $container['session'],
-        $container['twig']
-    );
+    return new AuthMiddleware($container[Auth::class], $container[ErrorHandler::class]);
 };
 
 // repositories
@@ -102,8 +97,8 @@ $container[Auth::class] = function () use ($container) {
     return new Auth($container['session'], $container[UserRepository::class]);
 };
 
-$container[CsrfTokenGenerator::class] = function () use ($container) {
-    return new CsrfTokenGenerator();
+$container[ErrorHandler::class] = function () use ($container) {
+    return new ErrorHandler($container[Auth::class], $container['session'], $container['twig']);
 };
 
 $container[LocaleMiddleware::class] = function () use ($container) {

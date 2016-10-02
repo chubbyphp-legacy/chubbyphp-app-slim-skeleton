@@ -2,6 +2,7 @@
 
 namespace SlimSkeleton\Controller;
 
+use Chubbyphp\ErrorHandler\ErrorHandlerInterface;
 use Chubbyphp\Validation\ValidatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -9,7 +10,6 @@ use Slim\Router;
 use Slim\Views\Twig;
 use SlimSkeleton\Security\AuthInterface;
 use SlimSkeleton\Security\Exception\EmptyPasswordException;
-use SlimSkeleton\Controller\Traits\RenderErrorTrait;
 use SlimSkeleton\Controller\Traits\RedirectForPathTrait;
 use SlimSkeleton\Controller\Traits\TwigDataTrait;
 use SlimSkeleton\Model\User;
@@ -20,8 +20,17 @@ use Chubbyphp\Session\SessionInterface;
 final class UserController
 {
     use RedirectForPathTrait;
-    use RenderErrorTrait;
     use TwigDataTrait;
+
+    /**
+     * @var ErrorHandlerInterface
+     */
+    private $errorHandler;
+
+    /**
+     * @var Twig
+     */
+    private $twig;
 
     /**
      * @var UserRepositoryInterface
@@ -35,6 +44,7 @@ final class UserController
 
     /**
      * @param AuthInterface           $auth
+     * @param ErrorHandlerInterface   $errorHandler
      * @param Router                  $router
      * @param SessionInterface        $session
      * @param Twig                    $twig
@@ -43,6 +53,7 @@ final class UserController
      */
     public function __construct(
         AuthInterface $auth,
+        ErrorHandlerInterface $errorHandler,
         Router $router,
         SessionInterface $session,
         Twig $twig,
@@ -50,6 +61,7 @@ final class UserController
         ValidatorInterface $validator
     ) {
         $this->auth = $auth;
+        $this->errorHandler = $errorHandler;
         $this->router = $router;
         $this->session = $session;
         $this->twig = $twig;
@@ -86,7 +98,7 @@ final class UserController
 
         $user = $this->userRepository->find($id);
         if (null === $user) {
-            return $this->renderError($request, $response, 404);
+            return $this->errorHandler->error($request, $response, 404);
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/view.html.twig',
@@ -156,7 +168,7 @@ final class UserController
         /** @var User $user */
         $user = $this->userRepository->find($id);
         if (null === $user) {
-            return $this->renderError($request, $response, 404);
+            return $this->errorHandler->error($request, $response, 404);
         }
 
         if ('POST' === $request->getMethod()) {
@@ -205,15 +217,15 @@ final class UserController
         $id = $request->getAttribute('id');
 
         /** @var User $user */
-        $user = $this->userRepository->find($request->getAttribute('id'));
+        $user = $this->userRepository->find($id);
         if (null === $user) {
-            return $this->renderError($request, $response, 404);
+            return $this->errorHandler->error($request, $response, 404);
         }
 
         $authenticatedUser = $this->auth->getAuthenticatedUser($request);
 
         if ($authenticatedUser->getId() === $user->getId()) {
-            return $this->renderError($request, $response, 403);
+            return $this->errorHandler->error($request, $response, 403);
         }
 
         $this->userRepository->delete($user);

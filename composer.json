@@ -1,6 +1,8 @@
 {
   "require": {
     "php": "~7.0",
+    "chubbyphp/chubbyphp-csrf": "~1.0@dev",
+    "chubbyphp/chubbyphp-error-handler": "~1.0@dev",
     "chubbyphp/chubbyphp-model": "~1.0@dev",
     "chubbyphp/chubbyphp-session": "~1.0@dev",
     "chubbyphp/chubbyphp-translation": "~1.0@dev",
