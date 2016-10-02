@@ -30,6 +30,8 @@ $container->register(new TwigProvider());
 $container->register(new ValidationProvider());
 
 // extend providers
+$container['csrf.errorHandler.key'] = ErrorHandler::class;
+
 $container->extend('translator.providers', function (array $providers) use ($container) {
     $translationDir = $container['appDir'].'/Resources/translations';
     $providers[] = new LocaleTranslationProvider('de', require $translationDir.'/de.php');
@@ -58,8 +60,6 @@ $container->extend('validator.repositories', function (array $repositories) use 
 
     return $repositories;
 });
-
-$container['csrf.errorHandler.key'] = ErrorHandler::class;
 
 // controllers
 $container[HomeController::class] = function () use ($container) {
