@@ -8,8 +8,8 @@ use Slim\Router;
 use SlimSkeleton\Security\AuthInterface;
 use SlimSkeleton\Security\Exception\AbstractLoginException;
 use SlimSkeleton\Controller\Traits\RedirectForPathTrait;
-use SlimSkeleton\Session\FlashMessage;
-use SlimSkeleton\Session\SessionInterface;
+use Chubbyphp\Session\FlashMessage;
+use Chubbyphp\Session\SessionInterface;
 
 final class AuthController
 {

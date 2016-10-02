@@ -22,7 +22,9 @@ return [
         'debug' => false,
         'localeFallback' => 'en',
         'locales' => ['de', 'en'],
-        'session.symmetricKey' => '6t332+EAscTgRQstgHjUOYvTeTbhk7CaW9AptDT9Fhw=', // https://github.com/AndrewCarterUK/CryptoKey
         'session.expirationTime' => 1200,
+        'session.privateRsaKey' => '6t332+EAscTgRQstgHjUOYvTeTbhk7CaW9AptDT9Fhw=', // https://github.com/AndrewCarterUK/CryptoKey
+        'session.publicRsaKey' => '6t332+EAscTgRQstgHjUOYvTeTbhk7CaW9AptDT9Fhw=',
+        'session.setCookieSecureOnly' => false,
     ],
 ];

@@ -1,15 +1,11 @@
 <?php
 
+use Chubbyphp\Session\SessionProvider;
 use Chubbyphp\Translation\LocaleTranslationProvider;
 use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\ValidationProvider;
-use Dflydev\FigCookies\SetCookie;
-use Lcobucci\JWT\Parser;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Negotiation\LanguageNegotiator;
-use PSR7Session\Http\SessionMiddleware;
-use PSR7Session\Time\SystemCurrentTime;
 use Slim\Container;
 use SlimSkeleton\Security\Auth;
 use SlimSkeleton\Security\AuthMiddleware;
@@ -23,14 +19,12 @@ use SlimSkeleton\Provider\ConsoleProvider;
 use SlimSkeleton\Provider\DoctrineServiceProvider;
 use SlimSkeleton\Provider\TwigProvider;
 use SlimSkeleton\Repository\UserRepository;
-use SlimSkeleton\Session\Session;
-
 
 /* @var Container $container */
-
 $container->register(new ConsoleProvider());
 $container->register(new DoctrineServiceProvider());
 $container->register(new TranslationProvider());
+$container->register(new SessionProvider());
 $container->register(new TwigProvider());
 $container->register(new ValidationProvider());
 
@@ -66,18 +60,18 @@ $container->extend('validator.repositories', function (array $repositories) use 
 
 // controllers
 $container[HomeController::class] = function () use ($container) {
-    return new HomeController($container[Auth::class], $container[Session::class], $container['twig']);
+    return new HomeController($container[Auth::class], $container['session'], $container['twig']);
 };
 
 $container[AuthController::class] = function () use ($container) {
-    return new AuthController($container[Auth::class], $container['router'], $container[Session::class]);
+    return new AuthController($container[Auth::class], $container['router'], $container['session']);
 };
 
 $container[UserController::class] = function () use ($container) {
     return new UserController(
         $container[Auth::class],
         $container['router'],
-        $container[Session::class],
+        $container['session'],
         $container['twig'],
         $container[UserRepository::class],
         $container['validator']
@@ -86,29 +80,15 @@ $container[UserController::class] = function () use ($container) {
 
 // middlewares
 $container[AuthMiddleware::class] = function () use ($container) {
-    return new AuthMiddleware($container[Auth::class], $container[Session::class], $container['twig']);
+    return new AuthMiddleware($container[Auth::class], $container['session'], $container['twig']);
 };
 
 $container[CsrfTokenMiddleware::class] = function () use ($container) {
     return new CsrfTokenMiddleware(
         $container[Auth::class],
         $container[CsrfTokenGenerator::class],
-        $container[Session::class],
+        $container['session'],
         $container['twig']
-    );
-};
-
-$container[SessionMiddleware::class] = function () use ($container) {
-    return new SessionMiddleware(
-        new Sha256(),
-        $container['session.symmetricKey'],
-        $container['session.symmetricKey'],
-        SetCookie::create(SessionMiddleware::DEFAULT_COOKIE)
-            ->withHttpOnly(true)
-            ->withPath('/'),
-        new Parser(),
-        $container['session.expirationTime'],
-        new SystemCurrentTime()
     );
 };
 
@@ -119,7 +99,7 @@ $container[UserRepository::class] = function () use ($container) {
 
 // services
 $container[Auth::class] = function () use ($container) {
-    return new Auth($container[Session::class], $container[UserRepository::class]);
+    return new Auth($container['session'], $container[UserRepository::class]);
 };
 
 $container[CsrfTokenGenerator::class] = function () use ($container) {
@@ -136,8 +116,4 @@ $container[LocaleMiddleware::class] = function () use ($container) {
 
 $container[LanguageNegotiator::class] = function () use ($container) {
     return new LanguageNegotiator();
-};
-
-$container[Session::class] = function () use ($container) {
-    return new Session();
 };

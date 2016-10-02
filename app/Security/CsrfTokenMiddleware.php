@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
 use SlimSkeleton\Controller\Traits\RenderErrorTrait;
 use SlimSkeleton\Controller\Traits\TwigDataTrait;
-use SlimSkeleton\Session\SessionInterface;
+use Chubbyphp\Session\SessionInterface;
 
 class CsrfTokenMiddleware
 {

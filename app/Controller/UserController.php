@@ -14,8 +14,8 @@ use SlimSkeleton\Controller\Traits\RedirectForPathTrait;
 use SlimSkeleton\Controller\Traits\TwigDataTrait;
 use SlimSkeleton\Model\User;
 use SlimSkeleton\Repository\UserRepositoryInterface;
-use SlimSkeleton\Session\FlashMessage;
-use SlimSkeleton\Session\SessionInterface;
+use Chubbyphp\Session\FlashMessage;
+use Chubbyphp\Session\SessionInterface;
 
 final class UserController
 {

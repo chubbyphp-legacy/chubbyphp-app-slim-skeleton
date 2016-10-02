@@ -9,7 +9,7 @@ use SlimSkeleton\Security\Exception\UserNotFoundException;
 use SlimSkeleton\Model\User;
 use SlimSkeleton\Model\UserInterface;
 use SlimSkeleton\Repository\UserRepositoryInterface;
-use SlimSkeleton\Session\SessionInterface;
+use Chubbyphp\Session\SessionInterface;
 
 final class Auth implements AuthInterface
 {
