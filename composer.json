@@ -2,6 +2,7 @@
   "require": {
     "php": "~7.0",
     "chubbyphp/chubbyphp-model": "~1.0@dev",
+    "chubbyphp/chubbyphp-translation": "~1.0@dev",
     "chubbyphp/chubbyphp-validation": "~1.0@dev",
     "dflydev/fig-cookies": "^1.0.2",
     "doctrine/dbal": "^2.5.5",

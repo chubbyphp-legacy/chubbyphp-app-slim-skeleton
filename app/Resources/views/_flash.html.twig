@@ -1,5 +1,5 @@
 {% if flashMessage %}
     <div class="alert alert-{{ flashMessage.longType }}" role="{{ flashMessage.longType }}">
-        {{ flashMessage.message|trans(locale) }}
+        {{ flashMessage.message|translate(locale) }}
     </div>
 {% endif %}

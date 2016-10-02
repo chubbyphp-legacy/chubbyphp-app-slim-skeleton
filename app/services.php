@@ -1,5 +1,8 @@
 <?php
 
+use Chubbyphp\Translation\LocaleTranslationProvider;
+use Chubbyphp\Translation\TranslationProvider;
+use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\ValidationProvider;
 use Dflydev\FigCookies\SetCookie;
 use Lcobucci\JWT\Parser;
@@ -18,12 +21,10 @@ use SlimSkeleton\Controller\UserController;
 use SlimSkeleton\Middleware\LocaleMiddleware;
 use SlimSkeleton\Provider\ConsoleProvider;
 use SlimSkeleton\Provider\DoctrineServiceProvider;
-use SlimSkeleton\Provider\TranslationProvider;
 use SlimSkeleton\Provider\TwigProvider;
 use SlimSkeleton\Repository\UserRepository;
 use SlimSkeleton\Session\Session;
-use SlimSkeleton\Translation\LocaleTranslationProvider;
-use SlimSkeleton\Translation\TranslatorTwigExtension;
+
 
 /* @var Container $container */
 
@@ -49,7 +50,7 @@ $container->extend('twig.namespaces', function (array $namespaces) use ($contain
 });
 
 $container->extend('twig.extensions', function (array $extensions) use ($container) {
-    $extensions[] = new TranslatorTwigExtension($container['translator']);
+    $extensions[] = new TranslationTwigExtension($container['translator']);
     if ($container['debug']) {
         $extensions[] = new \Twig_Extension_Debug();
     }

@@ -5,17 +5,17 @@
 {% block container %}
     <div class="row">
         <div class="col-xs-12">
-            <h1>{{ "user.title.edit"|trans(locale) }}</h1>
+            <h1>{{ "user.title.edit"|translate(locale) }}</h1>
             <form action="{{ path_for('user_edit', {'locale': locale, 'id': user.id}) }}" method="post" class="form-horizontal">
                 {{ forms.renderInputText(user, 'email', 'user.label.email', errorMessages, locale) }}
                 {{ forms.renderInputPassword(user, 'password', 'user.label.password', errorMessages, locale) }}
                 <input type="hidden" name="csrf" value="{{ csrf }}">
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
-                        <button type="submit" class="btn btn-success" name="save" value="save" title="{{ "user.label.save"|trans(locale) }}">
+                        <button type="submit" class="btn btn-success" name="save" value="save" title="{{ "user.label.save"|translate(locale) }}">
                             <i class="glyphicon glyphicon-save"></i>
                         </button>
-                        <a class="btn btn-default" href="{{ path_for('user_list', {'locale': locale}) }}" title="{{ "user.action.list"|trans(locale) }}">
+                        <a class="btn btn-default" href="{{ path_for('user_list', {'locale': locale}) }}" title="{{ "user.action.list"|translate(locale) }}">
                             <i class="glyphicon glyphicon-list-alt"></i>
                         </a>
                     </div>

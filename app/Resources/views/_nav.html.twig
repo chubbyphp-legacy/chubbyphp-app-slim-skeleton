@@ -7,27 +7,27 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ path_for('home', {'locale': locale}) }}">{{ "project.title"|trans(locale) }}</a>
+            <a class="navbar-brand" href="{{ path_for('home', {'locale': locale}) }}">{{ "project.title"|translate(locale) }}</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="{{ path_for('user_list', {'locale': locale}) }}">{{ "nav.users"|trans(locale) }}</a></li>
+                <li><a href="{{ path_for('user_list', {'locale': locale}) }}">{{ "nav.users"|translate(locale) }}</a></li>
             </ul>
             {% if not authenticatedUser %}
                 <form action="{{ path_for('login', {'locale': locale}) }}" method="post" class="navbar-form navbar-right">
                     <div class="form-group">
-                        <input type="text" name="email" placeholder="{{ "login.label.email"|trans(locale) }}" class="form-control">
+                        <input type="text" name="email" placeholder="{{ "login.label.email"|translate(locale) }}" class="form-control">
                     </div>
                     <div class="form-group">
-                        <input type="password" name="password" placeholder="{{ "login.label.password"|trans(locale) }}" class="form-control">
+                        <input type="password" name="password" placeholder="{{ "login.label.password"|translate(locale) }}" class="form-control">
                     </div>
                     <input type="hidden" name="csrf" value="{{ csrf }}">
-                    <button type="submit" class="btn btn-success">{{ "login.action.login"|trans(locale) }}</button>
+                    <button type="submit" class="btn btn-success">{{ "login.action.login"|translate(locale) }}</button>
                 </form>
             {% else %}
                 <form action="{{ path_for('logout', {'locale': locale}) }}" method="post" class="navbar-form navbar-right">
                     <input type="hidden" name="csrf" value="{{ csrf }}">
-                    <button type="submit" value="{{ authenticatedUser.id }}" class="btn btn-danger">{{ "login.action.logout"|trans(locale) }}</button>
+                    <button type="submit" value="{{ authenticatedUser.id }}" class="btn btn-danger">{{ "login.action.logout"|translate(locale) }}</button>
                 </form>
             {% endif %}
         </div><!--/.navbar-collapse -->

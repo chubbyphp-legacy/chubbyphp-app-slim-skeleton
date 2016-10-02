@@ -3,8 +3,8 @@
 {% block container %}
     <div class="row">
         <div class="col-xs-12">
-            <h1>{{ ("error."~code~".title")|trans(locale) }}</h1>
-            <p>{{ ("error."~code~".text")|trans(locale)|raw }}</p>
+            <h1>{{ ("error."~code~".title")|translate(locale) }}</h1>
+            <p>{{ ("error."~code~".text")|translate(locale)|raw }}</p>
         </div>
     </div>
 {% endblock %}

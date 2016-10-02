@@ -3,19 +3,19 @@
 {% block container %}
     <div class="row">
         <div class="col-xs-12">
-            <h1>{{ "user.title.list"|trans(locale) }}</h1>
+            <h1>{{ "user.title.list"|translate(locale) }}</h1>
             <div class="button-bar">
-                <a class="btn btn-default btn-sm" href="{{ path_for('user_create', {'locale': locale}) }}" title="{{ "user.action.create"|trans(locale) }}">
+                <a class="btn btn-default btn-sm" href="{{ path_for('user_create', {'locale': locale}) }}" title="{{ "user.action.create"|translate(locale) }}">
                     <i class="glyphicon glyphicon-plus"></i>
-                    {{ "user.action.create"|trans(locale) }}
+                    {{ "user.action.create"|translate(locale) }}
                 </a>
             </div>
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>{{ "user.label.id"|trans(locale) }}</th>
-                        <th>{{ "user.label.email"|trans(locale) }}</th>
-                        <th>{{ "user.label.actions"|trans(locale) }}</th>
+                        <th>{{ "user.label.id"|translate(locale) }}</th>
+                        <th>{{ "user.label.email"|translate(locale) }}</th>
+                        <th>{{ "user.label.actions"|translate(locale) }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,15 +24,15 @@
                             <td>{{ user.id }}</td>
                             <td>{{ user.email }}</td>
                             <td>
-                                <a href="{{ path_for('user_edit', {'locale': locale, 'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.edit"|trans(locale) }}">
+                                <a href="{{ path_for('user_edit', {'locale': locale, 'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.edit"|translate(locale) }}">
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
-                                <a href="{{ path_for('user_view', {'locale': locale, 'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.view"|trans(locale) }}">
+                                <a href="{{ path_for('user_view', {'locale': locale, 'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.view"|translate(locale) }}">
                                     <i class="glyphicon glyphicon-eye-open"></i>
                                 </a>
                                 <form action="{{ path_for('user_delete', {'locale': locale, 'id': user.id}) }}" method="post" class="inline-form">
                                     <input type="hidden" name="csrf" value="{{ csrf }}">
-                                    <button type="submit" class="btn btn-danger btn-sm" title="{{ "user.action.delete"|trans(locale) }}">
+                                    <button type="submit" class="btn btn-danger btn-sm" title="{{ "user.action.delete"|translate(locale) }}">
                                         <i class="glyphicon glyphicon-remove"></i>
                                     </button>
                                 </form>
