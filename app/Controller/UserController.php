@@ -2,7 +2,7 @@
 
 namespace SlimSkeleton\Controller;
 
-use Chubbyphp\ErrorHandler\ErrorHandlerInterface;
+use Chubbyphp\ErrorHandler\HttpException;
 use Chubbyphp\Validation\ValidatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -23,11 +23,6 @@ final class UserController
     use TwigDataTrait;
 
     /**
-     * @var ErrorHandlerInterface
-     */
-    private $errorHandler;
-
-    /**
      * @var Twig
      */
     private $twig;
@@ -44,7 +39,6 @@ final class UserController
 
     /**
      * @param AuthInterface           $auth
-     * @param ErrorHandlerInterface   $errorHandler
      * @param Router                  $router
      * @param SessionInterface        $session
      * @param Twig                    $twig
@@ -53,7 +47,6 @@ final class UserController
      */
     public function __construct(
         AuthInterface $auth,
-        ErrorHandlerInterface $errorHandler,
         Router $router,
         SessionInterface $session,
         Twig $twig,
@@ -61,7 +54,6 @@ final class UserController
         ValidatorInterface $validator
     ) {
         $this->auth = $auth;
-        $this->errorHandler = $errorHandler;
         $this->router = $router;
         $this->session = $session;
         $this->twig = $twig;
@@ -91,6 +83,8 @@ final class UserController
      * @param Response $response
      *
      * @return Response
+     *
+     * @throws HttpException
      */
     public function view(Request $request, Response $response)
     {
@@ -98,7 +92,7 @@ final class UserController
 
         $user = $this->userRepository->find($id);
         if (null === $user) {
-            return $this->errorHandler->error($request, $response, 404);
+            throw HttpException::create($request, $response, 404, 'user.error.notfound');
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/view.html.twig',
@@ -160,6 +154,8 @@ final class UserController
      * @param Response $response
      *
      * @return Response
+     *
+     * @throws HttpException
      */
     public function edit(Request $request, Response $response)
     {
@@ -168,7 +164,7 @@ final class UserController
         /** @var User $user */
         $user = $this->userRepository->find($id);
         if (null === $user) {
-            return $this->errorHandler->error($request, $response, 404);
+            throw HttpException::create($request, $response, 404, 'user.error.notfound');
         }
 
         if ('POST' === $request->getMethod()) {
@@ -211,6 +207,8 @@ final class UserController
      * @param Response $response
      *
      * @return Response
+     *
+     * @throws HttpException
      */
     public function delete(Request $request, Response $response)
     {
@@ -219,13 +217,13 @@ final class UserController
         /** @var User $user */
         $user = $this->userRepository->find($id);
         if (null === $user) {
-            return $this->errorHandler->error($request, $response, 404);
+            throw HttpException::create($request, $response, 404, 'user.error.notfound');
         }
 
         $authenticatedUser = $this->auth->getAuthenticatedUser($request);
 
         if ($authenticatedUser->getId() === $user->getId()) {
-            return $this->errorHandler->error($request, $response, 403);
+            throw HttpException::create($request, $response, 403, 'user.error.cantdeletehimself');
         }
 
         $this->userRepository->delete($user);

@@ -1,14 +1,17 @@
 <?php
 
 use Chubbyphp\Csrf\CsrfProvider;
+use Chubbyphp\ErrorHandler\ContentTypeResolver;
+use Chubbyphp\ErrorHandler\ErrorHandler;
 use Chubbyphp\Session\SessionProvider;
 use Chubbyphp\Translation\LocaleTranslationProvider;
 use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\ValidationProvider;
 use Negotiation\LanguageNegotiator;
+use Negotiation\Negotiator;
 use Slim\Container;
-use SlimSkeleton\Error\ErrorHandler;
+use SlimSkeleton\ErrorHandler\HtmlErrorResponseProvider;
 use SlimSkeleton\Security\Auth;
 use SlimSkeleton\Security\AuthMiddleware;
 use SlimSkeleton\Controller\AuthController;
@@ -30,8 +33,6 @@ $container->register(new TwigProvider());
 $container->register(new ValidationProvider());
 
 // extend providers
-$container['csrf.errorHandler.key'] = ErrorHandler::class;
-
 $container->extend('translator.providers', function (array $providers) use ($container) {
     $translationDir = $container['appDir'].'/Resources/translations';
     $providers[] = new LocaleTranslationProvider('de', require $translationDir.'/de.php');
@@ -73,7 +74,6 @@ $container[AuthController::class] = function () use ($container) {
 $container[UserController::class] = function () use ($container) {
     return new UserController(
         $container[Auth::class],
-        $container[ErrorHandler::class],
         $container['router'],
         $container['session'],
         $container['twig'],
@@ -84,7 +84,7 @@ $container[UserController::class] = function () use ($container) {
 
 // middlewares
 $container[AuthMiddleware::class] = function () use ($container) {
-    return new AuthMiddleware($container[Auth::class], $container[ErrorHandler::class]);
+    return new AuthMiddleware($container[Auth::class]);
 };
 
 // repositories
@@ -97,8 +97,24 @@ $container[Auth::class] = function () use ($container) {
     return new Auth($container['session'], $container[UserRepository::class]);
 };
 
-$container[ErrorHandler::class] = function () use ($container) {
-    return new ErrorHandler($container[Auth::class], $container['session'], $container['twig']);
+$container['acceptNegation'] = function () use ($container) {
+    return new Negotiator();
+};
+
+$container['contentTypeResolver'] = function () use ($container) {
+    return new ContentTypeResolver($container['acceptNegation'], ['text/html']);
+};
+
+$container['errorHandler'] = function () use ($container) {
+    return new ErrorHandler(
+        $container['contentTypeResolver'],
+        'text/html',
+        [$container[HtmlErrorResponseProvider::class]]
+    );
+};
+
+$container[HtmlErrorResponseProvider::class] = function () use ($container) {
+    return new HtmlErrorResponseProvider($container[Auth::class], $container['session'], $container['twig']);
 };
 
 $container[LocaleMiddleware::class] = function () use ($container) {

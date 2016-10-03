@@ -4,7 +4,10 @@
     <div class="row">
         <div class="col-xs-12">
             <h1>{{ ("error."~code~".title")|translate(locale) }}</h1>
-            <p>{{ ("error."~code~".text")|translate(locale)|raw }}</p>
+            <h4>{{ ("error."~code~".text")|translate(locale)|raw }}</h4>
+            {% if message %}
+                <p>{{ message|translate(locale)|raw }}</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

@@ -5,7 +5,7 @@ use Slim\Container;
 use SlimSkeleton\Middleware\LocaleMiddleware;
 
 /* @var App $app */
-/* @var Container container */
+/* @var Container $container */
 
 $app->add($container['csrf.middleware']);
 $app->add($container['session.middleware']);

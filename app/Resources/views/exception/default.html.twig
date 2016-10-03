@@ -1,0 +1,5 @@
+<h1>{{ ("error."~code~".title")|translate(locale) }}</h1>
+<h4>{{ ("error."~code~".text")|translate(locale)|raw }}</h4>
+{% if message %}
+    <p>{{ message|translate(locale)|raw }}</p>
+{% endif %}

@@ -2,7 +2,7 @@
 
 namespace SlimSkeleton\Security;
 
-use Chubbyphp\ErrorHandler\ErrorHandlerInterface;
+use Chubbyphp\ErrorHandler\HttpException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -14,18 +14,11 @@ final class AuthMiddleware
     private $auth;
 
     /**
-     * @var ErrorHandlerInterface
+     * @param AuthInterface $auth
      */
-    private $errorHandler;
-
-    /**
-     * @param AuthInterface         $auth
-     * @param ErrorHandlerInterface $errorHandler
-     */
-    public function __construct(AuthInterface $auth, ErrorHandlerInterface $errorHandler)
+    public function __construct(AuthInterface $auth)
     {
         $this->auth = $auth;
-        $this->errorHandler = $errorHandler;
     }
 
     /**
@@ -34,11 +27,13 @@ final class AuthMiddleware
      * @param callable $next
      *
      * @return Response
+     *
+     * @throws HttpException
      */
     public function __invoke(Request $request, Response $response, callable $next)
     {
         if (!$this->auth->isAuthenticated($request)) {
-            return $this->errorHandler->error($request, $response, 401);
+            throw HttpException::create($request, $response, 401);
         }
 
         $response = $next($request, $response);

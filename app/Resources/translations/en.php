@@ -23,6 +23,7 @@ return [
     'user.action.delete' => 'Delete user',
     'user.action.list' => 'back to userlist',
     'user.action.view' => 'View user',
+    'user.error.cantdeletehimself' => 'It\'s not permitted to delete the own user.',
     'user.flash.create.failed' => 'Could not create user!',
     'user.flash.create.success' => 'User successfully created.',
     'user.flash.edit.failed' => 'Could not update user!',
