@@ -114,7 +114,12 @@ $container['errorHandler'] = function () use ($container) {
 };
 
 $container[HtmlErrorResponseProvider::class] = function () use ($container) {
-    return new HtmlErrorResponseProvider($container[Auth::class], $container['session'], $container['twig']);
+    return new HtmlErrorResponseProvider(
+        $container[Auth::class],
+        $container['session'],
+        $container['twig'],
+        $container['settings']['displayErrorDetails']
+    );
 };
 
 $container[LocaleMiddleware::class] = function () use ($container) {
