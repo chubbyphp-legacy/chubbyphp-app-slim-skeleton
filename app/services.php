@@ -1,16 +1,15 @@
 <?php
 
 use Chubbyphp\Csrf\CsrfProvider;
-use Chubbyphp\ErrorHandler\ContentTypeResolver;
-use Chubbyphp\ErrorHandler\ErrorHandler;
 use Chubbyphp\Session\SessionProvider;
+use Chubbyphp\ErrorHandler\Slim\SimpleErrorHandlerProvider;
 use Chubbyphp\Translation\LocaleTranslationProvider;
 use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\ValidationProvider;
 use Negotiation\LanguageNegotiator;
-use Negotiation\Negotiator;
 use Slim\Container;
+use Slim\Handlers\Error;
 use SlimSkeleton\ErrorHandler\HtmlErrorResponseProvider;
 use SlimSkeleton\Security\Auth;
 use SlimSkeleton\Security\AuthMiddleware;
@@ -27,12 +26,17 @@ use SlimSkeleton\Repository\UserRepository;
 $container->register(new ConsoleProvider());
 $container->register(new CsrfProvider());
 $container->register(new DoctrineServiceProvider());
+$container->register(new SimpleErrorHandlerProvider());
 $container->register(new TranslationProvider());
 $container->register(new SessionProvider());
 $container->register(new TwigProvider());
 $container->register(new ValidationProvider());
 
 // extend providers
+$container['errorHandler.defaultProvider'] = function () use ($container) {
+    return $container[HtmlErrorResponseProvider::class];
+};
+
 $container->extend('translator.providers', function (array $providers) use ($container) {
     $translationDir = $container['appDir'].'/Resources/translations';
     $providers[] = new LocaleTranslationProvider('de', require $translationDir.'/de.php');
@@ -97,29 +101,17 @@ $container[Auth::class] = function () use ($container) {
     return new Auth($container['session'], $container[UserRepository::class]);
 };
 
-$container['acceptNegation'] = function () use ($container) {
-    return new Negotiator();
-};
-
-$container['contentTypeResolver'] = function () use ($container) {
-    return new ContentTypeResolver($container['acceptNegation'], ['text/html']);
-};
-
-$container['errorHandler'] = function () use ($container) {
-    return new ErrorHandler(
-        $container['contentTypeResolver'],
-        'text/html',
-        [$container[HtmlErrorResponseProvider::class]]
-    );
-};
-
 $container[HtmlErrorResponseProvider::class] = function () use ($container) {
     return new HtmlErrorResponseProvider(
         $container[Auth::class],
+        $container[Error::class],
         $container['session'],
-        $container['twig'],
-        $container['settings']['displayErrorDetails']
+        $container['twig']
     );
+};
+
+$container[Error::class] = function ($container) {
+    return new Error($container['settings']['displayErrorDetails']);
 };
 
 $container[LocaleMiddleware::class] = function () use ($container) {
