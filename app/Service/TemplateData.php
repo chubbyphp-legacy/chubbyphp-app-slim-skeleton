@@ -1,13 +1,13 @@
 <?php
 
-namespace SlimSkeleton\Controller\Traits;
+namespace SlimSkeleton\Service;
 
 use Chubbyphp\Security\Authentication\AuthenticationInterface;
+use Chubbyphp\Session\SessionInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Route;
-use Chubbyphp\Session\SessionInterface;
 
-trait TwigDataTrait
+final class TemplateData
 {
     /**
      * @var AuthenticationInterface
@@ -20,12 +20,22 @@ trait TwigDataTrait
     private $session;
 
     /**
+     * @param AuthenticationInterface $auth
+     * @param SessionInterface        $session
+     */
+    public function __construct(AuthenticationInterface $auth, SessionInterface $session)
+    {
+        $this->auth = $auth;
+        $this->session = $session;
+    }
+
+    /**
      * @param Request $request
      * @param array   $variables
      *
      * @return array
      */
-    private function getTwigData(Request $request, array $variables = []): array
+    public function aggregate(Request $request, array $variables = []): array
     {
         if (null === $locale = $request->getAttribute('locale')) {
             /* @var Route $route */

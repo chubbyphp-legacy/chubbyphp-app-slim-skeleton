@@ -2,16 +2,17 @@
 
 namespace SlimSkeleton\Controller;
 
-use Chubbyphp\Security\Authentication\AuthenticationInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
-use SlimSkeleton\Controller\Traits\TwigDataTrait;
-use Chubbyphp\Session\SessionInterface;
+use SlimSkeleton\Service\TemplateData;
 
 final class HomeController
 {
-    use TwigDataTrait;
+    /**
+     * @var TemplateData
+     */
+    private $templateData;
 
     /**
      * @var Twig
@@ -19,14 +20,12 @@ final class HomeController
     private $twig;
 
     /**
-     * @param AuthenticationInterface $auth
-     * @param SessionInterface        $session
-     * @param Twig                    $twig
+     * @param TemplateData $templateData
+     * @param Twig         $twig
      */
-    public function __construct(AuthenticationInterface $auth, SessionInterface $session, Twig $twig)
+    public function __construct(TemplateData $templateData, Twig $twig)
     {
-        $this->auth = $auth;
-        $this->session = $session;
+        $this->templateData = $templateData;
         $this->twig = $twig;
     }
 
@@ -38,6 +37,6 @@ final class HomeController
      */
     public function home(Request $request, Response $response)
     {
-        return $this->twig->render($response, '@SlimSkeleton/home.html.twig', $this->getTwigData($request));
+        return $this->twig->render($response, '@SlimSkeleton/home.html.twig', $this->templateData->aggregate($request));
     }
 }

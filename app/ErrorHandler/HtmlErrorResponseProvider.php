@@ -4,22 +4,23 @@ namespace SlimSkeleton\ErrorHandler;
 
 use Chubbyphp\ErrorHandler\ErrorResponseProviderInterface;
 use Chubbyphp\ErrorHandler\HttpException;
-use Chubbyphp\Security\Authentication\AuthenticationInterface;
-use Chubbyphp\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Handlers\Error;
 use Slim\Views\Twig;
-use SlimSkeleton\Controller\Traits\TwigDataTrait;
+use SlimSkeleton\Service\TemplateData;
 
 final class HtmlErrorResponseProvider implements ErrorResponseProviderInterface
 {
-    use TwigDataTrait;
-
     /**
      * @var Error
      */
     private $fallbackErrorHandler;
+
+    /**
+     * @var TemplateData
+     */
+    private $templateData;
 
     /**
      * @var Twig
@@ -27,20 +28,14 @@ final class HtmlErrorResponseProvider implements ErrorResponseProviderInterface
     private $twig;
 
     /**
-     * @param AuthenticationInterface $auth
-     * @param Error                   $fallbackErrorHandler
-     * @param SessionInterface        $session
-     * @param Twig                    $twig
+     * @param Error        $fallbackErrorHandler
+     * @param TemplateData $templateData
+     * @param Twig         $twig
      */
-    public function __construct(
-        AuthenticationInterface $auth,
-        Error $fallbackErrorHandler,
-        SessionInterface $session,
-        Twig $twig
-    ) {
-        $this->auth = $auth;
+    public function __construct(Error $fallbackErrorHandler, TemplateData $templateData, Twig $twig)
+    {
         $this->fallbackErrorHandler = $fallbackErrorHandler;
-        $this->session = $session;
+        $this->templateData = $templateData;
         $this->twig = $twig;
     }
 
@@ -66,7 +61,10 @@ final class HtmlErrorResponseProvider implements ErrorResponseProviderInterface
             $response = $exception->getResponse();
 
             return $this->twig->render($response, '@SlimSkeleton/httpexception.html.twig',
-                $this->getTwigData($request, ['code' => $exception->getCode(), 'message' => $exception->getMessage()])
+                $this->templateData->aggregate(
+                    $request,
+                    ['code' => $exception->getCode(), 'message' => $exception->getMessage()]
+                )
             )->withStatus($exception->getCode());
         }
 

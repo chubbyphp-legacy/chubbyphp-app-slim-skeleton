@@ -28,7 +28,8 @@ final class RedirectForPath
      *
      * @return Response
      */
-    public function get(Response $response, int $status, string $path, array $arguments = []): Response {
+    public function get(Response $response, int $status, string $path, array $arguments = []): Response
+    {
         return $response->withStatus($status)->withHeader('Location', $this->router->pathFor($path, $arguments));
     }
 }

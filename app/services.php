@@ -22,6 +22,7 @@ use SlimSkeleton\Provider\DoctrineServiceProvider;
 use SlimSkeleton\Provider\TwigProvider;
 use SlimSkeleton\Repository\UserRepository;
 use SlimSkeleton\Service\RedirectForPath;
+use SlimSkeleton\Service\TemplateData;
 
 /* @var Container $container */
 $container->register(new ConsoleProvider());
@@ -69,7 +70,7 @@ $container->extend('validator.repositories', function (array $repositories) use 
 
 // controllers
 $container[HomeController::class] = function () use ($container) {
-    return new HomeController($container[FormAuthentication::class], $container['session'], $container['twig']);
+    return new HomeController($container[TemplateData::class], $container['twig']);
 };
 
 $container[AuthController::class] = function () use ($container) {
@@ -85,6 +86,7 @@ $container[UserController::class] = function () use ($container) {
         $container[FormAuthentication::class],
         $container[RedirectForPath::class],
         $container['session'],
+        $container[TemplateData::class],
         $container['twig'],
         $container[UserRepository::class],
         $container['validator']
@@ -108,9 +110,8 @@ $container[FormAuthentication::class] = function () use ($container) {
 
 $container[HtmlErrorResponseProvider::class] = function () use ($container) {
     return new HtmlErrorResponseProvider(
-        $container[FormAuthentication::class],
         $container[Error::class],
-        $container['session'],
+        $container[TemplateData::class],
         $container['twig']
     );
 };
@@ -133,4 +134,8 @@ $container[LanguageNegotiator::class] = function () use ($container) {
 
 $container[RedirectForPath::class] = function () use ($container) {
     return new RedirectForPath($container['router']);
+};
+
+$container[TemplateData::class] = function () use ($container) {
+    return new TemplateData($container[FormAuthentication::class], $container['session']);
 };

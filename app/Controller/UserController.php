@@ -10,20 +10,33 @@ use Chubbyphp\Validation\ValidatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
-use SlimSkeleton\Controller\Traits\TwigDataTrait;
 use SlimSkeleton\Model\User;
 use Chubbyphp\Session\FlashMessage;
 use Chubbyphp\Session\SessionInterface;
 use SlimSkeleton\Service\RedirectForPath;
+use SlimSkeleton\Service\TemplateData;
 
 final class UserController
 {
-    use TwigDataTrait;
+    /**
+     * @var FormAuthentication
+     */
+    private $auth;
 
     /**
      * @var RedirectForPath
      */
     private $redirectForPath;
+
+    /**
+     * @var SessionInterface
+     */
+    private $session;
+
+    /**
+     * @var TemplateData
+     */
+    private $templateData;
 
     /**
      * @var Twig
@@ -42,8 +55,9 @@ final class UserController
 
     /**
      * @param FormAuthentication  $auth
-     * @param RedirectForPath              $redirectForPath
+     * @param RedirectForPath     $redirectForPath
      * @param SessionInterface    $session
+     * @param TemplateData        $templateData
      * @param Twig                $twig
      * @param RepositoryInterface $userRepository
      * @param ValidatorInterface  $validator
@@ -52,13 +66,16 @@ final class UserController
         FormAuthentication $auth,
         RedirectForPath $redirectForPath,
         SessionInterface $session,
+        TemplateData $templateData,
         Twig $twig,
-        RepositoryInterface $userRepository,
+        RepositoryInterface
+        $userRepository,
         ValidatorInterface $validator
     ) {
         $this->auth = $auth;
         $this->redirectForPath = $redirectForPath;
         $this->session = $session;
+        $this->templateData = $templateData;
         $this->twig = $twig;
         $this->userRepository = $userRepository;
         $this->validator = $validator;
@@ -75,7 +92,7 @@ final class UserController
         $users = $this->userRepository->findBy();
 
         return $this->twig->render($response, '@SlimSkeleton/user/list.html.twig',
-            $this->getTwigData($request, [
+            $this->templateData->aggregate($request, [
                 'users' => prepareForView($users),
             ])
         );
@@ -99,7 +116,7 @@ final class UserController
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/view.html.twig',
-            $this->getTwigData($request, [
+            $this->templateData->aggregate($request, [
                 'user' => prepareForView($user),
             ])
         );
@@ -146,7 +163,7 @@ final class UserController
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/create.html.twig',
-            $this->getTwigData($request, [
+            $this->templateData->aggregate($request, [
                 'errorMessages' => $errorMessages ?? [],
                 'user' => prepareForView($user),
             ])
@@ -201,7 +218,7 @@ final class UserController
         }
 
         return $this->twig->render($response, '@SlimSkeleton/user/edit.html.twig',
-            $this->getTwigData($request, [
+            $this->templateData->aggregate($request, [
                 'errorMessages' => $errorMessages ?? [],
                 'user' => prepareForView($user),
             ])
