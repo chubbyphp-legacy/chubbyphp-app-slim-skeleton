@@ -4,13 +4,13 @@ namespace SlimSkeleton\ErrorHandler;
 
 use Chubbyphp\ErrorHandler\ErrorResponseProviderInterface;
 use Chubbyphp\ErrorHandler\HttpException;
+use Chubbyphp\Security\Authentication\AuthenticationInterface;
 use Chubbyphp\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Handlers\Error;
 use Slim\Views\Twig;
 use SlimSkeleton\Controller\Traits\TwigDataTrait;
-use SlimSkeleton\Security\AuthInterface;
 
 final class HtmlErrorResponseProvider implements ErrorResponseProviderInterface
 {
@@ -27,13 +27,13 @@ final class HtmlErrorResponseProvider implements ErrorResponseProviderInterface
     private $twig;
 
     /**
-     * @param AuthInterface    $auth
-     * @param Error            $fallbackErrorHandler
-     * @param SessionInterface $session
-     * @param Twig             $twig
+     * @param AuthenticationInterface $auth
+     * @param Error                   $fallbackErrorHandler
+     * @param SessionInterface        $session
+     * @param Twig                    $twig
      */
     public function __construct(
-        AuthInterface $auth,
+        AuthenticationInterface $auth,
         Error $fallbackErrorHandler,
         SessionInterface $session,
         Twig $twig

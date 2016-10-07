@@ -16,7 +16,7 @@
             {% if not authenticatedUser %}
                 <form action="{{ path_for('login', {'locale': locale}) }}" method="post" class="navbar-form navbar-right">
                     <div class="form-group">
-                        <input type="text" name="email" placeholder="{{ "login.label.email"|translate(locale) }}" class="form-control">
+                        <input type="text" name="username" placeholder="{{ "login.label.email"|translate(locale) }}" class="form-control">
                     </div>
                     <div class="form-group">
                         <input type="password" name="password" placeholder="{{ "login.label.password"|translate(locale) }}" class="form-control">

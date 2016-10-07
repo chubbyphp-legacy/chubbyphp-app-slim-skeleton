@@ -2,15 +2,15 @@
 
 namespace SlimSkeleton\Controller\Traits;
 
+use Chubbyphp\Security\Authentication\AuthenticationInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Route;
-use SlimSkeleton\Security\AuthInterface;
 use Chubbyphp\Session\SessionInterface;
 
 trait TwigDataTrait
 {
     /**
-     * @var AuthInterface
+     * @var AuthenticationInterface
      */
     private $auth;
 

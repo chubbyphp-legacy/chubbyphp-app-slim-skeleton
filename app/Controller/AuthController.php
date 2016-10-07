@@ -2,11 +2,11 @@
 
 namespace SlimSkeleton\Controller;
 
+use Chubbyphp\Security\Authentication\Exception\AbstractLoginException;
+use Chubbyphp\Security\Authentication\FormAuthentication;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Router;
-use SlimSkeleton\Security\AuthInterface;
-use SlimSkeleton\Security\Exception\AbstractLoginException;
 use SlimSkeleton\Controller\Traits\RedirectForPathTrait;
 use Chubbyphp\Session\FlashMessage;
 use Chubbyphp\Session\SessionInterface;
@@ -16,7 +16,7 @@ final class AuthController
     use RedirectForPathTrait;
 
     /**
-     * @var AuthInterface
+     * @var FormAuthentication
      */
     private $auth;
 
@@ -28,10 +28,10 @@ final class AuthController
     /**
      * AuthController constructor.
      *
-     * @param AuthInterface    $auth
-     * @param SessionInterface $session
+     * @param FormAuthentication $auth
+     * @param SessionInterface   $session
      */
-    public function __construct(AuthInterface $auth, Router $router, SessionInterface $session)
+    public function __construct(FormAuthentication $auth, Router $router, SessionInterface $session)
     {
         $this->auth = $auth;
         $this->router = $router;

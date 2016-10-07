@@ -2,10 +2,10 @@
 
 namespace SlimSkeleton\Controller;
 
+use Chubbyphp\Security\Authentication\AuthenticationInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
-use SlimSkeleton\Security\AuthInterface;
 use SlimSkeleton\Controller\Traits\TwigDataTrait;
 use Chubbyphp\Session\SessionInterface;
 
@@ -19,11 +19,11 @@ final class HomeController
     private $twig;
 
     /**
-     * @param AuthInterface    $auth
-     * @param SessionInterface $session
-     * @param Twig             $twig
+     * @param AuthenticationInterface $auth
+     * @param SessionInterface        $session
+     * @param Twig                    $twig
      */
-    public function __construct(AuthInterface $auth, SessionInterface $session, Twig $twig)
+    public function __construct(AuthenticationInterface $auth, SessionInterface $session, Twig $twig)
     {
         $this->auth = $auth;
         $this->session = $session;

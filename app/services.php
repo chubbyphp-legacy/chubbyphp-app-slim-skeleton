@@ -4,6 +4,8 @@ use Chubbyphp\Csrf\CsrfProvider;
 use Chubbyphp\Session\SessionProvider;
 use Chubbyphp\ErrorHandler\Slim\SimpleErrorHandlerProvider;
 use Chubbyphp\Translation\LocaleTranslationProvider;
+use Chubbyphp\Security\Authentication\AuthenticationMiddleware;
+use Chubbyphp\Security\Authentication\FormAuthentication;
 use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\ValidationProvider;
@@ -11,8 +13,6 @@ use Negotiation\LanguageNegotiator;
 use Slim\Container;
 use Slim\Handlers\Error;
 use SlimSkeleton\ErrorHandler\HtmlErrorResponseProvider;
-use SlimSkeleton\Security\Auth;
-use SlimSkeleton\Security\AuthMiddleware;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
@@ -68,16 +68,16 @@ $container->extend('validator.repositories', function (array $repositories) use 
 
 // controllers
 $container[HomeController::class] = function () use ($container) {
-    return new HomeController($container[Auth::class], $container['session'], $container['twig']);
+    return new HomeController($container[FormAuthentication::class], $container['session'], $container['twig']);
 };
 
 $container[AuthController::class] = function () use ($container) {
-    return new AuthController($container[Auth::class], $container['router'], $container['session']);
+    return new AuthController($container[FormAuthentication::class], $container['router'], $container['session']);
 };
 
 $container[UserController::class] = function () use ($container) {
     return new UserController(
-        $container[Auth::class],
+        $container[FormAuthentication::class],
         $container['router'],
         $container['session'],
         $container['twig'],
@@ -87,8 +87,8 @@ $container[UserController::class] = function () use ($container) {
 };
 
 // middlewares
-$container[AuthMiddleware::class] = function () use ($container) {
-    return new AuthMiddleware($container[Auth::class]);
+$container[AuthenticationMiddleware::class] = function () use ($container) {
+    return new AuthenticationMiddleware($container[FormAuthentication::class]);
 };
 
 // repositories
@@ -97,13 +97,13 @@ $container[UserRepository::class] = function () use ($container) {
 };
 
 // services
-$container[Auth::class] = function () use ($container) {
-    return new Auth($container['session'], $container[UserRepository::class]);
+$container[FormAuthentication::class] = function () use ($container) {
+    return new FormAuthentication($container['session'], $container[UserRepository::class]);
 };
 
 $container[HtmlErrorResponseProvider::class] = function () use ($container) {
     return new HtmlErrorResponseProvider(
-        $container[Auth::class],
+        $container[FormAuthentication::class],
         $container[Error::class],
         $container['session'],
         $container['twig']

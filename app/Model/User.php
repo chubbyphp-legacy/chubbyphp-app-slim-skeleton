@@ -3,17 +3,23 @@
 namespace SlimSkeleton\Model;
 
 use Chubbyphp\Model\ModelInterface;
+use Chubbyphp\Security\Authentication\UserPasswordInterface;
 use Chubbyphp\Validation\Rules\UniqueModelRule;
 use Chubbyphp\Validation\ValidatableModelInterface;
 use Ramsey\Uuid\Uuid;
 use Respect\Validation\Validator as RespectValidator;
 
-final class User implements \JsonSerializable, ModelInterface, UserInterface, ValidatableModelInterface
+final class User implements \JsonSerializable, UserPasswordInterface, ValidatableModelInterface
 {
     /**
      * @var string
      */
     private $id;
+
+    /**
+     * @var string
+     */
+    private $username;
 
     /**
      * @var string
@@ -24,6 +30,11 @@ final class User implements \JsonSerializable, ModelInterface, UserInterface, Va
      * @var string
      */
     private $password;
+
+    /**
+     * @var array
+     */
+    private $roles;
 
     /**
      * @param string|null $id
@@ -42,10 +53,19 @@ final class User implements \JsonSerializable, ModelInterface, UserInterface, Va
     }
 
     /**
+     * @return string
+     */
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    /**
      * @param string $email
      */
     public function setEmail(string $email)
     {
+        $this->username = $email;
         $this->email = $email;
     }
 
@@ -74,6 +94,30 @@ final class User implements \JsonSerializable, ModelInterface, UserInterface, Va
     }
 
     /**
+     * @return array
+     */
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param array $roles
+     */
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getPossibleRoles()
+    {
+        return ['admin' => 'ADMIN', 'user' => 'USER'];
+    }
+
+    /**
      * @param array $data
      *
      * @return User|ModelInterface
@@ -82,8 +126,10 @@ final class User implements \JsonSerializable, ModelInterface, UserInterface, Va
     {
         $user = new self($data['id']);
 
-        $user->setEmail($data['email']);
-        $user->setPassword($data['password']);
+        $user->username = $data['username'];
+        $user->email = $data['email'];
+        $user->password = $data['password'];
+        $user->roles = json_decode($data['roles'], true);
 
         return $user;
     }
@@ -95,8 +141,10 @@ final class User implements \JsonSerializable, ModelInterface, UserInterface, Va
     {
         return [
             'id' => $this->id,
+            'username' => $this->username,
             'email' => $this->email,
             'password' => $this->password,
+            'roles' => json_encode($this->roles),
         ];
     }
 
@@ -107,7 +155,10 @@ final class User implements \JsonSerializable, ModelInterface, UserInterface, Va
     {
         return [
             'id' => $this->id,
+            'username' => $this->username,
             'email' => $this->email,
+            'roles' => $this->roles,
+            'possibleRoles' => self::getPossibleRoles(),
         ];
     }
 
@@ -116,7 +167,7 @@ final class User implements \JsonSerializable, ModelInterface, UserInterface, Va
      */
     public function getModelValidator()
     {
-        return RespectValidator::create()->addRule(new UniqueModelRule(['email']));
+        return RespectValidator::create()->addRule(new UniqueModelRule(['username', 'email']));
     }
 
     /**
@@ -125,8 +176,10 @@ final class User implements \JsonSerializable, ModelInterface, UserInterface, Va
     public function getPropertyValidators(): array
     {
         return [
+            'username' => RespectValidator::notBlank()->email(),
             'email' => RespectValidator::notBlank()->email(),
             'password' => RespectValidator::notBlank(),
+            'roles' => RespectValidator::notEmpty(),
         ];
     }
 }

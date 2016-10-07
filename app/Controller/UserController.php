@@ -3,17 +3,17 @@
 namespace SlimSkeleton\Controller;
 
 use Chubbyphp\ErrorHandler\HttpException;
+use Chubbyphp\Model\RepositoryInterface;
+use Chubbyphp\Security\Authentication\Exception\EmptyPasswordException;
+use Chubbyphp\Security\Authentication\FormAuthentication;
 use Chubbyphp\Validation\ValidatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Router;
 use Slim\Views\Twig;
-use SlimSkeleton\Security\AuthInterface;
-use SlimSkeleton\Security\Exception\EmptyPasswordException;
 use SlimSkeleton\Controller\Traits\RedirectForPathTrait;
 use SlimSkeleton\Controller\Traits\TwigDataTrait;
 use SlimSkeleton\Model\User;
-use SlimSkeleton\Repository\UserRepositoryInterface;
 use Chubbyphp\Session\FlashMessage;
 use Chubbyphp\Session\SessionInterface;
 
@@ -28,7 +28,7 @@ final class UserController
     private $twig;
 
     /**
-     * @var UserRepositoryInterface
+     * @var RepositoryInterface
      */
     private $userRepository;
 
@@ -38,19 +38,19 @@ final class UserController
     private $validator;
 
     /**
-     * @param AuthInterface           $auth
-     * @param Router                  $router
-     * @param SessionInterface        $session
-     * @param Twig                    $twig
-     * @param UserRepositoryInterface $userRepository
-     * @param ValidatorInterface      $validator
+     * @param FormAuthentication  $auth
+     * @param Router              $router
+     * @param SessionInterface    $session
+     * @param Twig                $twig
+     * @param RepositoryInterface $userRepository
+     * @param ValidatorInterface  $validator
      */
     public function __construct(
-        AuthInterface $auth,
+        FormAuthentication $auth,
         Router $router,
         SessionInterface $session,
         Twig $twig,
-        UserRepositoryInterface $userRepository,
+        RepositoryInterface $userRepository,
         ValidatorInterface $validator
     ) {
         $this->auth = $auth;
@@ -115,7 +115,8 @@ final class UserController
         if ('POST' === $request->getMethod()) {
             $data = $request->getParsedBody();
 
-            $user->setEmail($data['email']);
+            $user->setEmail($data['email'] ?? '');
+            $user->setRoles($data['roles'] ?? []);
 
             try {
                 $user->setPassword($this->auth->hashPassword($data['password']));
@@ -170,7 +171,9 @@ final class UserController
         if ('POST' === $request->getMethod()) {
             $data = $request->getParsedBody();
 
-            $user->setEmail($data['email']);
+            $user->setEmail($data['email'] ?? '');
+            $user->setRoles($data['roles'] ?? []);
+
             if ($data['password']) {
                 $user->setPassword($this->auth->hashPassword($data['password']));
             }

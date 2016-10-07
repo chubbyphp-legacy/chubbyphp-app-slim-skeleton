@@ -33,6 +33,9 @@ return [
     'user.label.email' => 'E-Mail',
     'user.label.id' => 'Id',
     'user.label.password' => 'Password',
+    'user.label.roles' => 'Roles',
+    'user.label.roles.admin' => 'Administrator',
+    'user.label.roles.user' => 'User',
     'user.label.save' => 'Save',
     'user.title.create' => 'Create user',
     'user.title.edit' => 'Edit user',
@@ -41,4 +44,5 @@ return [
     'validation.error.fieldemailisnotunique' => 'The E-Mail address is already in use!',
     'validation.error.mustbevalidemail' => 'This field expects a valid E-Mail!',
     'validation.error.nullmustnotbeblank' => 'This field expects to be not blank!',
+    'validation.error.mustnotbeempty' => 'This field expects to be not blank!',
 ];

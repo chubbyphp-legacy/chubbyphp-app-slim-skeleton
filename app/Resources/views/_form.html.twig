@@ -25,3 +25,39 @@
         </div>
     </div>
 {% endmacro %}
+
+{% macro renderSelect(model, property, propertyLabel, options, errorMessages, locale) %}
+    <div class="form-group{% if errorMessages[property] is defined %} has-error{% endif %}">
+        <label class="control-label col-lg-2" for="{{ property }}">{{ propertyLabel|translate(locale) }}</label>
+        <div class="col-lg-10">
+            <select id="{{ property }}" name="{{ property }}" class="form-control">
+                {% for labelKey, value in options %}
+                    <option value="{{ value }}"{% if value == model[property] %} selected="selected"{% endif %}>{{ (propertyLabel~"."~labelKey)|translate(locale) }}</option>
+                {% endfor %}
+            </select>
+            {% if errorMessages[property] is defined %}
+                {% for message in errorMessages[property] %}
+                    <span class="help-block">{{ ("validation.error."~(message|generateKey))|translate(locale) }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro renderSelectMultiple(model, property, propertyLabel, options, errorMessages, locale) %}
+    <div class="form-group{% if errorMessages[property] is defined %} has-error{% endif %}">
+        <label class="control-label col-lg-2" for="{{ property }}">{{ propertyLabel|translate(locale) }}</label>
+        <div class="col-lg-10">
+            <select id="{{ property }}" name="{{ property }}[]" multiple="multiple" class="form-control">
+                {% for labelKey, value in options %}
+                    <option value="{{ value }}"{% if value in model[property] %} selected="selected"{% endif %}>{{ (propertyLabel~"."~labelKey)|translate(locale) }}</option>
+                {% endfor %}
+            </select>
+            {% if errorMessages[property] is defined %}
+                {% for message in errorMessages[property] %}
+                    <span class="help-block">{{ ("validation.error."~(message|generateKey))|translate(locale) }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}

@@ -38,6 +38,7 @@ final class TwigProvider implements ServiceProviderInterface
                 [
                     'cache' => $container['cacheDir'].'/twig',
                     'debug' => $container['debug'],
+                    'auto_reload' => !$container['debug'] ? null : true,
                 ]
             );
 

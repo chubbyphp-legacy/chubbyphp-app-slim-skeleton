@@ -4,7 +4,7 @@ namespace SlimSkeleton\Repository;
 
 use SlimSkeleton\Model\User;
 
-final class UserRepository extends AbstractDoctrineRepository implements UserRepositoryInterface
+final class UserRepository extends AbstractDoctrineRepository
 {
     /**
      * @return string

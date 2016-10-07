@@ -5,6 +5,7 @@
     "chubbyphp/chubbyphp-error-handler": "~1.0@dev",
     "chubbyphp/chubbyphp-model": "~1.0@dev",
     "chubbyphp/chubbyphp-session": "~1.0@dev",
+    "chubbyphp/chubbyphp-security": "~1.0@dev",
     "chubbyphp/chubbyphp-translation": "~1.0@dev",
     "chubbyphp/chubbyphp-validation": "~1.0@dev",
     "doctrine/dbal": "^2.5.5",

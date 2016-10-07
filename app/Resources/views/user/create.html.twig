@@ -9,6 +9,7 @@
             <form action="{{ path_for('user_create', {'locale': locale}) }}" method="post" class="form-horizontal">
                 {{ forms.renderInputText(user, 'email', 'user.label.email', errorMessages, locale) }}
                 {{ forms.renderInputPassword(user, 'password', 'user.label.password', errorMessages, locale) }}
+                {{ forms.renderSelectMultiple(user, 'roles', 'user.label.roles', user.possibleRoles, errorMessages, locale) }}
                 <input type="hidden" name="csrf" value="{{ csrf }}">
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
