@@ -41,7 +41,7 @@ return [
     'user.title.edit' => 'Benutzer bearbeiten',
     'user.title.list' => 'Benutzerliste',
     'user.title.view' => 'Benutzer anschauen',
-    'validation.error.fieldemailisnotunique' => 'Die E-Mail Adresse wird bereits verwendet!',
+    'validation.error.fieldusernameemailisnotunique' => 'Die E-Mail Adresse wird bereits verwendet!',
     'validation.error.mustbevalidemail' => 'Dieses Feld erwartet eine gültige E-Mail!',
     'validation.error.nullmustnotbeblank' => 'Dieses Feld darf nicht leer sein!',
     'validation.error.mustnotbeempty' => 'Dieses Feld darf nicht leer sein!',
