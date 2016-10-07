@@ -2,6 +2,7 @@
 
 namespace SlimSkeleton\Repository;
 
+use Chubbyphp\Model\AbstractDoctrineRepository;
 use SlimSkeleton\Model\User;
 
 final class UserRepository extends AbstractDoctrineRepository
