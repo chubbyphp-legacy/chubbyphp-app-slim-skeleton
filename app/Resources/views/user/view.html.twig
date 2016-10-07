@@ -8,7 +8,7 @@
                 {% for property, value in user %}
                     <tr>
                         <td>{{ ("user.label."~property)|translate(locale) }}</td>
-                        <td>{{ value }}</td>
+                        <td>{% if value is iterable %}{% for subvalue in value %}{{ subvalue }}{% if not loop.last %}, {% endif %}{% endfor %}{% else %}{{ value }}{% endif %}</td>
                     </tr>
                 {% endfor %}
             </table>
