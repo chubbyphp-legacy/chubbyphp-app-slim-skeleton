@@ -21,6 +21,7 @@ use SlimSkeleton\Provider\ConsoleProvider;
 use SlimSkeleton\Provider\DoctrineServiceProvider;
 use SlimSkeleton\Provider\TwigProvider;
 use SlimSkeleton\Repository\UserRepository;
+use SlimSkeleton\Service\RedirectForPath;
 
 /* @var Container $container */
 $container->register(new ConsoleProvider());
@@ -72,13 +73,17 @@ $container[HomeController::class] = function () use ($container) {
 };
 
 $container[AuthController::class] = function () use ($container) {
-    return new AuthController($container[FormAuthentication::class], $container['router'], $container['session']);
+    return new AuthController(
+        $container[FormAuthentication::class],
+        $container[RedirectForPath::class],
+        $container['session']
+    );
 };
 
 $container[UserController::class] = function () use ($container) {
     return new UserController(
         $container[FormAuthentication::class],
-        $container['router'],
+        $container[RedirectForPath::class],
         $container['session'],
         $container['twig'],
         $container[UserRepository::class],
@@ -124,4 +129,8 @@ $container[LocaleMiddleware::class] = function () use ($container) {
 
 $container[LanguageNegotiator::class] = function () use ($container) {
     return new LanguageNegotiator();
+};
+
+$container[RedirectForPath::class] = function () use ($container) {
+    return new RedirectForPath($container['router']);
 };

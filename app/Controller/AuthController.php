@@ -6,19 +6,21 @@ use Chubbyphp\Security\Authentication\Exception\AbstractLoginException;
 use Chubbyphp\Security\Authentication\FormAuthentication;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Router;
-use SlimSkeleton\Controller\Traits\RedirectForPathTrait;
 use Chubbyphp\Session\FlashMessage;
 use Chubbyphp\Session\SessionInterface;
+use SlimSkeleton\Service\RedirectForPath;
 
 final class AuthController
 {
-    use RedirectForPathTrait;
-
     /**
      * @var FormAuthentication
      */
     private $auth;
+
+    /**
+     * @var RedirectForPath
+     */
+    private $redirectForPath;
 
     /**
      * @var SessionInterface
@@ -27,14 +29,14 @@ final class AuthController
 
     /**
      * AuthController constructor.
-     *
      * @param FormAuthentication $auth
-     * @param SessionInterface   $session
+     * @param RedirectForPath $redirectForPath
+     * @param SessionInterface $session
      */
-    public function __construct(FormAuthentication $auth, Router $router, SessionInterface $session)
+    public function __construct(FormAuthentication $auth, RedirectForPath $redirectForPath, SessionInterface $session)
     {
         $this->auth = $auth;
-        $this->router = $router;
+        $this->redirectForPath = $redirectForPath;
         $this->session = $session;
     }
 
@@ -66,6 +68,6 @@ final class AuthController
     {
         $this->auth->logout($request);
 
-        return $this->getRedirectForPath($response, 302, 'home', ['locale' => $request->getAttribute('locale')]);
+        return $this->redirectForPath->get($response, 302, 'home', ['locale' => $request->getAttribute('locale')]);
     }
 }

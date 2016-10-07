@@ -9,18 +9,21 @@ use Chubbyphp\Security\Authentication\FormAuthentication;
 use Chubbyphp\Validation\ValidatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Router;
 use Slim\Views\Twig;
-use SlimSkeleton\Controller\Traits\RedirectForPathTrait;
 use SlimSkeleton\Controller\Traits\TwigDataTrait;
 use SlimSkeleton\Model\User;
 use Chubbyphp\Session\FlashMessage;
 use Chubbyphp\Session\SessionInterface;
+use SlimSkeleton\Service\RedirectForPath;
 
 final class UserController
 {
-    use RedirectForPathTrait;
     use TwigDataTrait;
+
+    /**
+     * @var RedirectForPath
+     */
+    private $redirectForPath;
 
     /**
      * @var Twig
@@ -39,7 +42,7 @@ final class UserController
 
     /**
      * @param FormAuthentication  $auth
-     * @param Router              $router
+     * @param RedirectForPath              $redirectForPath
      * @param SessionInterface    $session
      * @param Twig                $twig
      * @param RepositoryInterface $userRepository
@@ -47,14 +50,14 @@ final class UserController
      */
     public function __construct(
         FormAuthentication $auth,
-        Router $router,
+        RedirectForPath $redirectForPath,
         SessionInterface $session,
         Twig $twig,
         RepositoryInterface $userRepository,
         ValidatorInterface $validator
     ) {
         $this->auth = $auth;
-        $this->router = $router;
+        $this->redirectForPath = $redirectForPath;
         $this->session = $session;
         $this->twig = $twig;
         $this->userRepository = $userRepository;
@@ -130,7 +133,7 @@ final class UserController
                     new FlashMessage(FlashMessage::TYPE_SUCCESS, 'user.flash.create.success')
                 );
 
-                return $this->getRedirectForPath($response, 302, 'user_edit', [
+                return $this->redirectForPath->get($response, 302, 'user_edit', [
                     'locale' => $request->getAttribute('locale'),
                     'id' => $user->getId(),
                 ]);
@@ -185,7 +188,7 @@ final class UserController
                     new FlashMessage(FlashMessage::TYPE_SUCCESS, 'user.flash.edit.success')
                 );
 
-                return $this->getRedirectForPath($response, 302, 'user_edit', [
+                return $this->redirectForPath->get($response, 302, 'user_edit', [
                     'locale' => $request->getAttribute('locale'),
                     'id' => $user->getId(),
                 ]);
@@ -231,6 +234,6 @@ final class UserController
 
         $this->userRepository->delete($user);
 
-        return $this->getRedirectForPath($response, 302, 'user_list', ['locale' => $request->getAttribute('locale')]);
+        return $this->redirectForPath->get($response, 302, 'user_list', ['locale' => $request->getAttribute('locale')]);
     }
 }
