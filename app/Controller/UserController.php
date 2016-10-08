@@ -6,6 +6,7 @@ use Chubbyphp\ErrorHandler\HttpException;
 use Chubbyphp\Model\RepositoryInterface;
 use Chubbyphp\Security\Authentication\Exception\EmptyPasswordException;
 use Chubbyphp\Security\Authentication\FormAuthentication;
+use Chubbyphp\Security\Authentication\PasswordManagerInterface;
 use Chubbyphp\Validation\ValidatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -21,7 +22,12 @@ final class UserController
     /**
      * @var FormAuthentication
      */
-    private $auth;
+    private $authentication;
+
+    /**
+     * @var PasswordManagerInterface
+     */
+    private $passwordManager;
 
     /**
      * @var RedirectForPath
@@ -54,16 +60,18 @@ final class UserController
     private $validator;
 
     /**
-     * @param FormAuthentication  $auth
-     * @param RedirectForPath     $redirectForPath
-     * @param SessionInterface    $session
-     * @param TemplateData        $templateData
-     * @param Twig                $twig
-     * @param RepositoryInterface $userRepository
-     * @param ValidatorInterface  $validator
+     * @param FormAuthentication       $authentication
+     * @param PasswordManagerInterface $passwordManager
+     * @param RedirectForPath          $redirectForPath
+     * @param SessionInterface         $session
+     * @param TemplateData             $templateData
+     * @param Twig                     $twig
+     * @param RepositoryInterface      $userRepository
+     * @param ValidatorInterface       $validator
      */
     public function __construct(
-        FormAuthentication $auth,
+        FormAuthentication $authentication,
+        PasswordManagerInterface $passwordManager,
         RedirectForPath $redirectForPath,
         SessionInterface $session,
         TemplateData $templateData,
@@ -72,7 +80,8 @@ final class UserController
         $userRepository,
         ValidatorInterface $validator
     ) {
-        $this->auth = $auth;
+        $this->authentication = $authentication;
+        $this->passwordManager = $passwordManager;
         $this->redirectForPath = $redirectForPath;
         $this->session = $session;
         $this->templateData = $templateData;
@@ -139,7 +148,7 @@ final class UserController
             $user->setRoles($data['roles'] ?? []);
 
             try {
-                $user->setPassword($this->auth->hashPassword($data['password']));
+                $user->setPassword($this->passwordManager->hash($data['password']));
             } catch (EmptyPasswordException $e) {
             }
 
@@ -195,7 +204,7 @@ final class UserController
             $user->setRoles($data['roles'] ?? []);
 
             if ($data['password']) {
-                $user->setPassword($this->auth->hashPassword($data['password']));
+                $user->setPassword($this->passwordManager->hash($data['password']));
             }
 
             if ([] === $errorMessages = $this->validator->validateModel($user)) {
@@ -243,9 +252,9 @@ final class UserController
             throw HttpException::create($request, $response, 404, 'user.error.notfound');
         }
 
-        $authenticatedUser = $this->auth->getAuthenticatedUser($request);
+        $authenticationenticatedUser = $this->authentication->getAuthenticatedUser($request);
 
-        if ($authenticatedUser->getId() === $user->getId()) {
+        if ($authenticationenticatedUser->getId() === $user->getId()) {
             throw HttpException::create($request, $response, 403, 'user.error.cantdeletehimself');
         }
 

@@ -15,7 +15,7 @@ final class AuthController
     /**
      * @var FormAuthentication
      */
-    private $auth;
+    private $authentication;
 
     /**
      * @var RedirectForPath
@@ -30,13 +30,13 @@ final class AuthController
     /**
      * AuthController constructor.
      *
-     * @param FormAuthentication $auth
+     * @param FormAuthentication $authentication
      * @param RedirectForPath    $redirectForPath
      * @param SessionInterface   $session
      */
-    public function __construct(FormAuthentication $auth, RedirectForPath $redirectForPath, SessionInterface $session)
+    public function __construct(FormAuthentication $authentication, RedirectForPath $redirectForPath, SessionInterface $session)
     {
-        $this->auth = $auth;
+        $this->authentication = $authentication;
         $this->redirectForPath = $redirectForPath;
         $this->session = $session;
     }
@@ -50,7 +50,7 @@ final class AuthController
     public function login(Request $request, Response $response): Response
     {
         try {
-            $this->auth->login($request);
+            $this->authentication->login($request);
         } catch (AbstractLoginException $e) {
             $flashMessage = new FlashMessage(FlashMessage::TYPE_DANGER, 'login.flash.invalidcredentials');
             $this->session->addFlash($request, $flashMessage);
@@ -67,7 +67,7 @@ final class AuthController
      */
     public function logout(Request $request, Response $response): Response
     {
-        $this->auth->logout($request);
+        $this->authentication->logout($request);
 
         return $this->redirectForPath->get($response, 302, 'home', ['locale' => $request->getAttribute('locale')]);
     }

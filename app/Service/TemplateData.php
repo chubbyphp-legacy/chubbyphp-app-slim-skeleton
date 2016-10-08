@@ -13,7 +13,7 @@ final class TemplateData
     /**
      * @var AuthenticationInterface
      */
-    private $auth;
+    private $authentication;
 
     /**
      * @var SessionInterface
@@ -21,12 +21,12 @@ final class TemplateData
     private $session;
 
     /**
-     * @param AuthenticationInterface $auth
+     * @param AuthenticationInterface $authentication
      * @param SessionInterface        $session
      */
-    public function __construct(AuthenticationInterface $auth, SessionInterface $session)
+    public function __construct(AuthenticationInterface $authentication, SessionInterface $session)
     {
-        $this->auth = $auth;
+        $this->authentication = $authentication;
         $this->session = $session;
     }
 
@@ -48,7 +48,7 @@ final class TemplateData
         }
 
         return array_replace_recursive([
-            'authenticatedUser' => prepareForView($this->auth->getAuthenticatedUser($request)),
+            'authenticatedUser' => prepareForView($this->authentication->getAuthenticatedUser($request)),
             'csrf' => $this->session->get($request, CsrfMiddleware::CSRF_KEY),
             'flashMessage' => $this->session->getFlash($request),
             'locale' => $locale,

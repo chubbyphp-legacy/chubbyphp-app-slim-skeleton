@@ -6,6 +6,7 @@ use Chubbyphp\ErrorHandler\Slim\SimpleErrorHandlerProvider;
 use Chubbyphp\Translation\LocaleTranslationProvider;
 use Chubbyphp\Security\Authentication\AuthenticationMiddleware;
 use Chubbyphp\Security\Authentication\FormAuthentication;
+use Chubbyphp\Security\Authentication\PasswordManager;
 use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\ValidationProvider;
@@ -84,6 +85,7 @@ $container[AuthController::class] = function () use ($container) {
 $container[UserController::class] = function () use ($container) {
     return new UserController(
         $container[FormAuthentication::class],
+        $container[PasswordManager::class],
         $container[RedirectForPath::class],
         $container['session'],
         $container[TemplateData::class],
@@ -104,8 +106,16 @@ $container[UserRepository::class] = function () use ($container) {
 };
 
 // services
+$container[Error::class] = function ($container) {
+    return new Error($container['settings']['displayErrorDetails']);
+};
+
 $container[FormAuthentication::class] = function () use ($container) {
-    return new FormAuthentication($container['session'], $container[UserRepository::class]);
+    return new FormAuthentication(
+        $container[PasswordManager::class],
+        $container['session'],
+        $container[UserRepository::class]
+    );
 };
 
 $container[HtmlErrorResponseProvider::class] = function () use ($container) {
@@ -116,8 +126,8 @@ $container[HtmlErrorResponseProvider::class] = function () use ($container) {
     );
 };
 
-$container[Error::class] = function ($container) {
-    return new Error($container['settings']['displayErrorDetails']);
+$container[LanguageNegotiator::class] = function () use ($container) {
+    return new LanguageNegotiator();
 };
 
 $container[LocaleMiddleware::class] = function () use ($container) {
@@ -128,8 +138,8 @@ $container[LocaleMiddleware::class] = function () use ($container) {
     );
 };
 
-$container[LanguageNegotiator::class] = function () use ($container) {
-    return new LanguageNegotiator();
+$container[PasswordManager::class] = function () use ($container) {
+    return new PasswordManager();
 };
 
 $container[RedirectForPath::class] = function () use ($container) {
