@@ -2,6 +2,7 @@
 
 namespace SlimSkeleton\Service;
 
+use Chubbyphp\Csrf\CsrfMiddleware;
 use Chubbyphp\Security\Authentication\AuthenticationInterface;
 use Chubbyphp\Session\SessionInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -48,7 +49,7 @@ final class TemplateData
 
         return array_replace_recursive([
             'authenticatedUser' => prepareForView($this->auth->getAuthenticatedUser($request)),
-            'csrf' => $this->session->get($request, 'csrf'),
+            'csrf' => $this->session->get($request, CsrfMiddleware::CSRF_KEY),
             'flashMessage' => $this->session->getFlash($request),
             'locale' => $locale,
         ], $variables);
