@@ -18,7 +18,7 @@ final class UserRepository extends AbstractDoctrineRepository
     /**
      * @return string
      */
-    protected function getTablename(): string
+    protected function getTable(): string
     {
         return 'users';
     }
