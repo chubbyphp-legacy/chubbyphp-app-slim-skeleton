@@ -1,5 +1,9 @@
 <?php
 
+use Pimple\Container;
+
+/* @var Container $container */
+
 return [
     'settings' => [
         'httpVersion' => '1.1',
@@ -8,7 +12,7 @@ return [
         'determineRouteBeforeAppMiddleware' => true,
         'displayErrorDetails' => false,
         'addContentLengthHeader' => true,
-        'routerCacheFile' => true,
+        'routerCacheFile' => $container['cacheDir'].'/routes.php',
     ],
     'projectSettings' => [
         'db.options' => [
