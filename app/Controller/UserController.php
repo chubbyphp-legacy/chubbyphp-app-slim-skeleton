@@ -148,7 +148,7 @@ final class UserController
             $user->setRoles($data['roles'] ?? []);
 
             try {
-                $user->setPassword($this->passwordManager->hash($data['password']));
+                $user->setPassword($this->passwordManager->hash($data['password'] ?? ''));
             } catch (EmptyPasswordException $e) {
             }
 
