@@ -22,7 +22,7 @@ final class TwigProvider implements ServiceProviderInterface
             $extensions = [];
             $extensions[] = new TwigExtension(
                 $container['router'],
-                rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/')
+                $container['request']->getUri()->getBasePath()
             );
 
             return $extensions;
