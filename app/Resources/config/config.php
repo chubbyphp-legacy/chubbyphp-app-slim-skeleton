@@ -27,11 +27,11 @@ return [
         'debug' => false,
         'localeFallback' => 'en',
         'locales' => ['de', 'en'],
+        'security.authentication.key' => 'security.authentication.formauthentication',
+        'security.userrepository.key' => UserRepository::class,
         'session.expirationTime' => 1200,
         'session.privateRsaKey' => '6t332+EAscTgRQstgHjUOYvTeTbhk7CaW9AptDT9Fhw=', // https://github.com/AndrewCarterUK/CryptoKey
         'session.publicRsaKey' => '6t332+EAscTgRQstgHjUOYvTeTbhk7CaW9AptDT9Fhw=',
         'session.setCookieSecureOnly' => false,
-        'security.authentication.key' => 'security.authentication.formauthentication',
-        'security.userrepository.key' => UserRepository::class
     ],
 ];
