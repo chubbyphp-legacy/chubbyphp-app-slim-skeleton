@@ -35,9 +35,6 @@ $container->register(new TwigProvider());
 $container->register(new ValidationProvider());
 
 // extend providers
-$container['security.authentication.key'] = 'security.authentication.formauthentication';
-$container['security.userrepository.key'] = UserRepository::class;
-
 $container['errorHandler.defaultProvider'] = function () use ($container) {
     return $container[HtmlErrorResponseProvider::class];
 };

@@ -1,6 +1,7 @@
 <?php
 
 use Pimple\Container;
+use SlimSkeleton\Repository\UserRepository;
 
 /* @var Container $container */
 
@@ -30,5 +31,7 @@ return [
         'session.privateRsaKey' => '6t332+EAscTgRQstgHjUOYvTeTbhk7CaW9AptDT9Fhw=', // https://github.com/AndrewCarterUK/CryptoKey
         'session.publicRsaKey' => '6t332+EAscTgRQstgHjUOYvTeTbhk7CaW9AptDT9Fhw=',
         'session.setCookieSecureOnly' => false,
+        'security.authentication.key' => 'security.authentication.formauthentication',
+        'security.userrepository.key' => UserRepository::class
     ],
 ];
