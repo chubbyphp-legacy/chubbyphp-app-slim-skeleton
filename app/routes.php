@@ -1,6 +1,5 @@
 <?php
 
-use Chubbyphp\Security\Authentication\AuthenticationMiddleware;
 use Slim\App;
 use Slim\Container;
 use SlimSkeleton\Controller\AuthController;
@@ -22,5 +21,5 @@ $app->group('/{locale:'.implode('|', $container['locales']).'}', function () use
         $app->map(['GET', 'POST'], '/{id}/edit', UserController::class.':edit')->setName('user_edit');
         $app->get('/{id}/view', UserController::class.':view')->setName('user_view');
         $app->post('/{id}/delete', UserController::class.':delete')->setName('user_delete');
-    })->add($container[AuthenticationMiddleware::class]);
+    })->add($container['security.authentication.middleware']);
 });

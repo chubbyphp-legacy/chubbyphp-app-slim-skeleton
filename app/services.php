@@ -3,10 +3,8 @@
 use Chubbyphp\Csrf\CsrfProvider;
 use Chubbyphp\Session\SessionProvider;
 use Chubbyphp\ErrorHandler\Slim\SimpleErrorHandlerProvider;
+use Chubbyphp\Security\Authentication\AuthenticationProvider;
 use Chubbyphp\Translation\LocaleTranslationProvider;
-use Chubbyphp\Security\Authentication\AuthenticationMiddleware;
-use Chubbyphp\Security\Authentication\FormAuthentication;
-use Chubbyphp\Security\Authentication\PasswordManager;
 use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\ValidationProvider;
@@ -26,6 +24,7 @@ use SlimSkeleton\Service\RedirectForPath;
 use SlimSkeleton\Service\TemplateData;
 
 /* @var Container $container */
+$container->register(new AuthenticationProvider());
 $container->register(new ConsoleProvider());
 $container->register(new CsrfProvider());
 $container->register(new DoctrineServiceProvider());
@@ -36,6 +35,9 @@ $container->register(new TwigProvider());
 $container->register(new ValidationProvider());
 
 // extend providers
+$container['security.authentication.key'] = 'security.authentication.formauthentication';
+$container['security.userrepository.key'] = UserRepository::class;
+
 $container['errorHandler.defaultProvider'] = function () use ($container) {
     return $container[HtmlErrorResponseProvider::class];
 };
@@ -76,7 +78,7 @@ $container[HomeController::class] = function () use ($container) {
 
 $container[AuthController::class] = function () use ($container) {
     return new AuthController(
-        $container[FormAuthentication::class],
+        $container['security.authentication'],
         $container[RedirectForPath::class],
         $container['session']
     );
@@ -84,8 +86,8 @@ $container[AuthController::class] = function () use ($container) {
 
 $container[UserController::class] = function () use ($container) {
     return new UserController(
-        $container[FormAuthentication::class],
-        $container[PasswordManager::class],
+        $container['security.authentication'],
+        $container['security.authentication.passwordmanager'],
         $container[RedirectForPath::class],
         $container['session'],
         $container[TemplateData::class],
@@ -93,11 +95,6 @@ $container[UserController::class] = function () use ($container) {
         $container[UserRepository::class],
         $container['validator']
     );
-};
-
-// middlewares
-$container[AuthenticationMiddleware::class] = function () use ($container) {
-    return new AuthenticationMiddleware($container[FormAuthentication::class]);
 };
 
 // repositories
@@ -108,14 +105,6 @@ $container[UserRepository::class] = function () use ($container) {
 // services
 $container[Error::class] = function ($container) {
     return new Error($container['settings']['displayErrorDetails']);
-};
-
-$container[FormAuthentication::class] = function () use ($container) {
-    return new FormAuthentication(
-        $container[PasswordManager::class],
-        $container['session'],
-        $container[UserRepository::class]
-    );
 };
 
 $container[HtmlErrorResponseProvider::class] = function () use ($container) {
@@ -138,14 +127,10 @@ $container[LocaleMiddleware::class] = function () use ($container) {
     );
 };
 
-$container[PasswordManager::class] = function () use ($container) {
-    return new PasswordManager();
-};
-
 $container[RedirectForPath::class] = function () use ($container) {
     return new RedirectForPath($container['router']);
 };
 
 $container[TemplateData::class] = function () use ($container) {
-    return new TemplateData($container[FormAuthentication::class], $container['session']);
+    return new TemplateData($container['security.authentication'], $container['session']);
 };
