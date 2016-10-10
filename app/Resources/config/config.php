@@ -22,6 +22,10 @@ return [
         'debug' => false,
         'localeFallback' => 'en',
         'locales' => ['de', 'en'],
+        'security.authorization.rolehierarchy' => [
+            'ADMIN' => ['USER_MANAGEMENT'],
+            'USER_MANAGEMENT' => ['USER_LIST', 'USER_CREATE', 'USER_EDIT', 'USER_VIEW', 'USER_DELETE'],
+        ],
         'session.expirationTime' => 1200,
         'session.privateRsaKey' => '6t332+EAscTgRQstgHjUOYvTeTbhk7CaW9AptDT9Fhw=', // https://github.com/AndrewCarterUK/CryptoKey
         'session.publicRsaKey' => '6t332+EAscTgRQstgHjUOYvTeTbhk7CaW9AptDT9Fhw=',

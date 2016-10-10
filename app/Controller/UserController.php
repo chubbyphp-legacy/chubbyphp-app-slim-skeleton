@@ -7,6 +7,7 @@ use Chubbyphp\Model\RepositoryInterface;
 use Chubbyphp\Security\Authentication\Exception\EmptyPasswordException;
 use Chubbyphp\Security\Authentication\AuthenticationInterface;
 use Chubbyphp\Security\Authentication\PasswordManagerInterface;
+use Chubbyphp\Security\Authorization\AuthorizationInterface;
 use Chubbyphp\Validation\ValidatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -23,6 +24,11 @@ final class UserController
      * @var AuthenticationInterface
      */
     private $authentication;
+
+    /**
+     * @var AuthorizationInterface
+     */
+    private $authorization;
 
     /**
      * @var PasswordManagerInterface
@@ -61,6 +67,7 @@ final class UserController
 
     /**
      * @param AuthenticationInterface  $authentication
+     * @param AuthorizationInterface   $authorization
      * @param PasswordManagerInterface $passwordManager
      * @param RedirectForPath          $redirectForPath
      * @param SessionInterface         $session
@@ -71,6 +78,7 @@ final class UserController
      */
     public function __construct(
         AuthenticationInterface $authentication,
+        AuthorizationInterface $authorization,
         PasswordManagerInterface $passwordManager,
         RedirectForPath $redirectForPath,
         SessionInterface $session,
@@ -81,6 +89,7 @@ final class UserController
         ValidatorInterface $validator
     ) {
         $this->authentication = $authentication;
+        $this->authorization = $authorization;
         $this->passwordManager = $passwordManager;
         $this->redirectForPath = $redirectForPath;
         $this->session = $session;
@@ -98,6 +107,10 @@ final class UserController
      */
     public function listAll(Request $request, Response $response)
     {
+        if (!$this->authorization->isGranted($this->authentication->getAuthenticatedUser($request), 'USER_LIST')) {
+            throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
+        }
+
         $users = $this->userRepository->findBy();
 
         return $this->twig->render($response, '@SlimSkeleton/user/list.html.twig',
@@ -117,6 +130,10 @@ final class UserController
      */
     public function view(Request $request, Response $response)
     {
+        if (!$this->authorization->isGranted($this->authentication->getAuthenticatedUser($request), 'USER_VIEW')) {
+            throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
+        }
+
         $id = $request->getAttribute('id');
 
         $user = $this->userRepository->find($id);
@@ -139,13 +156,22 @@ final class UserController
      */
     public function create(Request $request, Response $response)
     {
+        $authenticatedUser = $this->authentication->getAuthenticatedUser($request);
+
+        if (!$this->authorization->isGranted($authenticatedUser, 'USER_CREATE')) {
+            throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
+        }
+
         $user = new User();
 
         if ('POST' === $request->getMethod()) {
             $data = $request->getParsedBody();
 
             $user->setEmail($data['email'] ?? '');
-            $user->setRoles($data['roles'] ?? []);
+
+            if (isset($data['roles']) && $this->authorization->isGranted($authenticatedUser, ['ADMIN'])) {
+                $user->setRoles($data['roles']);
+            }
 
             try {
                 $user->setPassword($this->passwordManager->hash($data['password'] ?? ''));
@@ -189,6 +215,12 @@ final class UserController
      */
     public function edit(Request $request, Response $response)
     {
+        $authenticatedUser = $this->authentication->getAuthenticatedUser($request);
+
+        if (!$this->authorization->isGranted($authenticatedUser, 'USER_EDIT')) {
+            throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
+        }
+
         $id = $request->getAttribute('id');
 
         /** @var User $user */
@@ -201,7 +233,10 @@ final class UserController
             $data = $request->getParsedBody();
 
             $user->setEmail($data['email'] ?? '');
-            $user->setRoles($data['roles'] ?? []);
+
+            if (isset($data['roles']) && $this->authorization->isGranted($authenticatedUser, ['ADMIN'])) {
+                $user->setRoles($data['roles']);
+            }
 
             if ($data['password']) {
                 $user->setPassword($this->passwordManager->hash($data['password']));
@@ -244,6 +279,10 @@ final class UserController
      */
     public function delete(Request $request, Response $response)
     {
+        if (!$this->authorization->isGranted($this->authentication->getAuthenticatedUser($request), 'USER_DELETE')) {
+            throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
+        }
+
         $id = $request->getAttribute('id');
 
         /** @var User $user */
@@ -252,9 +291,9 @@ final class UserController
             throw HttpException::create($request, $response, 404, 'user.error.notfound');
         }
 
-        $authenticationenticatedUser = $this->authentication->getAuthenticatedUser($request);
+        $authenticatedUser = $this->authentication->getAuthenticatedUser($request);
 
-        if ($authenticationenticatedUser->getId() === $user->getId()) {
+        if ($authenticatedUser->getId() === $user->getId()) {
             throw HttpException::create($request, $response, 403, 'user.error.cantdeletehimself');
         }
 

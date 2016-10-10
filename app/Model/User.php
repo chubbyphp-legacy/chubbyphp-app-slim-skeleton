@@ -37,11 +37,15 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     private $roles;
 
     /**
+     * User constructor.
+     *
      * @param string|null $id
+     * @param array       $roles
      */
-    public function __construct(string $id = null)
+    public function __construct(string $id = null, array $roles = ['USER'])
     {
         $this->id = $id ?? Uuid::uuid4();
+        $this->roles = $roles;
     }
 
     /**
@@ -114,7 +118,7 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
      */
     public static function getPossibleRoles()
     {
-        return ['admin' => 'ADMIN', 'user' => 'USER'];
+        return ['admin' => 'ADMIN', 'user_management' => 'USER_MANAGEMENT', 'user' => 'USER'];
     }
 
     /**

@@ -5,6 +5,8 @@ use Chubbyphp\Session\SessionProvider;
 use Chubbyphp\ErrorHandler\Slim\SimpleErrorHandlerProvider;
 use Chubbyphp\Security\Authentication\AuthenticationProvider;
 use Chubbyphp\Security\Authentication\FormAuthentication;
+use Chubbyphp\Security\Authorization\AuthorizationProvider;
+use Chubbyphp\Security\Authorization\RoleAuthorization;
 use Chubbyphp\Translation\LocaleTranslationProvider;
 use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
@@ -26,6 +28,7 @@ use SlimSkeleton\Service\TemplateData;
 
 /* @var Container $container */
 $container->register(new AuthenticationProvider());
+$container->register(new AuthorizationProvider());
 $container->register(new ConsoleProvider());
 $container->register(new CsrfProvider());
 $container->register(new DoctrineServiceProvider());
@@ -44,6 +47,12 @@ $container->extend('security.authentication.authentications', function (array $a
     $authentications[] = $container[FormAuthentication::class];
 
     return $authentications;
+});
+
+$container->extend('security.authorization.authorizations', function (array $authorizations) use ($container) {
+    $authorizations[] = $container[RoleAuthorization::class];
+
+    return $authorizations;
 });
 
 $container->extend('translator.providers', function (array $providers) use ($container) {
@@ -91,6 +100,7 @@ $container[AuthController::class] = function () use ($container) {
 $container[UserController::class] = function () use ($container) {
     return new UserController(
         $container['security.authentication'],
+        $container['security.authorization'],
         $container['security.authentication.passwordmanager'],
         $container[RedirectForPath::class],
         $container['session'],
@@ -107,16 +117,16 @@ $container[UserRepository::class] = function () use ($container) {
 };
 
 // services
+$container[Error::class] = function ($container) {
+    return new Error($container['settings']['displayErrorDetails']);
+};
+
 $container[FormAuthentication::class] = function ($container) {
     return new FormAuthentication(
         $container['security.authentication.passwordmanager'],
         $container['session'],
         $container[UserRepository::class]
     );
-};
-
-$container[Error::class] = function ($container) {
-    return new Error($container['settings']['displayErrorDetails']);
 };
 
 $container[HtmlErrorResponseProvider::class] = function () use ($container) {
@@ -141,6 +151,10 @@ $container[LocaleMiddleware::class] = function () use ($container) {
 
 $container[RedirectForPath::class] = function () use ($container) {
     return new RedirectForPath($container['router']);
+};
+
+$container[RoleAuthorization::class] = function ($container) {
+    return new RoleAuthorization($container['security.authorization.rolehierarchy']);
 };
 
 $container[TemplateData::class] = function () use ($container) {
