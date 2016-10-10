@@ -166,11 +166,12 @@ final class UserController
     public function create(Request $request, Response $response)
     {
         $authenticatedUser = $this->authentication->getAuthenticatedUser($request);
-        $allowedRoles = $this->roleHierarchyResolver->resolve($authenticatedUser->getRoles());
 
         if (!$this->authorization->isGranted($authenticatedUser, 'ADMIN')) {
             throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
         }
+
+        $possibleRoles = $this->roleHierarchyResolver->resolve(['ADMIN']);
 
         $user = new User();
 
@@ -180,7 +181,7 @@ final class UserController
             $user->setEmail($data['email'] ?? '');
 
             if (isset($data['roles'])) {
-                $user->setRoles($this->getAllowedRolesWithinTheWishedsOnes($data['roles'], $allowedRoles));
+                $user->setRoles($this->getWishedRoles($data['roles'], $possibleRoles));
             }
 
             try {
@@ -211,7 +212,7 @@ final class UserController
             $this->templateData->aggregate($request, [
                 'errorMessages' => $errorMessages ?? [],
                 'user' => prepareForView($user),
-                'allowedRoles' => array_combine($allowedRoles, $allowedRoles),
+                'possibleRoles' => array_combine($possibleRoles, $possibleRoles),
             ])
         );
     }
@@ -227,11 +228,12 @@ final class UserController
     public function edit(Request $request, Response $response)
     {
         $authenticatedUser = $this->authentication->getAuthenticatedUser($request);
-        $allowedRoles = $this->roleHierarchyResolver->resolve($authenticatedUser->getRoles());
 
         if (!$this->authorization->isGranted($authenticatedUser, 'ADMIN')) {
             throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
         }
+
+        $possibleRoles = $this->roleHierarchyResolver->resolve(['ADMIN']);
 
         $id = $request->getAttribute('id');
 
@@ -247,7 +249,7 @@ final class UserController
             $user->setEmail($data['email'] ?? '');
 
             if (isset($data['roles']) && $authenticatedUser->getId() !== $user->getId()) {
-                $user->setRoles($this->getAllowedRolesWithinTheWishedsOnes($data['roles'], $allowedRoles));
+                $user->setRoles($this->getWishedRoles($data['roles'], $possibleRoles));
             }
 
             if ($data['password']) {
@@ -277,7 +279,7 @@ final class UserController
             $this->templateData->aggregate($request, [
                 'errorMessages' => $errorMessages ?? [],
                 'user' => prepareForView($user),
-                'allowedRoles' => array_combine($allowedRoles, $allowedRoles),
+                'possibleRoles' => array_combine($possibleRoles, $possibleRoles),
             ])
         );
     }
@@ -320,10 +322,10 @@ final class UserController
      *
      * @return array
      */
-    private function getAllowedRolesWithinTheWishedsOnes(array $roles, $allowedRoles): array
+    private function getWishedRoles(array $roles, $possibleRoles): array
     {
         foreach ($roles as $i => $role) {
-            if (!in_array($role, $allowedRoles, true)) {
+            if (!in_array($role, $possibleRoles, true)) {
                 unset($roles[$i]);
             }
         }
