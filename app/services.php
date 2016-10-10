@@ -103,6 +103,7 @@ $container[UserController::class] = function () use ($container) {
         $container['security.authorization'],
         $container['security.authentication.passwordmanager'],
         $container[RedirectForPath::class],
+        $container['security.authorization.rolehierarchyresolver'],
         $container['session'],
         $container[TemplateData::class],
         $container['twig'],
@@ -154,7 +155,7 @@ $container[RedirectForPath::class] = function () use ($container) {
 };
 
 $container[RoleAuthorization::class] = function ($container) {
-    return new RoleAuthorization($container['security.authorization.rolehierarchy']);
+    return new RoleAuthorization($container['security.authorization.rolehierarchyresolver']);
 };
 
 $container[TemplateData::class] = function () use ($container) {

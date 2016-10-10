@@ -8,6 +8,7 @@ use Chubbyphp\Security\Authentication\Exception\EmptyPasswordException;
 use Chubbyphp\Security\Authentication\AuthenticationInterface;
 use Chubbyphp\Security\Authentication\PasswordManagerInterface;
 use Chubbyphp\Security\Authorization\AuthorizationInterface;
+use Chubbyphp\Security\Authorization\RoleHierarchyResolverInterface;
 use Chubbyphp\Validation\ValidatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -41,6 +42,11 @@ final class UserController
     private $redirectForPath;
 
     /**
+     * @var RoleHierarchyResolverInterface
+     */
+    private $roleHierarchyResolver;
+
+    /**
      * @var SessionInterface
      */
     private $session;
@@ -66,21 +72,23 @@ final class UserController
     private $validator;
 
     /**
-     * @param AuthenticationInterface  $authentication
-     * @param AuthorizationInterface   $authorization
-     * @param PasswordManagerInterface $passwordManager
-     * @param RedirectForPath          $redirectForPath
-     * @param SessionInterface         $session
-     * @param TemplateData             $templateData
-     * @param Twig                     $twig
-     * @param RepositoryInterface      $userRepository
-     * @param ValidatorInterface       $validator
+     * @param AuthenticationInterface        $authentication
+     * @param AuthorizationInterface         $authorization
+     * @param PasswordManagerInterface       $passwordManager
+     * @param RedirectForPath                $redirectForPath
+     * @param RoleHierarchyResolverInterface $roleHierarchyResolver
+     * @param SessionInterface               $session
+     * @param TemplateData                   $templateData
+     * @param Twig                           $twig
+     * @param RepositoryInterface            $userRepository
+     * @param ValidatorInterface             $validator
      */
     public function __construct(
         AuthenticationInterface $authentication,
         AuthorizationInterface $authorization,
         PasswordManagerInterface $passwordManager,
         RedirectForPath $redirectForPath,
+        RoleHierarchyResolverInterface $roleHierarchyResolver,
         SessionInterface $session,
         TemplateData $templateData,
         Twig $twig,
@@ -92,6 +100,7 @@ final class UserController
         $this->authorization = $authorization;
         $this->passwordManager = $passwordManager;
         $this->redirectForPath = $redirectForPath;
+        $this->roleHierarchyResolver = $roleHierarchyResolver;
         $this->session = $session;
         $this->templateData = $templateData;
         $this->twig = $twig;
@@ -107,7 +116,7 @@ final class UserController
      */
     public function listAll(Request $request, Response $response)
     {
-        if (!$this->authorization->isGranted($this->authentication->getAuthenticatedUser($request), 'USER_LIST')) {
+        if (!$this->authorization->isGranted($this->authentication->getAuthenticatedUser($request), 'ADMIN')) {
             throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
         }
 
@@ -130,7 +139,7 @@ final class UserController
      */
     public function view(Request $request, Response $response)
     {
-        if (!$this->authorization->isGranted($this->authentication->getAuthenticatedUser($request), 'USER_VIEW')) {
+        if (!$this->authorization->isGranted($this->authentication->getAuthenticatedUser($request), 'ADMIN')) {
             throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
         }
 
@@ -157,8 +166,9 @@ final class UserController
     public function create(Request $request, Response $response)
     {
         $authenticatedUser = $this->authentication->getAuthenticatedUser($request);
+        $allowedRoles = $this->roleHierarchyResolver->resolve($authenticatedUser->getRoles());
 
-        if (!$this->authorization->isGranted($authenticatedUser, 'USER_CREATE')) {
+        if (!$this->authorization->isGranted($authenticatedUser, 'ADMIN')) {
             throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
         }
 
@@ -169,8 +179,8 @@ final class UserController
 
             $user->setEmail($data['email'] ?? '');
 
-            if (isset($data['roles']) && $this->authorization->isGranted($authenticatedUser, ['ADMIN'])) {
-                $user->setRoles($data['roles']);
+            if (isset($data['roles'])) {
+                $user->setRoles($this->getAllowedRolesWithinTheWishedsOnes($data['roles'], $allowedRoles));
             }
 
             try {
@@ -201,6 +211,7 @@ final class UserController
             $this->templateData->aggregate($request, [
                 'errorMessages' => $errorMessages ?? [],
                 'user' => prepareForView($user),
+                'allowedRoles' => array_combine($allowedRoles, $allowedRoles),
             ])
         );
     }
@@ -216,8 +227,9 @@ final class UserController
     public function edit(Request $request, Response $response)
     {
         $authenticatedUser = $this->authentication->getAuthenticatedUser($request);
+        $allowedRoles = $this->roleHierarchyResolver->resolve($authenticatedUser->getRoles());
 
-        if (!$this->authorization->isGranted($authenticatedUser, 'USER_EDIT')) {
+        if (!$this->authorization->isGranted($authenticatedUser, 'ADMIN')) {
             throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
         }
 
@@ -234,8 +246,8 @@ final class UserController
 
             $user->setEmail($data['email'] ?? '');
 
-            if (isset($data['roles']) && $this->authorization->isGranted($authenticatedUser, ['ADMIN'])) {
-                $user->setRoles($data['roles']);
+            if (isset($data['roles']) && $authenticatedUser->getId() !== $user->getId()) {
+                $user->setRoles($this->getAllowedRolesWithinTheWishedsOnes($data['roles'], $allowedRoles));
             }
 
             if ($data['password']) {
@@ -265,6 +277,7 @@ final class UserController
             $this->templateData->aggregate($request, [
                 'errorMessages' => $errorMessages ?? [],
                 'user' => prepareForView($user),
+                'allowedRoles' => array_combine($allowedRoles, $allowedRoles),
             ])
         );
     }
@@ -281,7 +294,7 @@ final class UserController
     {
         $authenticatedUser = $this->authentication->getAuthenticatedUser($request);
 
-        if (!$this->authorization->isGranted($authenticatedUser, 'USER_DELETE')) {
+        if (!$this->authorization->isGranted($authenticatedUser, 'ADMIN')) {
             throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
         }
 
@@ -300,5 +313,21 @@ final class UserController
         $this->userRepository->delete($user);
 
         return $this->redirectForPath->get($response, 302, 'user_list', ['locale' => $request->getAttribute('locale')]);
+    }
+
+    /**
+     * @param array $roles
+     *
+     * @return array
+     */
+    private function getAllowedRolesWithinTheWishedsOnes(array $roles, $allowedRoles): array
+    {
+        foreach ($roles as $i => $role) {
+            if (!in_array($role, $allowedRoles, true)) {
+                unset($roles[$i]);
+            }
+        }
+
+        return $roles;
     }
 }

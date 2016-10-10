@@ -114,14 +114,6 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     }
 
     /**
-     * @return array
-     */
-    public static function getPossibleRoles()
-    {
-        return ['admin' => 'ADMIN', 'user_management' => 'USER_MANAGEMENT', 'user' => 'USER'];
-    }
-
-    /**
      * @param array $data
      *
      * @return User|ModelInterface
@@ -162,7 +154,6 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
             'username' => $this->username,
             'email' => $this->email,
             'roles' => $this->roles,
-            'possibleRoles' => self::getPossibleRoles(),
         ];
     }
 
