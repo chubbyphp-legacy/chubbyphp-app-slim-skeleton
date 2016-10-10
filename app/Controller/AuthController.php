@@ -2,7 +2,7 @@
 
 namespace SlimSkeleton\Controller;
 
-use Chubbyphp\Security\Authentication\Exception\AbstractLoginException;
+use Chubbyphp\Security\Authentication\Exception\AuthenticationExceptionInterface;
 use Chubbyphp\Security\Authentication\FormAuthentication;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -51,7 +51,7 @@ final class AuthController
     {
         try {
             $this->authentication->login($request);
-        } catch (AbstractLoginException $e) {
+        } catch (AuthenticationExceptionInterface $e) {
             $flashMessage = new FlashMessage(FlashMessage::TYPE_DANGER, 'login.flash.invalidcredentials');
             $this->session->addFlash($request, $flashMessage);
         }

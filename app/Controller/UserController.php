@@ -5,7 +5,7 @@ namespace SlimSkeleton\Controller;
 use Chubbyphp\ErrorHandler\HttpException;
 use Chubbyphp\Model\RepositoryInterface;
 use Chubbyphp\Security\Authentication\Exception\EmptyPasswordException;
-use Chubbyphp\Security\Authentication\FormAuthentication;
+use Chubbyphp\Security\Authentication\AuthenticationInterface;
 use Chubbyphp\Security\Authentication\PasswordManagerInterface;
 use Chubbyphp\Validation\ValidatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -20,7 +20,7 @@ use SlimSkeleton\Service\TemplateData;
 final class UserController
 {
     /**
-     * @var FormAuthentication
+     * @var AuthenticationInterface
      */
     private $authentication;
 
@@ -60,7 +60,7 @@ final class UserController
     private $validator;
 
     /**
-     * @param FormAuthentication       $authentication
+     * @param AuthenticationInterface  $authentication
      * @param PasswordManagerInterface $passwordManager
      * @param RedirectForPath          $redirectForPath
      * @param SessionInterface         $session
@@ -70,7 +70,7 @@ final class UserController
      * @param ValidatorInterface       $validator
      */
     public function __construct(
-        FormAuthentication $authentication,
+        AuthenticationInterface $authentication,
         PasswordManagerInterface $passwordManager,
         RedirectForPath $redirectForPath,
         SessionInterface $session,

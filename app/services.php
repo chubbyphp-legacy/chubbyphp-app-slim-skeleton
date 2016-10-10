@@ -4,6 +4,7 @@ use Chubbyphp\Csrf\CsrfProvider;
 use Chubbyphp\Session\SessionProvider;
 use Chubbyphp\ErrorHandler\Slim\SimpleErrorHandlerProvider;
 use Chubbyphp\Security\Authentication\AuthenticationProvider;
+use Chubbyphp\Security\Authentication\FormAuthentication;
 use Chubbyphp\Translation\LocaleTranslationProvider;
 use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
@@ -38,6 +39,12 @@ $container->register(new ValidationProvider());
 $container['errorHandler.defaultProvider'] = function () use ($container) {
     return $container[HtmlErrorResponseProvider::class];
 };
+
+$container->extend('security.authentication.authentications', function (array $authentications) use ($container) {
+    $authentications[] = $container[FormAuthentication::class];
+
+    return $authentications;
+});
 
 $container->extend('translator.providers', function (array $providers) use ($container) {
     $translationDir = $container['appDir'].'/Resources/translations';
@@ -75,7 +82,7 @@ $container[HomeController::class] = function () use ($container) {
 
 $container[AuthController::class] = function () use ($container) {
     return new AuthController(
-        $container['security.authentication'],
+        $container[FormAuthentication::class], // need cause login/logout
         $container[RedirectForPath::class],
         $container['session']
     );
@@ -100,6 +107,14 @@ $container[UserRepository::class] = function () use ($container) {
 };
 
 // services
+$container[FormAuthentication::class] = function ($container) {
+    return new FormAuthentication(
+        $container['security.authentication.passwordmanager'],
+        $container['session'],
+        $container[UserRepository::class]
+    );
+};
+
 $container[Error::class] = function ($container) {
     return new Error($container['settings']['displayErrorDetails']);
 };
