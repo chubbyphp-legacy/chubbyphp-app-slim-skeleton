@@ -1,4 +1,4 @@
-# slim-skeleton
+# chubbyphp/chubbyphp-app-slim-skeleton
 
 ## Description
 
@@ -13,7 +13,7 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
 ### Checkout the repository
 
 ```{.sh}
-git clone https://github.com/dominikzogg/slim-skeleton.git
+git clone https://github.com/ubbyphp/chubbyphp-app-slim-skeleton.git
 ```
 
 ### Install vagrant
