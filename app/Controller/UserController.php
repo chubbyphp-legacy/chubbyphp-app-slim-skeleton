@@ -279,7 +279,9 @@ final class UserController
      */
     public function delete(Request $request, Response $response)
     {
-        if (!$this->authorization->isGranted($this->authentication->getAuthenticatedUser($request), 'USER_DELETE')) {
+        $authenticatedUser = $this->authentication->getAuthenticatedUser($request);
+
+        if (!$this->authorization->isGranted($authenticatedUser, 'USER_DELETE')) {
             throw HttpException::create($request, $response, 403, 'user.error.permissiondenied');
         }
 
@@ -290,8 +292,6 @@ final class UserController
         if (null === $user) {
             throw HttpException::create($request, $response, 404, 'user.error.notfound');
         }
-
-        $authenticatedUser = $this->authentication->getAuthenticatedUser($request);
 
         if ($authenticatedUser->getId() === $user->getId()) {
             throw HttpException::create($request, $response, 403, 'user.error.cantdeletehimself');
