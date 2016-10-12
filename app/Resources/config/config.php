@@ -22,6 +22,8 @@ return [
         'debug' => false,
         'localeFallback' => 'en',
         'locales' => ['de', 'en'],
+        'monolog.logfile' => $container['logDir'].'/application.log',
+        'monolog.level' => 'info',
         'security.authorization.rolehierarchy' => [
             'ADMIN' => ['USER'],
             'USER' => [],

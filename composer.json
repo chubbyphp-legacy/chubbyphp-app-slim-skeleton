@@ -9,6 +9,7 @@
     "chubbyphp/chubbyphp-translation": "~1.0@dev",
     "chubbyphp/chubbyphp-validation": "~1.0@dev",
     "doctrine/dbal": "^2.5.5",
+    "monolog/monolog": "~1.21.0",
     "ramsey/uuid": "~3.5",
     "respect/validation": "^1.1.9",
     "silex/providers": "^2.0.3",

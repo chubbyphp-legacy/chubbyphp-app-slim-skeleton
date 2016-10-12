@@ -13,6 +13,7 @@ use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\ValidationProvider;
 use Negotiation\LanguageNegotiator;
 use Silex\Provider\DoctrineServiceProvider;
+use Silex\Provider\MonologServiceProvider;
 use Slim\Container;
 use Slim\Handlers\Error;
 use SlimSkeleton\ErrorHandler\HtmlErrorResponseProvider;
@@ -32,9 +33,10 @@ $container->register(new AuthorizationProvider());
 $container->register(new ConsoleProvider());
 $container->register(new CsrfProvider());
 $container->register(new DoctrineServiceProvider());
+$container->register(new MonologServiceProvider());
+$container->register(new SessionProvider());
 $container->register(new SimpleErrorHandlerProvider());
 $container->register(new TranslationProvider());
-$container->register(new SessionProvider());
 $container->register(new TwigProvider());
 $container->register(new ValidationProvider());
 
@@ -126,7 +128,8 @@ $container[FormAuthentication::class] = function ($container) {
     return new FormAuthentication(
         $container['security.authentication.passwordmanager'],
         $container['session'],
-        $container[UserRepository::class]
+        $container[UserRepository::class],
+        $container['logger']
     );
 };
 
@@ -155,7 +158,7 @@ $container[RedirectForPath::class] = function () use ($container) {
 };
 
 $container[RoleAuthorization::class] = function ($container) {
-    return new RoleAuthorization($container['security.authorization.rolehierarchyresolver']);
+    return new RoleAuthorization($container['security.authorization.rolehierarchyresolver'], $container['logger']);
 };
 
 $container[TemplateData::class] = function () use ($container) {
