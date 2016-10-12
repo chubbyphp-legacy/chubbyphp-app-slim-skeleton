@@ -11,7 +11,6 @@
     "doctrine/dbal": "^2.5.5",
     "monolog/monolog": "~1.21.0",
     "ramsey/uuid": "~3.5",
-    "respect/validation": "^1.1.9",
     "silex/providers": "^2.0.3",
     "slim/slim": "~3.5",
     "slim/twig-view": "^2.1.1",
