@@ -1,5 +1,7 @@
 <?php
 
+/** @var Pimple\Container $container */
+
 return [
     'settings' => [
         'httpVersion' => '1.1',
@@ -22,7 +24,7 @@ return [
         'debug' => false,
         'localeFallback' => 'en',
         'locales' => ['de', 'en'],
-        'monolog.logfile' => $container['logDir'].'/application.log',
+        'monolog.logfile' => $container['logDir'].'/application-' . (new \DateTime())->format('Y-m-d') .   '.log',
         'monolog.level' => 'info',
         'security.authorization.rolehierarchy' => [
             'ADMIN' => ['USER'],
