@@ -25,7 +25,7 @@ return [
         'localeFallback' => 'en',
         'locales' => ['de', 'en'],
         'monolog.logfile' => $container['logDir'].'/application-' . (new \DateTime())->format('Y-m-d') .   '.log',
-        'monolog.level' => 'info',
+        'monolog.level' => 'warning',
         'security.authorization.rolehierarchy' => [
             'ADMIN' => ['USER'],
             'USER' => [],
