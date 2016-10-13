@@ -63,7 +63,10 @@ final class HtmlErrorResponseProvider implements ErrorResponseProviderInterface
             return $this->twig->render($response, '@SlimSkeleton/httpexception.html.twig',
                 $this->templateData->aggregate(
                     $request,
-                    ['code' => $exception->getCode(), 'message' => $exception->getMessage()]
+                    [
+                        'code' => $exception->getCode(),
+                        'message' => !$this->isDefaultMessage($exception) ? $exception->getMessage() : '',
+                    ]
                 )
             )->withStatus($exception->getCode());
         }
@@ -71,5 +74,18 @@ final class HtmlErrorResponseProvider implements ErrorResponseProviderInterface
         $fallbackErrorHandler = $this->fallbackErrorHandler;
 
         return $fallbackErrorHandler($request, $response, $exception);
+    }
+
+    private function isDefaultMessage(HttpException $exception): bool
+    {
+        $constantName = 'STATUS_'.$exception->getCode();
+        $reflection = new \ReflectionObject($exception);
+        if ($reflection->hasConstant($constantName)) {
+            $defaultMessage = $reflection->getConstant($constantName);
+        } else {
+            $defaultMessage = 'unknown';
+        }
+
+        return $exception->getMessage() === $defaultMessage;
     }
 }
