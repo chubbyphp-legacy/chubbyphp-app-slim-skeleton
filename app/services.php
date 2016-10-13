@@ -59,8 +59,8 @@ $container->extend('security.authorization.authorizations', function (array $aut
 
 $container->extend('translator.providers', function (array $providers) use ($container) {
     $translationDir = $container['appDir'].'/Resources/translations';
-    $providers[] = new LocaleTranslationProvider('de', require $translationDir.'/de.php');
-    $providers[] = new LocaleTranslationProvider('en', require $translationDir.'/en.php');
+    $providers[] = new LocaleTranslationProvider('de', require $translationDir.'/de.php', $container['logger']);
+    $providers[] = new LocaleTranslationProvider('en', require $translationDir.'/en.php', $container['logger']);
 
     return $providers;
 });
