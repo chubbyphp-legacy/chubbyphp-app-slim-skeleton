@@ -45,6 +45,7 @@ return [
     'user.title.view' => 'View user',
     'validation.error.fieldusernameemailisnotunique' => 'The E-Mail address is already in use!',
     'validation.error.mustbevalidemail' => 'This field expects a valid E-Mail!',
+    'validation.error.mustnotbeblank' => 'This field expects to be not blank!',
     'validation.error.nullmustnotbeblank' => 'This field expects to be not blank!',
     'validation.error.mustnotbeempty' => 'This field expects to be not blank!',
 ];
