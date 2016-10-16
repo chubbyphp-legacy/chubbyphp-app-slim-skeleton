@@ -1,4 +1,6 @@
 {
+  "name": "chubbyphp/chubbyphp-app-slim-skeleton",
+  "type": "project",
   "require": {
     "php": "~7.0",
     "chubbyphp/chubbyphp-csrf": "~1.0@dev",
