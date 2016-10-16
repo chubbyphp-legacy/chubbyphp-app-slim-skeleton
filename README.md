@@ -25,43 +25,55 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
 
 ## Installation
 
-### Create project
+### With vagrant-php
+
+#### Download
 
 ```{.sh}
-composer create-project chubbyphp/chubbyphp-app-slim-skeleton <myproject> master --prefer-dist
+wget https://github.com/chubbyphp/chubbyphp-app-slim-skeleton/archive/master.zip
+unzip chubbyphp-app-slim-skeleton.zip
+mv chubbyphp-app-slim-skeleton <myproject>
 ```
 
-### Initialize git
+#### Initialize git
 
 ```{.sh}
 cd <myproject>
 git init
 ```
 
-### Install vagrant
+#### Install vagrant
 
 ```{.sh}
 git submodule update --init -- vagrant-php
 git submodule update --remote -- vagrant-php
 ```
 
-### Start vagrant
+#### Start vagrant
 
 ```{.sh}
 cd vagrant-php
 vagrant up
 ```
 
-### Install vendors
+#### Install vendors
 
 ```{.sh}
 vagrant ssh -c "composer.phar install"
 ```
 
-### Create MYSQL database
+### With php on host
 
 ```{.sh}
-vagrant ssh -c "echo 'CREATE DATABASE slim_demo;' | mysql"
+composer create-project chubbyphp/chubbyphp-app-slim-skeleton myproject dev-master --prefer-dist
+```
+
+## Setup
+
+### Create database
+
+```{.sql}
+CREATE DATABASE slim_demo;
 ```
 
 ### Create table(s)
