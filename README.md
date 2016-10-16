@@ -7,21 +7,21 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
 ## Requirements
 
  * php: ~7.0
- * chubbyphp/chubbyphp-csrf: ~1.0@dev
- * chubbyphp/chubbyphp-error-handler: ~1.0@dev
- * chubbyphp/chubbyphp-model: ~1.0@dev
- * chubbyphp/chubbyphp-session: ~1.0@dev
- * chubbyphp/chubbyphp-security: ~1.0@dev
- * chubbyphp/chubbyphp-translation: ~1.0@dev
- * chubbyphp/chubbyphp-validation: ~1.0@dev
- * doctrine/dbal: ^2.5.5
- * monolog/monolog: ~1.21.0
- * ramsey/uuid: ~3.5
- * silex/providers: ^2.0.3
- * slim/slim: ~3.5
- * slim/twig-view: ^2.1.1
- * symfony/console: ~3.1
- * willdurand/negotiation: ~2.1
+ * [chubbyphp/chubbyphp-csrf][1]: ~1.0@dev
+ * [chubbyphp/chubbyphp-error-handler][2]: ~1.0@dev
+ * [chubbyphp/chubbyphp-model][3]: ~1.0@dev
+ * [chubbyphp/chubbyphp-session][4]: ~1.0@dev
+ * [chubbyphp/chubbyphp-security][5]: ~1.0@dev
+ * [chubbyphp/chubbyphp-translation][6]: ~1.0@dev
+ * [chubbyphp/chubbyphp-validation][7]: ~1.0@dev
+ * [doctrine/dbal][8]: ^2.5.5
+ * [monolog/monolog][9]: ~1.21.0
+ * [ramsey/uuid][10]: ~3.5
+ * [silex/providers][11]: ^2.0.3
+ * [slim/slim][12]: ~3.5
+ * [slim/twig-view][13]: ^2.1.1
+ * [symfony/console][14]: ~3.1
+ * [willdurand/negotiation][15]: ~2.1
 
 ## Installation
 
@@ -57,17 +57,6 @@ vagrant up
 ```{.sh}
 vagrant ssh -c "composer.phar install"
 ```
-
-### chubbyphp vendors
-
- - [chubbyphp-csrf][1]
- - [chubbyphp-error-handler][2]
- - [chubbyphp-model][3]
- - [chubbyphp-security][4]
- - [chubbyphp-session][5]
- - [chubbyphp-translation][6]
- - [chubbyphp-validation][7]
-
 
 ### Create MYSQL database
 
@@ -113,3 +102,11 @@ admin // admin@admin.admin
 [5]: https://github.com/chubbyphp/chubbyphp-session
 [6]: https://github.com/chubbyphp/chubbyphp-translation
 [7]: https://github.com/chubbyphp/chubbyphp-validation
+[8]: https://github.com/doctrine/dbal
+[9]: https://github.com/Seldaek/monolog
+[10]: https://github.com/ramsey/uuid
+[11]: https://github.com/silexphp/Silex-Providers
+[12]: https://github.com/slimphp/Slim
+[13]: https://github.com/slimphp/Twig-View
+[14]: https://github.com/symfony/console
+[15]: https://github.com/willdurand/Negotiation
