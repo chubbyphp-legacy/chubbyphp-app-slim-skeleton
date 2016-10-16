@@ -7,19 +7,40 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
 ## Requirements
 
  * php: ~7.0
+ * chubbyphp/chubbyphp-csrf: ~1.0@dev
+ * chubbyphp/chubbyphp-error-handler: ~1.0@dev
+ * chubbyphp/chubbyphp-model: ~1.0@dev
+ * chubbyphp/chubbyphp-session: ~1.0@dev
+ * chubbyphp/chubbyphp-security: ~1.0@dev
+ * chubbyphp/chubbyphp-translation: ~1.0@dev
+ * chubbyphp/chubbyphp-validation: ~1.0@dev
+ * doctrine/dbal: ^2.5.5
+ * monolog/monolog: ~1.21.0
+ * ramsey/uuid: ~3.5
+ * silex/providers: ^2.0.3
+ * slim/slim: ~3.5
+ * slim/twig-view: ^2.1.1
+ * symfony/console: ~3.1
+ * willdurand/negotiation: ~2.1
 
 ## Installation
 
-### Checkout the repository
+### Create project
 
 ```{.sh}
-git clone https://github.com/chubbyphp/chubbyphp-app-slim-skeleton.git
+composer create-project chubbyphp/chubbyphp-app-slim-skeleton <myproject> master --prefer-dist
+```
+
+### Initialize git
+
+```{.sh}
+cd <myproject>
+git init
 ```
 
 ### Install vagrant
 
 ```{.sh}
-cd slim-skeleton
 git submodule update --init -- vagrant-php
 git submodule update --remote -- vagrant-php
 ```
@@ -36,6 +57,17 @@ vagrant up
 ```{.sh}
 vagrant ssh -c "composer.phar install"
 ```
+
+### chubbyphp vendors
+
+ - [chubbyphp-csrf][1]
+ - [chubbyphp-error-handler][2]
+ - [chubbyphp-model][3]
+ - [chubbyphp-security][4]
+ - [chubbyphp-session][5]
+ - [chubbyphp-translation][6]
+ - [chubbyphp-validation][7]
+
 
 ### Create MYSQL database
 
@@ -73,3 +105,11 @@ INSERT INTO `users` VALUES (
 ### Login
 
 admin // admin@admin.admin
+
+[1]: https://github.com/chubbyphp/chubbyphp-csrf
+[2]: https://github.com/chubbyphp/chubbyphp-error-handler
+[3]: https://github.com/chubbyphp/chubbyphp-model
+[4]: https://github.com/chubbyphp/chubbyphp-security
+[5]: https://github.com/chubbyphp/chubbyphp-session
+[6]: https://github.com/chubbyphp/chubbyphp-translation
+[7]: https://github.com/chubbyphp/chubbyphp-validation
