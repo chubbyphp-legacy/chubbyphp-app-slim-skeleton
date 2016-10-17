@@ -43,9 +43,8 @@ return [
     'user.title.edit' => 'Edit user',
     'user.title.list' => 'Userlist',
     'user.title.view' => 'View user',
-    'validation.error.fieldusernameemailisnotunique' => 'The E-Mail address is already in use!',
-    'validation.error.mustbevalidemail' => 'This field expects a valid E-Mail!',
-    'validation.error.mustnotbeblank' => 'This field expects to be not blank!',
-    'validation.error.nullmustnotbeblank' => 'This field expects to be not blank!',
-    'validation.error.mustnotbeempty' => 'This field expects to be not blank!',
+
+    '{{name}} must not be blank' => 'must not be blank',
+    '{{name}} must be valid email' => '{{name}} must be valid email',
+    '{{name}} are not unique' => '{{name}} are not unique'
 ];

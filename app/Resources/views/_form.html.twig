@@ -5,7 +5,7 @@
             <input type="text" id="{{ property }}" name="{{ property }}" value="{{ model[property] }}" class="form-control">
             {% if errorMessages[property] is defined %}
                 {% for message in errorMessages[property] %}
-                    <span class="help-block">{{ ("validation.error."~(message|generateKey))|translate(locale) }}</span>
+                    <span class="help-block">{{ message|translate(locale) }}</span>
                 {% endfor %}
             {% endif %}
         </div>
@@ -19,7 +19,7 @@
             <input type="password" id="{{ property }}" name="{{ property }}" class="form-control">
             {% if errorMessages[property] is defined %}
                 {% for message in errorMessages[property] %}
-                    <span class="help-block">{{ ("validation.error."~(message|generateKey))|translate(locale) }}</span>
+                    <span class="help-block">{{ message|translate(locale) }}</span>
                 {% endfor %}
             {% endif %}
         </div>
@@ -37,7 +37,7 @@
             </select>
             {% if errorMessages[property] is defined %}
                 {% for message in errorMessages[property] %}
-                    <span class="help-block">{{ ("validation.error."~(message|generateKey))|translate(locale) }}</span>
+                    <span class="help-block">{{ message|translate(locale) }}</span>
                 {% endfor %}
             {% endif %}
         </div>
@@ -55,7 +55,7 @@
             </select>
             {% if errorMessages[property] is defined %}
                 {% for message in errorMessages[property] %}
-                    <span class="help-block">{{ ("validation.error."~(message|generateKey))|translate(locale) }}</span>
+                    <span class="help-block">{{ message|translate(locale) }}</span>
                 {% endfor %}
             {% endif %}
         </div>
