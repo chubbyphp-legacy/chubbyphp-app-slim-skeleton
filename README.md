@@ -29,7 +29,7 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
 
 #### Download
 
-```{.sh}
+```{.bash}
 wget https://github.com/chubbyphp/chubbyphp-app-slim-skeleton/archive/master.zip
 unzip chubbyphp-app-slim-skeleton.zip
 mv chubbyphp-app-slim-skeleton <myproject>
@@ -37,34 +37,34 @@ mv chubbyphp-app-slim-skeleton <myproject>
 
 #### Initialize git
 
-```{.sh}
+```{.bash}
 cd <myproject>
 git init
 ```
 
 #### Install vagrant
 
-```{.sh}
+```{.bash}
 git submodule update --init -- vagrant-php
 git submodule update --remote -- vagrant-php
 ```
 
 #### Start vagrant
 
-```{.sh}
+```{.bash}
 cd vagrant-php
 vagrant up
 ```
 
 #### Install vendors
 
-```{.sh}
+```{.bash}
 vagrant ssh -c "composer.phar install"
 ```
 
 ### With php on host
 
-```{.sh}
+```{.bash}
 composer create-project chubbyphp/chubbyphp-app-slim-skeleton myproject dev-master --prefer-dist
 ```
 
