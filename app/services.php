@@ -10,6 +10,7 @@ use Chubbyphp\Security\Authorization\RoleAuthorization;
 use Chubbyphp\Translation\LocaleTranslationProvider;
 use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
+use Chubbyphp\Validation\Helper\UniqueModelRuleHelper;
 use Chubbyphp\Validation\ValidationProvider;
 use Negotiation\LanguageNegotiator;
 use Silex\Provider\DoctrineServiceProvider;
@@ -80,10 +81,10 @@ $container->extend('twig.extensions', function (array $extensions) use ($contain
     return $extensions;
 });
 
-$container->extend('validator.repositories', function (array $repositories) use ($container) {
-    $repositories[] = $container[UserRepository::class];
+$container->extend('validator.helpers', function (array $helpers) use ($container) {
+    $helpers[] = $container[UniqueModelRuleHelper::class . 'User'];
 
-    return $repositories;
+    return $helpers;
 });
 
 // controllers
@@ -163,4 +164,8 @@ $container[RoleAuthorization::class] = function ($container) {
 
 $container[TemplateData::class] = function () use ($container) {
     return new TemplateData($container['security.authentication'], $container['session']);
+};
+
+$container[UniqueModelRuleHelper::class . 'User'] = function () use ($container) {
+    return new UniqueModelRuleHelper($container[UserRepository::class]);
 };
