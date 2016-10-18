@@ -73,7 +73,7 @@ composer create-project chubbyphp/chubbyphp-app-slim-skeleton myproject dev-mast
 ### Create database
 
 ```{.sql}
-CREATE DATABASE slim_demo;
+CREATE DATABASE slim_skeleton;
 ```
 
 ### Create table(s)
