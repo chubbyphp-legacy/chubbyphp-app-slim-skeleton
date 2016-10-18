@@ -7,7 +7,7 @@ use Chubbyphp\Security\Authentication\UserPasswordInterface;
 use Chubbyphp\Validation\Rules\UniqueModelRule;
 use Chubbyphp\Validation\ValidatableModelInterface;
 use Ramsey\Uuid\Uuid;
-use Respect\Validation\Validator as RespectValidator;
+use Respect\Validation\Validator as v;
 
 final class User implements \JsonSerializable, UserPasswordInterface, ValidatableModelInterface
 {
@@ -158,23 +158,23 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     }
 
     /**
-     * @return RespectValidator|null
+     * @return v|null
      */
     public function getModelValidator()
     {
-        return RespectValidator::create()->addRule(new UniqueModelRule(['username', 'email']));
+        return v::create()->addRule(new UniqueModelRule(['username', 'email']));
     }
 
     /**
-     * @return RespectValidator[]|array
+     * @return v[]|array
      */
     public function getPropertyValidators(): array
     {
         return [
-            'username' => RespectValidator::notBlank()->email(),
-            'email' => RespectValidator::notBlank()->email(),
-            'password' => RespectValidator::notBlank(),
-            'roles' => RespectValidator::notEmpty(),
+            'username' => v::notBlank()->email(),
+            'email' => v::notBlank()->email(),
+            'password' => v::notBlank(),
+            'roles' => v::notEmpty(),
         ];
     }
 }
