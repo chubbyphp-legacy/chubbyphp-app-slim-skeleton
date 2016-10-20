@@ -309,7 +309,7 @@ final class UserController
         }
 
         if ($authenticatedUser->getId() === $user->getId()) {
-            throw HttpException::create($request, $response, 403, 'user.error.cantdeletehimself');
+            throw HttpException::create($request, $response, 403, 'user.error.cantdeleteyourself');
         }
 
         $this->userRepository->delete($user);

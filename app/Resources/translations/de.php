@@ -23,7 +23,7 @@ return [
     'user.action.delete' => 'Benutzer löschen',
     'user.action.list' => 'zurück zur Benutzerliste',
     'user.action.view' => 'Benutzer anschauen',
-    'user.error.cantdeletehimself' => 'Es ist nicht erlaubt seinen eigenen Benutzer zu löschen!',
+    'user.error.cantdeleteyourself' => 'Es ist nicht erlaubt seinen eigenen Benutzer zu löschen!',
     'user.error.notfound' => 'Benutzer mit diesem Identifier konnte nicht gefunden werden!',
     'user.error.permissiondenied' => 'Diese Benutzer Aktion kann aus mangelnden Rechten nicht durchgeführt werden!',
     'user.flash.create.failed' => 'Benutzer konnte nicht erstellt werden!',
