@@ -7,13 +7,13 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
 ## Requirements
 
  * php: ~7.0
- * [chubbyphp/chubbyphp-csrf][1]: ~1.0@dev
- * [chubbyphp/chubbyphp-error-handler][2]: ~1.0@dev
- * [chubbyphp/chubbyphp-model][3]: ~1.0@dev
- * [chubbyphp/chubbyphp-session][4]: ~1.0@dev
- * [chubbyphp/chubbyphp-security][5]: ~1.0@dev
- * [chubbyphp/chubbyphp-translation][6]: ~1.0@dev
- * [chubbyphp/chubbyphp-validation][7]: ~1.0@dev
+ * [chubbyphp/chubbyphp-csrf][1]: ~1.0
+ * [chubbyphp/chubbyphp-error-handler][2]: ~1.0
+ * [chubbyphp/chubbyphp-model][3]: ~1.0
+ * [chubbyphp/chubbyphp-session][4]: ~1.0
+ * [chubbyphp/chubbyphp-security][5]: ~1.0
+ * [chubbyphp/chubbyphp-translation][6]: ~1.0
+ * [chubbyphp/chubbyphp-validation][7]: ~1.0
  * [doctrine/dbal][8]: ^2.5.5
  * [monolog/monolog][9]: ~1.21.0
  * [ramsey/uuid][10]: ~3.5
