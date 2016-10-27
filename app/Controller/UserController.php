@@ -178,14 +178,14 @@ final class UserController
         if ('POST' === $request->getMethod()) {
             $data = $request->getParsedBody();
 
-            $user->setEmail($data['email'] ?? '');
+            $user = $user->withEmail($data['email'] ?? '');
 
             if (isset($data['roles'])) {
-                $user->setRoles($this->getWishedRoles($data['roles'], $possibleRoles));
+                $user = $user->withRoles($this->getWishedRoles($data['roles'], $possibleRoles));
             }
 
             try {
-                $user->setPassword($this->passwordManager->hash($data['password'] ?? ''));
+                $user = $user->withPassword($this->passwordManager->hash($data['password'] ?? ''));
             } catch (EmptyPasswordException $e) {
             }
 
@@ -246,14 +246,14 @@ final class UserController
         if ('POST' === $request->getMethod()) {
             $data = $request->getParsedBody();
 
-            $user->setEmail($data['email'] ?? '');
+            $user = $user->withEmail($data['email'] ?? '');
 
             if (isset($data['roles']) && $authenticatedUser->getId() !== $user->getId()) {
-                $user->setRoles($this->getWishedRoles($data['roles'], $possibleRoles));
+                $user = $user->withRoles($this->getWishedRoles($data['roles'], $possibleRoles));
             }
 
             if ($data['password']) {
-                $user->setPassword($this->passwordManager->hash($data['password']));
+                $user = $user->withPassword($this->passwordManager->hash($data['password']));
             }
 
             if ([] === $errorMessages = $this->validator->validateModel($user)) {

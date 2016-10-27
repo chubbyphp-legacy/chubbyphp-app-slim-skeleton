@@ -37,6 +37,11 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     private $roles;
 
     /**
+     * @var array|null
+     */
+    private $_change;
+
+    /**
      * User constructor.
      *
      * @param string|null $id
@@ -44,7 +49,7 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
      */
     public function __construct(string $id = null, array $roles = ['USER'])
     {
-        $this->id = $id ?? Uuid::uuid4();
+        $this->id = $id ?? (string) Uuid::uuid4();
         $this->roles = $roles;
     }
 
@@ -66,11 +71,16 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
 
     /**
      * @param string $email
+     *
+     * @return User
      */
-    public function setEmail(string $email)
+    public function withEmail(string $email): User
     {
-        $this->username = $email;
-        $this->email = $email;
+        $user = $this->cloneWithChange();
+        $user->email = $email;
+        $user->username = $email;
+
+        return $user;
     }
 
     /**
@@ -83,10 +93,15 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
 
     /**
      * @param string $password
+     *
+     * @return User
      */
-    public function setPassword(string $password)
+    public function withPassword(string $password): User
     {
-        $this->password = $password;
+        $user = $this->cloneWithChange();
+        $user->password = $password;
+
+        return $user;
     }
 
     /**
@@ -107,10 +122,26 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
 
     /**
      * @param array $roles
+     *
+     * @return User
      */
-    public function setRoles(array $roles)
+    public function withRoles(array $roles): User
     {
-        $this->roles = $roles;
+        $user = $this->cloneWithChange();
+        $user->roles = $roles;
+
+        return $user;
+    }
+
+    /**
+     * @return User
+     */
+    private function cloneWithChange(): User
+    {
+        $user = clone $this;
+        $user->_change = ['method' => __METHOD__, 'arguments' => func_get_args(), 'old' => $this];
+
+        return $user;
     }
 
     /**
