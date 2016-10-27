@@ -34,8 +34,11 @@ final class AuthController
      * @param RedirectForPath    $redirectForPath
      * @param SessionInterface   $session
      */
-    public function __construct(FormAuthentication $authentication, RedirectForPath $redirectForPath, SessionInterface $session)
-    {
+    public function __construct(
+        FormAuthentication $authentication,
+        RedirectForPath $redirectForPath,
+        SessionInterface $session
+    ) {
         $this->authentication = $authentication;
         $this->redirectForPath = $redirectForPath;
         $this->session = $session;
