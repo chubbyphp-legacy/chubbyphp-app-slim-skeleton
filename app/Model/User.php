@@ -135,18 +135,18 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
 
     /**
      * @param string $method
-     * @param mixed  $newValue
-     * @param mixed  $oldValue
+     * @param mixed  $new
+     * @param mixed  $old
      *
      * @return User
      */
-    private function cloneWithModification(string $method, $newValue, $oldValue): User
+    private function cloneWithModification(string $method, $new, $old): User
     {
         $user = clone $this;
         $user->__modifications[] = [
             'method' => $method,
-            'newValue' => $newValue,
-            'oldValue' => $oldValue,
+            'new' => $new,
+            'old' => $old,
         ];
 
         return $user;
