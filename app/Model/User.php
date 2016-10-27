@@ -37,9 +37,9 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     private $roles;
 
     /**
-     * @var array|null
+     * @var array
      */
-    private $_change;
+    private $__modifications = [];
 
     /**
      * User constructor.
@@ -76,7 +76,7 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
      */
     public function withEmail(string $email): User
     {
-        $user = $this->cloneWithChange();
+        $user = $this->cloneWithModification(__METHOD__, $email, $this->email);
         $user->email = $email;
         $user->username = $email;
 
@@ -98,7 +98,7 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
      */
     public function withPassword(string $password): User
     {
-        $user = $this->cloneWithChange();
+        $user = $this->cloneWithModification(__METHOD__, $password, $this->password);
         $user->password = $password;
 
         return $user;
@@ -127,19 +127,27 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
      */
     public function withRoles(array $roles): User
     {
-        $user = $this->cloneWithChange();
+        $user = $this->cloneWithModification(__METHOD__, $roles, $this->roles);
         $user->roles = $roles;
 
         return $user;
     }
 
     /**
+     * @param string $method
+     * @param mixed  $newValue
+     * @param mixed  $oldValue
+     *
      * @return User
      */
-    private function cloneWithChange(): User
+    private function cloneWithModification(string $method, $newValue, $oldValue): User
     {
         $user = clone $this;
-        $user->_change = ['method' => __METHOD__, 'arguments' => func_get_args(), 'old' => $this];
+        $user->__modifications[] = [
+            'method' => $method,
+            'newValue' => $newValue,
+            'oldValue' => $oldValue,
+        ];
 
         return $user;
     }
