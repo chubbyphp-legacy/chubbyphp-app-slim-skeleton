@@ -46,5 +46,5 @@ return [
 
     '{{name}} must not be blank' => 'darf nicht leer sein',
     '{{name}} must be valid email' => '{{name}} ist keine gültige E-Mail Adresse',
-    '{{name}} are not unique' => '{{name}} wird bereits verwendet'
+    '{{name}} are not unique' => '{{name}} wird bereits verwendet',
 ];

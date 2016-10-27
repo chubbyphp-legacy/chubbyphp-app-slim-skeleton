@@ -46,5 +46,5 @@ return [
 
     '{{name}} must not be blank' => 'must not be blank',
     '{{name}} must be valid email' => '{{name}} must be valid email',
-    '{{name}} are not unique' => '{{name}} are not unique'
+    '{{name}} are not unique' => '{{name}} are not unique',
 ];

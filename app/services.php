@@ -82,7 +82,7 @@ $container->extend('twig.extensions', function (array $extensions) use ($contain
 });
 
 $container->extend('validator.helpers', function (array $helpers) use ($container) {
-    $helpers[] = $container[Repository::class . 'User'];
+    $helpers[] = $container[Repository::class.'User'];
 
     return $helpers;
 });
@@ -166,6 +166,6 @@ $container[TemplateData::class] = function () use ($container) {
     return new TemplateData($container['security.authentication'], $container['session']);
 };
 
-$container[Repository::class . 'User'] = function () use ($container) {
+$container[Repository::class.'User'] = function () use ($container) {
     return new Repository($container[UserRepository::class]);
 };
