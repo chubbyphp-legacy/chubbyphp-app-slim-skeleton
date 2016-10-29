@@ -42,15 +42,11 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     private $__modifications = [];
 
     /**
-     * User constructor.
-     *
      * @param string|null $id
-     * @param array       $roles
      */
-    public function __construct(string $id = null, array $roles = ['USER'])
+    public function __construct(string $id = null)
     {
         $this->id = $id ?? (string) Uuid::uuid4();
-        $this->roles = $roles;
     }
 
     /**
