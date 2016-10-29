@@ -22,6 +22,8 @@ use Silex\Provider\MonologServiceProvider;
 use Slim\Container;
 use Slim\Handlers\Error;
 use SlimSkeleton\ErrorHandler\HtmlErrorResponseProvider;
+use SlimSkeleton\Command\CreateUserCommand;
+use SlimSkeleton\Command\SchemaCommand;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
@@ -60,6 +62,13 @@ $container->extend('console.commands', function (array $commands) use ($containe
     $commands[] = new ImportCommand();
     $commands[] = new ReservedWordsCommand();
     $commands[] = new RunSqlCommand();
+    $commands[] = new SchemaCommand(
+        $container['appDir'].'/Resources/schema'
+    );
+    $commands[] = new CreateUserCommand(
+        $container['security.authentication.passwordmanager'],
+        $container[UserRepository::class]
+    );
 
     return $commands;
 });

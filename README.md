@@ -76,15 +76,21 @@ composer create-project chubbyphp/chubbyphp-app-slim-skeleton myproject dev-mast
 echo "CREATE DATABASE slim_skeleton;" | mysql --user=root --password=root
 ```
 
-### Import data
+### Create / Update schema
 
 ```{.sh}
-bin/console dbal:import slim_skeleton.sql
+bin/console slim-skeleton:database:schema:update
+```
+
+### Create user
+
+```{.sh}
+bin/console slim-skeleton:user:create admin@admin.admin admin ADMIN
 ```
 
 ### Login
 
-admin // admin@admin.admin
+admin@admin.admin // admin
 
 [1]: https://github.com/chubbyphp/chubbyphp-csrf
 [2]: https://github.com/chubbyphp/chubbyphp-error-handler
