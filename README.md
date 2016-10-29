@@ -29,7 +29,7 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
 
 #### Download
 
-```{.bash}
+```{.sh}
 wget https://github.com/chubbyphp/chubbyphp-app-slim-skeleton/archive/master.zip
 unzip chubbyphp-app-slim-skeleton.zip
 mv chubbyphp-app-slim-skeleton <myproject>
@@ -37,34 +37,34 @@ mv chubbyphp-app-slim-skeleton <myproject>
 
 #### Initialize git
 
-```{.bash}
+```{.sh}
 cd <myproject>
 git init
 ```
 
 #### Install vagrant
 
-```{.bash}
+```{.sh}
 git submodule update --init -- vagrant-php
 git submodule update --remote -- vagrant-php
 ```
 
 #### Start vagrant
 
-```{.bash}
+```{.sh}
 cd vagrant-php
 vagrant up
 ```
 
 #### Install vendors
 
-```{.bash}
+```{.sh}
 vagrant ssh -c "composer.phar install"
 ```
 
 ### With php on host
 
-```{.bash}
+```{.sh}
 composer create-project chubbyphp/chubbyphp-app-slim-skeleton myproject dev-master --prefer-dist
 ```
 
@@ -72,35 +72,14 @@ composer create-project chubbyphp/chubbyphp-app-slim-skeleton myproject dev-mast
 
 ### Create database
 
-```{.sql}
-CREATE DATABASE slim_skeleton;
+```{.sh}
+echo "CREATE DATABASE slim_skeleton;" | mysql --user=root --password=root
 ```
 
-### Create table(s)
+### Import data
 
-```{.sql}
-CREATE TABLE `users` (
-  `id` char(36) NOT NULL,
-  `username` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `roles` text,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username_idx` (`username`),
-  UNIQUE KEY `email_idx` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-```
-
-### Add default user
-
-```{.sql}
-INSERT INTO `users` VALUES (
-    'e450f557-f911-446a-8657-fbc801b2be37',
-    'admin@admin.admin',
-    'admin@admin.admin',
-    '$2y$10$zXfRRDa2u9WxgB0noAnk1u281vVwNwjNcH5WCRdu8I70aBk23TS6G',
-    '["ADMIN"]'
-);
+```{.sh}
+bin/console dbal:import slim_skeleton.sql
 ```
 
 ### Login
