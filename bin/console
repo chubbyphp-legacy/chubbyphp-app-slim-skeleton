@@ -3,7 +3,7 @@
 
 use Slim\App;
 use Slim\Container;
-use SlimSkeleton\Console\ConsoleApplication;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -23,7 +23,11 @@ $app = require_once __DIR__ . '/../app/app.php';
 /** @var Container $container */
 $container = $app->getContainer();
 
-$console = new ConsoleApplication($container['console.name'], $container['console.version'], [$envOption]);
+$console = new Application($container['console.name'], $container['console.version']);
+
+foreach ([$envOption] as $inputOption) {
+    $console->getDefinition()->addOption($inputOption);
+}
 
 foreach ($container['console.helpers'] as $alias => $helper) {
     $console->getHelperSet()->set($helper, $alias);
