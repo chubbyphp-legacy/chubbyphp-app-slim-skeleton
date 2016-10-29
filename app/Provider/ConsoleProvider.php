@@ -15,6 +15,10 @@ final class ConsoleProvider implements ServiceProviderInterface
         $container['console.name'] = 'slim-skeleton';
         $container['console.version'] = '1.0';
 
+        $container['console.helpers'] = function () {
+            return [];
+        };
+
         $container['console.commands'] = function () {
             return [];
         };

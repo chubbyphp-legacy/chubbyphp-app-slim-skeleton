@@ -12,6 +12,10 @@ use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\Requirements\Repository;
 use Chubbyphp\Validation\ValidationProvider;
+use Doctrine\DBAL\Tools\Console\Command\ImportCommand;
+use Doctrine\DBAL\Tools\Console\Command\ReservedWordsCommand;
+use Doctrine\DBAL\Tools\Console\Command\RunSqlCommand;
+use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Negotiation\LanguageNegotiator;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\MonologServiceProvider;
@@ -45,6 +49,20 @@ $container->register(new ValidationProvider());
 $container['errorHandler.defaultProvider'] = function () use ($container) {
     return $container[HtmlErrorResponseProvider::class];
 };
+
+$container->extend('console.helpers', function (array $helpers) use ($container) {
+    $helpers['db'] = new ConnectionHelper($container['db']);
+
+    return $helpers;
+});
+
+$container->extend('console.commands', function (array $commands) use ($container) {
+    $commands[] = new ImportCommand();
+    $commands[] = new ReservedWordsCommand();
+    $commands[] = new RunSqlCommand();
+
+    return $commands;
+});
 
 $container->extend('security.authentication.authentications', function (array $authentications) use ($container) {
     $authentications[] = $container[FormAuthentication::class];

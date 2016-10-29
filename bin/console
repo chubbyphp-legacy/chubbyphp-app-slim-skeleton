@@ -24,5 +24,10 @@ $app = require_once __DIR__ . '/../app/app.php';
 $container = $app->getContainer();
 
 $console = new ConsoleApplication($container['console.name'], $container['console.version'], [$envOption]);
+
+foreach ($container['console.helpers'] as $alias => $helper) {
+    $console->getHelperSet()->set($helper, $alias);
+}
+
 $console->addCommands($container['console.commands']);
 $console->run($input);
