@@ -23,7 +23,8 @@ use Slim\Container;
 use Slim\Handlers\Error;
 use SlimSkeleton\ErrorHandler\HtmlErrorResponseProvider;
 use SlimSkeleton\Command\CreateUserCommand;
-use SlimSkeleton\Command\SchemaCommand;
+use SlimSkeleton\Command\SchemaDumpUpdateCommand;
+use SlimSkeleton\Command\SchemaUpdateCommand;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
@@ -62,9 +63,8 @@ $container->extend('console.commands', function (array $commands) use ($containe
     $commands[] = new ImportCommand();
     $commands[] = new ReservedWordsCommand();
     $commands[] = new RunSqlCommand();
-    $commands[] = new SchemaCommand(
-        $container['appDir'].'/schema.php'
-    );
+    $commands[] = new SchemaDumpUpdateCommand($container['db'], $container['appDir'].'/schema.php');
+    $commands[] = new SchemaUpdateCommand($container['db'], $container['appDir'].'/schema.php');
     $commands[] = new CreateUserCommand(
         $container['security.authentication.passwordmanager'],
         $container[UserRepository::class],
