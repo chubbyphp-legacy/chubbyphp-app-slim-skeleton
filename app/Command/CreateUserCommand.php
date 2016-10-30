@@ -2,8 +2,8 @@
 
 namespace SlimSkeleton\Command;
 
-use Chubbyphp\Security\Authentication\PasswordManager;
 use Chubbyphp\Security\Authentication\PasswordManagerInterface;
+use Chubbyphp\Validation\ValidatorInterface;
 use SlimSkeleton\Model\User;
 use SlimSkeleton\Repository\UserRepository;
 use Symfony\Component\Console\Command\Command;
@@ -24,13 +24,23 @@ class CreateUserCommand extends Command
     private $userRepository;
 
     /**
-     * @param PasswordManager $passwordManager
-     * @param UserRepository  $userRepository
+     * @var ValidatorInterface
      */
-    public function __construct(PasswordManager $passwordManager, UserRepository $userRepository)
-    {
+    private $validator;
+
+    /**
+     * @param PasswordManagerInterface $passwordManager
+     * @param UserRepository           $userRepository
+     * @param ValidatorInterface       $validator
+     */
+    public function __construct(
+        PasswordManagerInterface $passwordManager,
+        UserRepository $userRepository,
+        ValidatorInterface $validator
+    ) {
         $this->passwordManager = $passwordManager;
         $this->userRepository = $userRepository;
+        $this->validator = $validator;
 
         parent::__construct();
     }
@@ -66,11 +76,22 @@ class CreateUserCommand extends Command
             ->withRoles($roles)
         ;
 
+        $errors = $this->validator->validateModel($user);
+        if ([] !== $errors) {
+            foreach ($errors as $field => $errorsPerField) {
+                foreach ($errorsPerField as $errorPerField) {
+                    $output->writeln(sprintf('<error>%s: %s</error>', $field, $errorPerField));
+                }
+            }
+
+            return 1;
+        }
+
         $this->userRepository->insert($user);
 
         $output->writeln(
             sprintf(
-                'User with email "%s", password "%s" and roles "%s" created',
+                '<info>User with email "%s", password "%s" and roles "%s" created</info>',
                 $email,
                 $password,
                 implode(', ', $roles)

@@ -67,7 +67,8 @@ $container->extend('console.commands', function (array $commands) use ($containe
     );
     $commands[] = new CreateUserCommand(
         $container['security.authentication.passwordmanager'],
-        $container[UserRepository::class]
+        $container[UserRepository::class],
+        $container['validator']
     );
 
     return $commands;
