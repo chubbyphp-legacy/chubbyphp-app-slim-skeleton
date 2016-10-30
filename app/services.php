@@ -63,7 +63,7 @@ $container->extend('console.commands', function (array $commands) use ($containe
     $commands[] = new ReservedWordsCommand();
     $commands[] = new RunSqlCommand();
     $commands[] = new SchemaCommand(
-        $container['appDir'].'/Resources/schema'
+        $container['appDir'].'/schema.php'
     );
     $commands[] = new CreateUserCommand(
         $container['security.authentication.passwordmanager'],

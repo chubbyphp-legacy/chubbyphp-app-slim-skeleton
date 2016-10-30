@@ -13,14 +13,14 @@ class SchemaCommand extends Command
     /**
      * @var
      */
-    private $schemaDir;
+    private $schemaPath;
 
     /**
-     * @param string $schemaDir
+     * @param string $schemaPath
      */
-    public function __construct(string $schemaDir)
+    public function __construct(string $schemaPath)
     {
-        $this->schemaDir = $schemaDir;
+        $this->schemaPath = $schemaPath;
 
         parent::__construct();
     }
@@ -32,7 +32,7 @@ class SchemaCommand extends Command
     {
         $this
             ->setName('slim-skeleton:database:schema:update')
-            ->setDescription(sprintf('Update the database schema based on configuration at "%s"', $this->schemaDir))
+            ->setDescription(sprintf('Update the database schema based on schema at "%s"', $this->schemaPath))
         ;
     }
 
@@ -46,16 +46,15 @@ class SchemaCommand extends Command
 
         $schemaManager = $connection->getSchemaManager();
         $fromSchema = $schemaManager->createSchema();
-        $schema = new Schema();
 
-        foreach (glob($this->schemaDir.'/*.php') as $tableSchemaFile) {
-            require $tableSchemaFile;
-        }
+        /** @var Schema $schema */
+        $schema = require $this->schemaPath;
 
         $statements = $fromSchema->getMigrateToSql($schema, $connection->getDatabasePlatform());
 
         $connection->beginTransaction();
         foreach ($statements as $statement) {
+            $output->writeln(sprintf('Execute: %s', $statement));
             $connection->exec($statement);
         }
         $connection->commit();
