@@ -12,7 +12,6 @@ use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\Requirements\Repository;
 use Chubbyphp\Validation\ValidationProvider;
-use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Negotiation\LanguageNegotiator;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\MonologServiceProvider;
