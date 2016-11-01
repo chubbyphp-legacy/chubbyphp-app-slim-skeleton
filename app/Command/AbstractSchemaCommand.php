@@ -4,9 +4,8 @@ namespace SlimSkeleton\Command;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
-use Symfony\Component\Console\Command\Command;
 
-abstract class AbstractSchemaCommand extends Command
+abstract class AbstractSchemaCommand
 {
     /**
      * @var Connection
@@ -26,8 +25,6 @@ abstract class AbstractSchemaCommand extends Command
     {
         $this->connection = $connection;
         $this->schemaPath = $schemaPath;
-
-        parent::__construct();
     }
 
     /**

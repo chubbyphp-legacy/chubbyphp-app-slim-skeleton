@@ -8,20 +8,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class SchemaUpdateCommand extends AbstractSchemaCommand
 {
     /**
-     * {@inheritdoc}
+     * @param InputInterface  $input
+     * @param OutputInterface $output
      */
-    protected function configure()
-    {
-        $this
-            ->setName('slim-skeleton:database:schema:update')
-            ->setDescription(sprintf('Update the database schema based on schema at "%s"', $this->schemaPath))
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function __invoke(InputInterface $input, OutputInterface $output)
     {
         if ([] === $statements = $this->getStatements()) {
             $output->writeln('<info>No schema changes required</info>');

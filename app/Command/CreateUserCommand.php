@@ -6,12 +6,10 @@ use Chubbyphp\Security\Authentication\PasswordManagerInterface;
 use Chubbyphp\Validation\ValidatorInterface;
 use SlimSkeleton\Model\User;
 use SlimSkeleton\Repository\UserRepository;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class CreateUserCommand extends Command
+final class CreateUserCommand
 {
     /**
      * @var PasswordManagerInterface
@@ -41,30 +39,15 @@ final class CreateUserCommand extends Command
         $this->passwordManager = $passwordManager;
         $this->userRepository = $userRepository;
         $this->validator = $validator;
-
-        parent::__construct();
     }
 
     /**
-     * {@inheritdoc}
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int
      */
-    protected function configure()
-    {
-        $this
-            ->setName('slim-skeleton:user:create')
-            ->setDescription('Create a new user')
-            ->setDefinition([
-                new InputArgument('email', InputArgument::REQUIRED, 'The email address of the user.'),
-                new InputArgument('password', InputArgument::REQUIRED, 'The password of the user.'),
-                new InputArgument('roles', InputArgument::IS_ARRAY | InputArgument::REQUIRED, 'The roles of the user.'),
-            ])
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function __invoke(InputInterface $input, OutputInterface $output)
     {
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
