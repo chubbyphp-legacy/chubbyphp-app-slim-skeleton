@@ -23,6 +23,8 @@ $app = require_once __DIR__ . '/../app/app.php';
 /** @var Container $container */
 $container = $app->getContainer();
 
+require_once __DIR__ . '/../app/commands.php';
+
 $console = new Application($container['console.name'], $container['console.version']);
 
 foreach ([$envOption] as $inputOption) {
