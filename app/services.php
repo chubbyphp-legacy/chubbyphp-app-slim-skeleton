@@ -56,12 +56,6 @@ $container['errorHandler.defaultProvider'] = function () use ($container) {
     return $container[HtmlErrorResponseProvider::class];
 };
 
-$container->extend('console.helpers', function (array $helpers) use ($container) {
-    $helpers['db'] = new ConnectionHelper($container['db']);
-
-    return $helpers;
-});
-
 $container->extend('console.commands', function (array $commands) use ($container) {
     $commands[] = $container['console.command.database.run.sql'];
     $commands[] = $container['console.command.database.schema.dump.update'];
