@@ -3,6 +3,7 @@
   "type": "project",
   "require": {
     "php": "~7.0",
+    "bitexpert/prophiler-psr7-middleware": "~0.3.0",
     "chubbyphp/chubbyphp-csrf": "~1.0",
     "chubbyphp/chubbyphp-error-handler": "~1.0",
     "chubbyphp/chubbyphp-model": "~1.0",
@@ -11,6 +12,7 @@
     "chubbyphp/chubbyphp-translation": "~1.0",
     "chubbyphp/chubbyphp-validation": "~1.0",
     "doctrine/dbal": "^2.5.5",
+    "fabfuel/prophiler": "dev-feature/php7",
     "monolog/monolog": "~1.21.0",
     "ramsey/uuid": "~3.5",
     "silex/providers": "^2.0.3",
