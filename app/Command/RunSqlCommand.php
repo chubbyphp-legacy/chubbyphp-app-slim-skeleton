@@ -6,6 +6,9 @@ use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * (c) <http://www.doctrine-project.org>.
+ */
 final class RunSqlCommand
 {
     /**

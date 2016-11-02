@@ -16,6 +16,7 @@ $container->register(new ConsoleProvider());
 
 /* @var Container $container */
 $container->extend('console.commands', function (array $commands) use ($container) {
+    $commands[] = $container['console.command.database.create'];
     $commands[] = $container['console.command.database.run.sql'];
     $commands[] = $container['console.command.database.schema.update'];
     $commands[] = $container['console.command.user.create'];
@@ -57,6 +58,23 @@ $container['console.command.database.run.sql'] = function () use ($container) {
         }
     );
 };
+
+$container['console.command.database.create'] = function () use ($container) {
+    return new LazyCommand(
+        'slim-skeleton:database:create',
+        [
+            new InputOption('shard', null, InputOption::VALUE_REQUIRED, 'The shard connection to use for this command'),
+            new InputOption('if-not-exists', null, InputOption::VALUE_NONE, 'Don\'t trigger an error, when the database already exists'),
+        ],
+        function (InputInterface $input, OutputInterface $output) use ($container) {
+            $command = new \SlimSkeleton\Command\CreateDatabaseCommand($container['db']);
+
+            return $command($input, $output);
+        }
+    );
+};
+
+//if-not-exists
 
 $container['console.command.database.schema.update'] = function () use ($container) {
     return new LazyCommand(
