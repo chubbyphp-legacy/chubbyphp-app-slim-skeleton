@@ -25,7 +25,7 @@ final class RunSqlCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int
+     * @return int|null
      */
     public function __invoke(InputInterface $input, OutputInterface $output)
     {

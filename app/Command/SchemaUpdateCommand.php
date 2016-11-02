@@ -32,6 +32,8 @@ final class SchemaUpdateCommand
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
+     *
+     * @return int|null
      */
     public function __invoke(InputInterface $input, OutputInterface $output)
     {
