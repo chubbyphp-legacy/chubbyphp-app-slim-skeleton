@@ -161,7 +161,7 @@ $container[RoleAuthorization::class] = function ($container) {
 };
 
 $container[TemplateData::class] = function () use ($container) {
-    return new TemplateData($container['security.authentication'], $container['session']);
+    return new TemplateData($container['security.authentication'], $container['debug'], $container['session']);
 };
 
 $container[Repository::class.'User'] = function () use ($container) {
