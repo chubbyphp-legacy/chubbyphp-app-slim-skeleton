@@ -39,30 +39,11 @@ final class CreateDatabaseCommand
     public function __invoke(InputInterface $input, OutputInterface $output)
     {
         $connection = $this->connection;
-        $ifNotExists = $input->getOption('if-not-exists');
+
         $params = $connection->getParams();
 
         if (isset($params['master'])) {
             $params = $params['master'];
-        }
-
-        // Cannot inject `shard` option in parent::getDoctrineConnection
-        // cause it will try to connect to a non-existing database
-        if (isset($params['shards'])) {
-            $shards = $params['shards'];
-            // Default select global
-            $params = array_merge($params, $params['global']);
-            unset($params['global']['dbname']);
-            if ($input->getOption('shard')) {
-                foreach ($shards as $i => $shard) {
-                    if ($shard['id'] === (int) $input->getOption('shard')) {
-                        // Select sharded database
-                        $params = array_merge($params, $shard);
-                        unset($params['shards'][$i]['dbname'], $params['id']);
-                        break;
-                    }
-                }
-            }
         }
 
         $hasPath = isset($params['path']);
@@ -76,7 +57,7 @@ final class CreateDatabaseCommand
         unset($params['dbname'], $params['path'], $params['url']);
 
         $tmpConnection = DriverManager::getConnection($params);
-        $shouldNotCreateDatabase = $ifNotExists && in_array($name, $tmpConnection->getSchemaManager()->listDatabases());
+        $shouldNotCreateDatabase = in_array($name, $tmpConnection->getSchemaManager()->listDatabases());
 
         // Only quote if we don't have a path
         if (!$hasPath) {
