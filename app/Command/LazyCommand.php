@@ -6,7 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class LazyCommand extends Command
+final class LazyCommand extends Command
 {
     /**
      * @var callable
