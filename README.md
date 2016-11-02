@@ -79,7 +79,7 @@ echo "CREATE DATABASE slim_skeleton;" | mysql --user=root --password=root
 ### Create / Update schema
 
 ```{.sh}
-bin/console slim-skeleton:database:schema:update
+bin/console slim-skeleton:database:schema:update --dump --force
 ```
 
 ### Create user
