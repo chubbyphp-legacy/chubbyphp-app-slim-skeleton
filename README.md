@@ -7,6 +7,7 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
 ## Requirements
 
  * php: ~7.0
+ * [bitexpert/prophiler-psr7-middleware][16]: ~0.3.0
  * [chubbyphp/chubbyphp-csrf][1]: ~1.0
  * [chubbyphp/chubbyphp-error-handler][2]: ~1.0
  * [chubbyphp/chubbyphp-model][3]: ~1.0
@@ -15,6 +16,7 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
  * [chubbyphp/chubbyphp-translation][6]: ~1.0
  * [chubbyphp/chubbyphp-validation][7]: ~1.0
  * [doctrine/dbal][8]: ^2.5.5
+ * [fabfuel/prophiler][17]: dev-feature/php7
  * [monolog/monolog][9]: ~1.21.0
  * [ramsey/uuid][10]: ~3.5
  * [silex/providers][11]: ^2.0.3
@@ -107,3 +109,5 @@ admin@admin.admin // admin
 [13]: https://github.com/slimphp/Twig-View
 [14]: https://github.com/symfony/console
 [15]: https://github.com/willdurand/Negotiation
+[16]: https://github.com/bitExpert/prophiler-psr7-middleware
+[17]: https://github.com/fabfuel/prophiler
