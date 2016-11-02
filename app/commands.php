@@ -63,12 +63,12 @@ $container['console.command.database.schema.update'] = function () use ($contain
         'slim-skeleton:database:schema:update',
         [
             new InputOption(
-                'dump-sql', null, InputOption::VALUE_NONE,
+                'dump', null, InputOption::VALUE_NONE,
                 'Dumps the generated SQL statements to the screen (does not execute them).'
             ),
             new InputOption(
                 'force', 'f', InputOption::VALUE_NONE,
-                'Causes the generated SQL statements to be physically executed against your database.'
+                'Executes the generated SQL statements.'
             ),
         ],
         function (InputInterface $input, OutputInterface $output) use ($container) {

@@ -35,7 +35,7 @@ final class SchemaUpdateCommand
      */
     public function __invoke(InputInterface $input, OutputInterface $output)
     {
-        $dumpSql = true === $input->getOption('dump-sql');
+        $dump = true === $input->getOption('dump');
         $force = true === $input->getOption('force');
 
         if ([] === $statements = $this->getStatements()) {
@@ -44,57 +44,22 @@ final class SchemaUpdateCommand
             return 0;
         }
 
-        if (!$dumpSql && !$force) {
-            $output->writeln('<comment>ATTENTION</comment>: This operation should not be executed in a production environment.');
-            $output->writeln('           Use the incremental update to detect changes during development and use');
-            $output->writeln('           the SQL DDL provided to manually update your database in production.');
+        if (!$dump && !$force) {
+            $output->writeln('<comment>ATTENTION</comment>: Do not execute in production.');
+            $output->writeln('    Use the incremental update to detect changes during development and use');
+            $output->writeln('    the SQL provided to manually update your database in production.');
             $output->writeln('');
-            $output->writeln(sprintf('The Schema-Tool would execute <info>"%s"</info> queries to update the database.', count($statements)));
+            $output->writeln(sprintf('Would execute <info>"%s"</info> queries.', count($statements)));
             $output->writeln('Please run the operation by passing one - or both - of the following options:');
             $output->writeln('    <info>--force</info> to execute the command');
-            $output->writeln('    <info>--dump-sql</info> to dump the SQL statements to the screen');
+            $output->writeln('    <info>--dump</info> to dump the SQL statements to the screen');
 
             return 1;
         }
 
-        if ($force) {
-            $this->forceUpdate($output, $statements);
-
-            return 0;
-        }
-
-        $this->dumpUpdate($output, $statements);
+        $this->update($output, $statements, $dump, $force);
 
         return 0;
-    }
-
-    /**
-     * @param OutputInterface $output
-     * @param array           $statements
-     */
-    private function forceUpdate(OutputInterface $output, array $statements)
-    {
-        $output->writeln('<info>Begin transaction</info>');
-        $this->connection->beginTransaction();
-
-        foreach ($statements as $statement) {
-            $output->writeln($statement);
-            $this->connection->exec($statement);
-        }
-
-        $output->writeln('<info>Commit</info>');
-        $this->connection->commit();
-    }
-
-    /**
-     * @param OutputInterface $output
-     * @param array           $statements
-     */
-    private function dumpUpdate(OutputInterface $output, array $statements)
-    {
-        foreach ($statements as $statement) {
-            $output->writeln($statement);
-        }
     }
 
     /**
@@ -111,5 +76,40 @@ final class SchemaUpdateCommand
         $schema = require $this->schemaPath;
 
         return $fromSchema->getMigrateToSql($schema, $connection->getDatabasePlatform());
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param array           $statements
+     * @param bool            $dump
+     * @param bool            $force
+     */
+    private function update(OutputInterface $output, array $statements, bool $dump, bool $force)
+    {
+        if ($dump) {
+            $output->writeln('<info>Begin transaction</info>');
+        }
+
+        if ($force) {
+            $this->connection->beginTransaction();
+        }
+
+        foreach ($statements as $statement) {
+            if ($dump) {
+                $output->writeln($statement);
+            }
+
+            if ($force) {
+                $this->connection->exec($statement);
+            }
+        }
+
+        if ($dump) {
+            $output->writeln('<info>Commit</info>');
+        }
+
+        if ($force) {
+            $this->connection->commit();
+        }
     }
 }
