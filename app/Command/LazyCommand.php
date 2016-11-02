@@ -14,30 +14,33 @@ class LazyCommand extends Command
     private $command;
 
     /**
-     * @param string   $name
-     * @param string   $description
-     * @param array    $definition
-     * @param callable $command
+     * @param string      $name
+     * @param array       $definition
+     * @param callable    $command
+     * @param string|null $description
+     * @param string|null $help
      */
     public function __construct(
         string $name,
-        string $description,
         array $definition,
-        callable $command
+        callable $command,
+        string $description = null,
+        string $help = null
     ) {
-        $this->command = $command;
-
         parent::__construct($name);
 
-        $this->setDescription($description);
+        $this->command = $command;
+
         $this->setDefinition($definition);
+        $this->setDescription($description);
+        $this->setHelp($help);
     }
 
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int
+     * @return int|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
