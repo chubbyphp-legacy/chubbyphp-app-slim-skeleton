@@ -9,6 +9,7 @@ $container['appDir'] = __DIR__;
 $container['cacheDir'] = $container['appDir'].'/../var/cache';
 $container['configDir'] = $container['appDir'].'/../config';
 $container['logDir'] = $container['appDir'].'/../var/log';
+$container['publicDir'] = $container['appDir'].'/../public';
 
 require_once $container['appDir'].'/functions.php';
 
