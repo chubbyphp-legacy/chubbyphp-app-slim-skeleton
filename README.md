@@ -73,7 +73,7 @@ composer create-project chubbyphp/chubbyphp-app-slim-skeleton myproject dev-mast
 ### Create database
 
 ```{.sh}
-echo "CREATE DATABASE slim_skeleton;" | mysql --user=root --password=root
+bin/console slim-skeleton:database:create
 ```
 
 ### Create / Update schema
