@@ -45,11 +45,7 @@ final class RunSqlCommand
             $resultSet = $this->connection->executeUpdate($sql);
         }
 
-        ob_start();
-
-        \Doctrine\Common\Util\Debug::dump($resultSet, (int) $depth);
-
-        $message = ob_get_clean();
+        $message = \Doctrine\Common\Util\Debug::dump($resultSet, (int) $depth, true, false);
 
         $output->write($message);
     }
