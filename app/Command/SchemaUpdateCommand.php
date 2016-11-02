@@ -43,7 +43,7 @@ final class SchemaUpdateCommand
         if ([] === $statements = $this->getStatements()) {
             $output->writeln('<info>No schema changes required</info>');
 
-            return 0;
+            return;
         }
 
         if (!$dump && !$force) {
@@ -60,8 +60,6 @@ final class SchemaUpdateCommand
         }
 
         $this->update($output, $statements, $dump, $force);
-
-        return 0;
     }
 
     /**
