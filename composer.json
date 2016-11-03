@@ -5,7 +5,7 @@
     "php": "~7.0",
     "bitexpert/prophiler-psr7-middleware": "~0.3.0",
     "chubbyphp/chubbyphp-csrf": "~1.0",
-    "chubbyphp/chubbyphp-error-handler": "~1.0",
+    "chubbyphp/chubbyphp-error-handler": "~1.1@dev",
     "chubbyphp/chubbyphp-model": "~1.0",
     "chubbyphp/chubbyphp-session": "~1.0",
     "chubbyphp/chubbyphp-security": "~1.0",

@@ -4,7 +4,8 @@ use bitExpert\Http\Middleware\Psr7\Prophiler\ProphilerMiddleware;
 use Doctrine\DBAL\Configuration;
 use Chubbyphp\Csrf\CsrfProvider;
 use Chubbyphp\Session\SessionProvider;
-use Chubbyphp\ErrorHandler\Slim\SimpleErrorHandler;
+use Chubbyphp\ErrorHandler\ErrorHandlerMiddleware;
+use Chubbyphp\ErrorHandler\SimpleErrorHandlerProvider;
 use Chubbyphp\Security\Authentication\AuthenticationProvider;
 use Chubbyphp\Security\Authentication\FormAuthentication;
 use Chubbyphp\Security\Authorization\AuthorizationProvider;
@@ -24,12 +25,10 @@ use Silex\Provider\DoctrineServiceProvider;
 use Psr\Log\LoggerInterface;
 use Silex\Provider\MonologServiceProvider;
 use Slim\Container;
-use Slim\Handlers\Error;
 use SlimSkeleton\ErrorHandler\HtmlErrorResponseProvider;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
-use SlimSkeleton\Middleware\ErrorHandlerMiddleware;
 use SlimSkeleton\Middleware\LocaleMiddleware;
 use SlimSkeleton\Profiler\LoggerStack;
 use SlimSkeleton\Provider\TwigProvider;
@@ -42,6 +41,7 @@ $container->register(new AuthenticationProvider());
 $container->register(new AuthorizationProvider());
 $container->register(new CsrfProvider());
 $container->register(new DoctrineServiceProvider());
+$container->register(new SimpleErrorHandlerProvider());
 $container->register(new MonologServiceProvider());
 $container->register(new SessionProvider());
 $container->register(new TranslationProvider());
@@ -153,11 +153,7 @@ $container[UserRepository::class] = function () use ($container) {
 
 // services
 $container[ErrorHandlerMiddleware::class] = function () use ($container) {
-    return new ErrorHandlerMiddleware($container[SimpleErrorHandler::class]);
-};
-
-$container[SimpleErrorHandler::class] = function () use ($container) {
-    return new SimpleErrorHandler($container['errorHandler.defaultProvider'], $container['logger'] ?? null);
+    return new ErrorHandlerMiddleware($container['errorHandler.service']);
 };
 
 $container[FormAuthentication::class] = function ($container) {
