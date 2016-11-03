@@ -2,7 +2,6 @@
 
 use Chubbyphp\Csrf\CsrfProvider;
 use Chubbyphp\Session\SessionProvider;
-use Chubbyphp\ErrorHandler\ErrorHandlerMiddleware;
 use Chubbyphp\ErrorHandler\SimpleErrorHandlerProvider;
 use Chubbyphp\Security\Authentication\AuthenticationProvider;
 use Chubbyphp\Security\Authentication\FormAuthentication;
@@ -119,10 +118,6 @@ $container[UserRepository::class] = function () use ($container) {
 };
 
 // services
-$container[ErrorHandlerMiddleware::class] = function () use ($container) {
-    return new ErrorHandlerMiddleware($container['errorHandler.service']);
-};
-
 $container[FormAuthentication::class] = function ($container) {
     return new FormAuthentication(
         $container['security.authentication.passwordmanager'],
