@@ -1,7 +1,5 @@
 <?php
 
-use bitExpert\Http\Middleware\Psr7\Prophiler\ProphilerMiddleware;
-use Doctrine\DBAL\Configuration;
 use Chubbyphp\Csrf\CsrfProvider;
 use Chubbyphp\Session\SessionProvider;
 use Chubbyphp\ErrorHandler\ErrorHandlerMiddleware;
@@ -15,14 +13,8 @@ use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\Requirements\Repository;
 use Chubbyphp\Validation\ValidationProvider;
-use Fabfuel\Prophiler\Adapter\Doctrine\SQLLogger;
-use Fabfuel\Prophiler\Adapter\Psr\Log\Logger;
-use Fabfuel\Prophiler\Aggregator\Database\QueryAggregator;
-use Fabfuel\Prophiler\Profiler;
-use Fabfuel\Prophiler\Toolbar;
 use Negotiation\LanguageNegotiator;
 use Silex\Provider\DoctrineServiceProvider;
-use Psr\Log\LoggerInterface;
 use Silex\Provider\MonologServiceProvider;
 use Slim\Container;
 use SlimSkeleton\ErrorHandler\HtmlErrorResponseProvider;
@@ -30,7 +22,6 @@ use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
 use SlimSkeleton\Middleware\LocaleMiddleware;
-use SlimSkeleton\Profiler\LoggerStack;
 use SlimSkeleton\Provider\TwigProvider;
 use SlimSkeleton\Repository\UserRepository;
 use SlimSkeleton\Service\RedirectForPath;
@@ -52,30 +43,6 @@ $container->register(new ValidationProvider());
 $container['errorHandler.defaultProvider'] = function () use ($container) {
     return $container[HtmlErrorResponseProvider::class];
 };
-
-$container['dbs.config'] = function ($container) use ($container) {
-    $container['dbs.options.initializer']();
-
-    $configs = new Container();
-    foreach ($container['dbs.options'] as $name => $options) {
-        $config = new Configuration();
-        if ($container['debug']) {
-            $config->setSQLLogger(new SQLLogger($container[Profiler::class]));
-        }
-
-        $configs[$name] = $config;
-    }
-
-    return $configs;
-};
-
-$container->extend('logger', function (LoggerInterface $logger) use ($container) {
-    if (!$container['debug']) {
-        return $logger;
-    }
-
-    return new LoggerStack([$logger, new Logger($container[Profiler::class])]);
-});
 
 $container->extend('security.authentication.authentications', function (array $authentications) use ($container) {
     $authentications[] = $container[FormAuthentication::class];
@@ -185,18 +152,6 @@ $container[LocaleMiddleware::class] = function () use ($container) {
     );
 };
 
-$container[ProphilerMiddleware::class] = function () use ($container) {
-    return new ProphilerMiddleware($container[Toolbar::class]);
-};
-
-$container[Profiler::class] = function () use ($container) {
-    $profiler = new Profiler();
-
-    $profiler->addAggregator(new QueryAggregator());
-
-    return $profiler;
-};
-
 $container[RedirectForPath::class] = function () use ($container) {
     return new RedirectForPath($container['router']);
 };
@@ -211,8 +166,4 @@ $container[RoleAuthorization::class] = function ($container) {
 
 $container[TemplateData::class] = function () use ($container) {
     return new TemplateData($container['security.authentication'], $container['debug'], $container['session']);
-};
-
-$container[Toolbar::class] = function () use ($container) {
-    return new Toolbar($container[Profiler::class]);
 };

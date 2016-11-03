@@ -32,6 +32,10 @@ foreach ($config['projectSettings'] as $key => $value) {
     $container[$key] = $value;
 }
 
+if ($container['debug']) {
+    require_once $container['appDir'].'/profiler.php';
+}
+
 $app = new App($container);
 
 require_once $container['appDir'].'/middlewares.php';
