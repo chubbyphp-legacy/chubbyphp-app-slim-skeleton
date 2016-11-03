@@ -4,7 +4,7 @@ use bitExpert\Http\Middleware\Psr7\Prophiler\ProphilerMiddleware;
 use Doctrine\DBAL\Configuration;
 use Chubbyphp\Csrf\CsrfProvider;
 use Chubbyphp\Session\SessionProvider;
-use Chubbyphp\ErrorHandler\Slim\SimpleErrorHandlerProvider;
+use Chubbyphp\ErrorHandler\Slim\SimpleErrorHandler;
 use Chubbyphp\Security\Authentication\AuthenticationProvider;
 use Chubbyphp\Security\Authentication\FormAuthentication;
 use Chubbyphp\Security\Authorization\AuthorizationProvider;
@@ -29,6 +29,7 @@ use SlimSkeleton\ErrorHandler\HtmlErrorResponseProvider;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
+use SlimSkeleton\Middleware\ErrorHandlerMiddleware;
 use SlimSkeleton\Middleware\LocaleMiddleware;
 use SlimSkeleton\Profiler\LoggerStack;
 use SlimSkeleton\Provider\TwigProvider;
@@ -43,7 +44,6 @@ $container->register(new CsrfProvider());
 $container->register(new DoctrineServiceProvider());
 $container->register(new MonologServiceProvider());
 $container->register(new SessionProvider());
-$container->register(new SimpleErrorHandlerProvider());
 $container->register(new TranslationProvider());
 $container->register(new TwigProvider());
 $container->register(new ValidationProvider());
@@ -152,8 +152,12 @@ $container[UserRepository::class] = function () use ($container) {
 };
 
 // services
-$container[Error::class] = function ($container) {
-    return new Error($container['settings']['displayErrorDetails']);
+$container[ErrorHandlerMiddleware::class] = function () use ($container) {
+    return new ErrorHandlerMiddleware($container[SimpleErrorHandler::class]);
+};
+
+$container[SimpleErrorHandler::class] = function () use ($container) {
+    return new SimpleErrorHandler($container['errorHandler.defaultProvider'], $container['logger'] ?? null);
 };
 
 $container[FormAuthentication::class] = function ($container) {
@@ -167,7 +171,7 @@ $container[FormAuthentication::class] = function ($container) {
 
 $container[HtmlErrorResponseProvider::class] = function () use ($container) {
     return new HtmlErrorResponseProvider(
-        $container[Error::class],
+        $container['errorHandler'],
         $container[TemplateData::class],
         $container['twig']
     );
