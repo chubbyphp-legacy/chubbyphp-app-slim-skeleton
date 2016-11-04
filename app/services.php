@@ -16,10 +16,14 @@ use Negotiation\LanguageNegotiator;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Slim\Container;
-use SlimSkeleton\ErrorHandler\HtmlErrorResponseProvider;
+use SlimSkeleton\Command\CreateDatabaseCommand;
+use SlimSkeleton\Command\CreateUserCommand;
+use SlimSkeleton\Command\RunSqlCommand;
+use SlimSkeleton\Command\SchemaUpdateCommand;
 use SlimSkeleton\Controller\AuthController;
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
+use SlimSkeleton\ErrorHandler\HtmlErrorResponseProvider;
 use SlimSkeleton\Middleware\LocaleMiddleware;
 use SlimSkeleton\Provider\TwigProvider;
 use SlimSkeleton\Repository\UserRepository;
@@ -84,6 +88,27 @@ $container->extend('validator.helpers', function (array $helpers) use ($containe
     return $helpers;
 });
 
+// commands
+$container[CreateDatabaseCommand::class] = function () use ($container) {
+    return new CreateDatabaseCommand($container['db']);
+};
+
+$container[CreateUserCommand::class] = function () use ($container) {
+    return new CreateUserCommand(
+        $container['security.authentication.passwordmanager'],
+        $container[UserRepository::class],
+        $container['validator']
+    );
+};
+
+$container[RunSqlCommand::class] = function () use ($container) {
+    return new RunSqlCommand($container['db']);
+};
+
+$container[SchemaUpdateCommand::class] = function () use ($container) {
+    return new SchemaUpdateCommand($container['db'], $container['appDir'].'/schema.php');
+};
+
 // controllers
 $container[HomeController::class] = function () use ($container) {
     return new HomeController($container[TemplateData::class], $container['twig']);
@@ -112,6 +137,15 @@ $container[UserController::class] = function () use ($container) {
     );
 };
 
+// middlewares
+$container[LocaleMiddleware::class] = function () use ($container) {
+    return new LocaleMiddleware(
+        $container[LanguageNegotiator::class],
+        $container['localeFallback'],
+        $container['locales']
+    );
+};
+
 // repositories
 $container[UserRepository::class] = function () use ($container) {
     return new UserRepository($container['db']);
@@ -137,14 +171,6 @@ $container[HtmlErrorResponseProvider::class] = function () use ($container) {
 
 $container[LanguageNegotiator::class] = function () use ($container) {
     return new LanguageNegotiator();
-};
-
-$container[LocaleMiddleware::class] = function () use ($container) {
-    return new LocaleMiddleware(
-        $container[LanguageNegotiator::class],
-        $container['localeFallback'],
-        $container['locales']
-    );
 };
 
 $container[RedirectForPath::class] = function () use ($container) {
