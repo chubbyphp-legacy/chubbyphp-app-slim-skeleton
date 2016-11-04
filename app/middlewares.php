@@ -1,9 +1,9 @@
 <?php
 
 use bitExpert\Http\Middleware\Psr7\Prophiler\ProphilerMiddleware;
+use Chubbyphp\Lazy\LazyMiddleware;
 use Slim\App;
 use Slim\Container;
-use SlimSkeleton\Middleware\LazyMiddleware;
 use SlimSkeleton\Middleware\LocaleMiddleware;
 
 /* @var App $app */

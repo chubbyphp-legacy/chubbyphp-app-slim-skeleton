@@ -1,9 +1,9 @@
 <?php
 
+use Chubbyphp\Lazy\LazyCommand;
 use Slim\Container;
 use SlimSkeleton\Command\CreateDatabaseCommand;
 use SlimSkeleton\Command\CreateUserCommand;
-use SlimSkeleton\Command\LazyCommand;
 use SlimSkeleton\Command\RunSqlCommand;
 use SlimSkeleton\Command\SchemaUpdateCommand;
 use SlimSkeleton\Provider\ConsoleProvider;
