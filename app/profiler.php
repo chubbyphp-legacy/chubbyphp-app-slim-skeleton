@@ -7,6 +7,7 @@ use Fabfuel\Prophiler\Adapter\Psr\Log\Logger;
 use Fabfuel\Prophiler\Aggregator\Database\QueryAggregator;
 use Fabfuel\Prophiler\Profiler;
 use Fabfuel\Prophiler\Toolbar;
+use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
 use Slim\Container;
 
@@ -26,7 +27,7 @@ $container['dbs.config'] = function ($container) use ($container) {
 };
 
 $container->extend('logger', function (LoggerInterface $logger) use ($container) {
-    return new class([$logger, new Logger($container[Profiler::class])]) extends \Psr\Log\AbstractLogger {
+    return new class([$logger, new Logger($container[Profiler::class])]) extends AbstractLogger {
         /**
          * @var LoggerInterface[]
          */
