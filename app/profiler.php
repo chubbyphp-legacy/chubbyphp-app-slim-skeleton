@@ -26,10 +26,6 @@ $container['dbs.config'] = function ($container) use ($container) {
 };
 
 $container->extend('logger', function (LoggerInterface $logger) use ($container) {
-    if (!$container['debug']) {
-        return $logger;
-    }
-
     return new class([$logger, new Logger($container[Profiler::class])]) extends \Psr\Log\AbstractLogger {
         /**
          * @var LoggerInterface[]
