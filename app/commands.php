@@ -10,6 +10,7 @@ use SlimSkeleton\Provider\ConsoleProvider;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+/* @var Container $container */
 $container->register(new ConsoleProvider());
 
 /* @var Container $container */
