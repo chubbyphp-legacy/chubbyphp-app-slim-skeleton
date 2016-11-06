@@ -50,7 +50,12 @@ final class RouterExtension extends \Twig_Extension
         return $this->router->pathFor($name, $data, $queryParams);
     }
 
-    public function getTrailFor(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    public function getTrailFor(Request $request): array
     {
         /** @var Route $route */
         $route = $request->getAttribute('route');
@@ -71,16 +76,17 @@ final class RouterExtension extends \Twig_Extension
         foreach ($this->routeHirarchy as $routeName => $subRouteNames) {
             if ($routeName === $activeName) {
                 $inTrail[] = $routeName;
+
+                continue;
             }
             foreach ($subRouteNames as $subRouteName) {
                 if ($subRouteName === $activeName) {
-                    $inTrail[] = $subRouteName;
-                    $inTrail = array_merge($inTrail, $this->generateTrail($routeName));
+                    return array_merge([$subRouteName], $this->generateTrail($routeName));
                 }
             }
         }
 
-        return array_unique($inTrail);
+        return $inTrail;
     }
 
     /**
