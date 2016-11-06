@@ -1,12 +1,13 @@
 <?php
 
 use Chubbyphp\Csrf\CsrfProvider;
-use Chubbyphp\Session\SessionProvider;
 use Chubbyphp\ErrorHandler\SimpleErrorHandlerProvider;
+use Chubbyphp\Model\Cache\ModelCache;
 use Chubbyphp\Security\Authentication\AuthenticationProvider;
 use Chubbyphp\Security\Authentication\FormAuthentication;
 use Chubbyphp\Security\Authorization\AuthorizationProvider;
 use Chubbyphp\Security\Authorization\RoleAuthorization;
+use Chubbyphp\Session\SessionProvider;
 use Chubbyphp\Translation\LocaleTranslationProvider;
 use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
@@ -148,7 +149,7 @@ $container[LocaleMiddleware::class] = function () use ($container) {
 
 // repositories
 $container[UserRepository::class] = function () use ($container) {
-    return new UserRepository($container['db'], $container['logger']);
+    return new UserRepository($container['db'], new ModelCache(), $container['logger']);
 };
 
 // services
