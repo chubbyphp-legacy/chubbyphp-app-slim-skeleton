@@ -5,7 +5,6 @@ namespace SlimSkeleton\Provider;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Slim\Views\Twig;
-use Slim\Views\TwigExtension;
 
 final class TwigProvider implements ServiceProviderInterface
 {
@@ -19,13 +18,7 @@ final class TwigProvider implements ServiceProviderInterface
         };
 
         $container['twig.extensions'] = function () use ($container) {
-            $extensions = [];
-            $extensions[] = new TwigExtension(
-                $container['router'],
-                $container['request']->getUri()->getBasePath()
-            );
-
-            return $extensions;
+            return [];
         };
 
         $container['twig.globals'] = function () use ($container) {

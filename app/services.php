@@ -30,6 +30,7 @@ use SlimSkeleton\Provider\TwigProvider;
 use SlimSkeleton\Repository\UserRepository;
 use SlimSkeleton\Service\RedirectForPath;
 use SlimSkeleton\Service\TemplateData;
+use SlimSkeleton\Twig\RouterExtension;
 
 /* @var Container $container */
 $container->register(new AuthenticationProvider());
@@ -75,6 +76,10 @@ $container->extend('twig.namespaces', function (array $namespaces) use ($contain
 });
 
 $container->extend('twig.extensions', function (array $extensions) use ($container) {
+    $extensions[] = new RouterExtension($container['router'], [
+        'home' => [],
+        'user_list' => ['user_create', 'user_edit', 'user_view', 'user_delete'],
+    ]);
     $extensions[] = new TranslationTwigExtension($container['translator']);
     if ($container['debug']) {
         $extensions[] = new \Twig_Extension_Debug();

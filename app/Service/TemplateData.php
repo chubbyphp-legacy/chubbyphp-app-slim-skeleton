@@ -60,6 +60,7 @@ final class TemplateData
             'debug' => $this->debug,
             'flashMessage' => $this->session->getFlash($request),
             'locale' => $locale,
+            'request' => $request,
         ], $variables);
     }
 }
