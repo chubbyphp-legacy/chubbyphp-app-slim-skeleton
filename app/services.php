@@ -30,6 +30,7 @@ use SlimSkeleton\Provider\TwigProvider;
 use SlimSkeleton\Repository\UserRepository;
 use SlimSkeleton\Service\RedirectForPath;
 use SlimSkeleton\Service\TemplateData;
+use SlimSkeleton\Service\TwigRender;
 use SlimSkeleton\Twig\RouterExtension;
 
 /* @var Container $container */
@@ -117,7 +118,7 @@ $container[SchemaUpdateCommand::class] = function () use ($container) {
 
 // controllers
 $container[HomeController::class] = function () use ($container) {
-    return new HomeController($container[TemplateData::class], $container['twig']);
+    return new HomeController($container[TemplateData::class], $container[TwigRender::class]);
 };
 
 $container[AuthController::class] = function () use ($container) {
@@ -137,7 +138,7 @@ $container[UserController::class] = function () use ($container) {
         $container['security.authorization.rolehierarchyresolver'],
         $container['session'],
         $container[TemplateData::class],
-        $container['twig'],
+        $container[TwigRender::class],
         $container[UserRepository::class],
         $container['validator']
     );
@@ -171,7 +172,7 @@ $container[HtmlErrorResponseProvider::class] = function () use ($container) {
     return new HtmlErrorResponseProvider(
         $container['errorHandler'],
         $container[TemplateData::class],
-        $container['twig']
+        $container[TwigRender::class]
     );
 };
 
@@ -193,4 +194,8 @@ $container[RoleAuthorization::class] = function ($container) {
 
 $container[TemplateData::class] = function () use ($container) {
     return new TemplateData($container['security.authentication'], $container['debug'], $container['session']);
+};
+
+$container[TwigRender::class] = function () use ($container) {
+    return new TwigRender($container['twig']);
 };

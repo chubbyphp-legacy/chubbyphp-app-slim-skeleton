@@ -12,12 +12,12 @@ use Chubbyphp\Security\Authorization\RoleHierarchyResolverInterface;
 use Chubbyphp\Validation\ValidatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
 use SlimSkeleton\Model\User;
 use Chubbyphp\Session\FlashMessage;
 use Chubbyphp\Session\SessionInterface;
 use SlimSkeleton\Service\RedirectForPath;
 use SlimSkeleton\Service\TemplateData;
+use SlimSkeleton\Service\TwigRender;
 
 final class UserController
 {
@@ -57,7 +57,7 @@ final class UserController
     private $templateData;
 
     /**
-     * @var Twig
+     * @var TwigRender
      */
     private $twig;
 
@@ -79,7 +79,7 @@ final class UserController
      * @param RoleHierarchyResolverInterface $roleHierarchyResolver
      * @param SessionInterface               $session
      * @param TemplateData                   $templateData
-     * @param Twig                           $twig
+     * @param TwigRender                     $twig
      * @param RepositoryInterface            $userRepository
      * @param ValidatorInterface             $validator
      */
@@ -91,7 +91,7 @@ final class UserController
         RoleHierarchyResolverInterface $roleHierarchyResolver,
         SessionInterface $session,
         TemplateData $templateData,
-        Twig $twig,
+        TwigRender $twig,
         RepositoryInterface
         $userRepository,
         ValidatorInterface $validator

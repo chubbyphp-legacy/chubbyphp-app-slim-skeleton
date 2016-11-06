@@ -4,8 +4,8 @@ namespace SlimSkeleton\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
 use SlimSkeleton\Service\TemplateData;
+use SlimSkeleton\Service\TwigRender;
 
 final class HomeController
 {
@@ -15,15 +15,15 @@ final class HomeController
     private $templateData;
 
     /**
-     * @var Twig
+     * @var TwigRender
      */
     private $twig;
 
     /**
      * @param TemplateData $templateData
-     * @param Twig         $twig
+     * @param TwigRender   $twig
      */
-    public function __construct(TemplateData $templateData, Twig $twig)
+    public function __construct(TemplateData $templateData, TwigRender $twig)
     {
         $this->templateData = $templateData;
         $this->twig = $twig;

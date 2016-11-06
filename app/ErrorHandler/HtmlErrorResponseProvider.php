@@ -7,8 +7,8 @@ use Chubbyphp\ErrorHandler\HttpException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Handlers\Error;
-use Slim\Views\Twig;
 use SlimSkeleton\Service\TemplateData;
+use SlimSkeleton\Service\TwigRender;
 
 final class HtmlErrorResponseProvider implements ErrorResponseProviderInterface
 {
@@ -23,16 +23,16 @@ final class HtmlErrorResponseProvider implements ErrorResponseProviderInterface
     private $templateData;
 
     /**
-     * @var Twig
+     * @var TwigRender
      */
     private $twig;
 
     /**
      * @param Error        $fallbackErrorHandler
      * @param TemplateData $templateData
-     * @param Twig         $twig
+     * @param TwigRender   $twig
      */
-    public function __construct(Error $fallbackErrorHandler, TemplateData $templateData, Twig $twig)
+    public function __construct(Error $fallbackErrorHandler, TemplateData $templateData, TwigRender $twig)
     {
         $this->fallbackErrorHandler = $fallbackErrorHandler;
         $this->templateData = $templateData;

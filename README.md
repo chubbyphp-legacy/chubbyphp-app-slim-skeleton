@@ -22,8 +22,8 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
  * [ramsey/uuid][10]: ~3.5
  * [silex/providers][11]: ^2.0.3
  * [slim/slim][12]: ~3.5
- * [slim/twig-view][13]: ^2.1.1
  * [symfony/console][14]: ~3.1
+ * [twig/twig][12]: ~1.27.0
  * [willdurand/negotiation][15]: ~2.1
 
 ## Installation
@@ -107,7 +107,7 @@ admin@admin.admin // admin
 [10]: https://github.com/ramsey/uuid
 [11]: https://github.com/silexphp/Silex-Providers
 [12]: https://github.com/slimphp/Slim
-[13]: https://github.com/slimphp/Twig-View
+[13]: https://github.com/twigphp/Twig
 [14]: https://github.com/symfony/console
 [15]: https://github.com/willdurand/Negotiation
 [16]: https://github.com/bitExpert/prophiler-psr7-middleware
