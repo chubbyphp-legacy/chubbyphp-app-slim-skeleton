@@ -148,7 +148,7 @@ $container[LocaleMiddleware::class] = function () use ($container) {
 
 // repositories
 $container[UserRepository::class] = function () use ($container) {
-    return new UserRepository($container['db']);
+    return new UserRepository($container['db'], $container['logger']);
 };
 
 // services

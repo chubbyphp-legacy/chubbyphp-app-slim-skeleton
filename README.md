@@ -9,9 +9,9 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
  * php: ~7.0
  * [bitexpert/prophiler-psr7-middleware][16]: ~0.3.0
  * [chubbyphp/chubbyphp-csrf][1]: ~1.0
- * [chubbyphp/chubbyphp-error-handler][2]: ~1.1
- * [chubbyphp/chubbyphp-lazy][18]: ~1.0@dev
- * [chubbyphp/chubbyphp-model][3]: ~1.0
+ * [chubbyphp/chubbyphp-error-handler][2]: ~1.1@beta
+ * [chubbyphp/chubbyphp-lazy][18]: ~1.0@beta
+ * [chubbyphp/chubbyphp-model][3]: ~1.1@beta
  * [chubbyphp/chubbyphp-session][4]: ~1.0
  * [chubbyphp/chubbyphp-security][5]: ~1.0
  * [chubbyphp/chubbyphp-translation][6]: ~1.0
