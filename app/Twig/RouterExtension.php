@@ -2,8 +2,6 @@
 
 namespace SlimSkeleton\Twig;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Route;
 use Slim\Router;
 
 final class RouterExtension extends \Twig_Extension
@@ -14,17 +12,11 @@ final class RouterExtension extends \Twig_Extension
     private $router;
 
     /**
-     * @var array
-     */
-    private $routeHirarchy;
-
-    /**
      * @param Router $router
      */
-    public function __construct(Router $router, array $routeHirarchy = [])
+    public function __construct(Router $router)
     {
         $this->router = $router;
-        $this->routeHirarchy = $routeHirarchy;
     }
 
     /**
@@ -34,7 +26,6 @@ final class RouterExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFunction('path_for', [$this, 'pathFor']),
-            new \Twig_SimpleFunction('trail_for', [$this, 'getTrailFor']),
         ];
     }
 
@@ -48,45 +39,6 @@ final class RouterExtension extends \Twig_Extension
     public function pathFor(string $name, $data = [], $queryParams = []): string
     {
         return $this->router->pathFor($name, $data, $queryParams);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return array
-     */
-    public function getTrailFor(Request $request): array
-    {
-        /** @var Route $route */
-        $route = $request->getAttribute('route');
-
-        $route->getName();
-
-        return $this->generateTrail($route->getName());
-    }
-
-    /**
-     * @param string $activeName
-     *
-     * @return array
-     */
-    private function generateTrail(string $activeName): array
-    {
-        $inTrail = [];
-        foreach ($this->routeHirarchy as $routeName => $subRouteNames) {
-            if ($routeName === $activeName) {
-                $inTrail[] = $routeName;
-
-                continue;
-            }
-            foreach ($subRouteNames as $subRouteName) {
-                if ($subRouteName === $activeName) {
-                    return array_merge([$subRouteName], $this->generateTrail($routeName));
-                }
-            }
-        }
-
-        return $inTrail;
     }
 
     /**

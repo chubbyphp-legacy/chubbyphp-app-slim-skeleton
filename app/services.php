@@ -77,10 +77,7 @@ $container->extend('twig.namespaces', function (array $namespaces) use ($contain
 });
 
 $container->extend('twig.extensions', function (array $extensions) use ($container) {
-    $extensions[] = new RouterExtension($container['router'], [
-        'home' => [],
-        'user_list' => ['user_create', 'user_edit', 'user_view', 'user_delete'],
-    ]);
+    $extensions[] = new RouterExtension($container['router']);
     $extensions[] = new TranslationTwigExtension($container['translator']);
     if ($container['debug']) {
         $extensions[] = new \Twig_Extension_Debug();
@@ -193,7 +190,18 @@ $container[RoleAuthorization::class] = function ($container) {
 };
 
 $container[TemplateData::class] = function () use ($container) {
-    return new TemplateData($container['security.authentication'], $container['debug'], $container['session']);
+    return new TemplateData(
+        $container['security.authentication'],
+        $container['debug'],
+        $container['session'],
+        [
+            'user_create' => ['user_list'],
+            'user_delete' => ['user_list'],
+            'user_edit' => ['user_list'],
+            'user_list' => [],
+            'user_view' => ['user_list'],
+        ]
+    );
 };
 
 $container[TwigRender::class] = function () use ($container) {

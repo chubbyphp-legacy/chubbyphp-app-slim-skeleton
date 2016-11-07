@@ -26,15 +26,26 @@ final class TemplateData
     private $session;
 
     /**
+     * @var array
+     */
+    private $trail;
+
+    /**
      * @param AuthenticationInterface $authentication
      * @param bool                    $debug
      * @param SessionInterface        $session
+     * @param array                   $trail
      */
-    public function __construct(AuthenticationInterface $authentication, bool $debug, SessionInterface $session)
-    {
+    public function __construct(
+        AuthenticationInterface $authentication,
+        bool $debug,
+        SessionInterface $session,
+        array $trail
+    ) {
         $this->authentication = $authentication;
         $this->debug = $debug;
         $this->session = $session;
+        $this->trail = $trail;
     }
 
     /**
@@ -45,12 +56,12 @@ final class TemplateData
      */
     public function aggregate(Request $request, array $variables = []): array
     {
-        if (null === $locale = $request->getAttribute('locale')) {
-            /* @var Route $route */
-            if (null === $route = $request->getAttribute('route')) {
-                throw new \RuntimeException('There was no way to resolve a locale!');
-            }
+        /* @var Route $route */
+        if (null === $route = $request->getAttribute('route')) {
+            throw new \RuntimeException('The route has to be resolved');
+        }
 
+        if (null === $locale = $request->getAttribute('locale')) {
             $locale = $route->getArgument('locale');
         }
 
@@ -60,7 +71,23 @@ final class TemplateData
             'debug' => $this->debug,
             'flashMessage' => $this->session->getFlash($request),
             'locale' => $locale,
-            'request' => $request,
+            'trail' => $this->getTrailForRoute($route),
         ], $variables);
+    }
+
+    /**
+     * @param Route $route
+     *
+     * @return array
+     */
+    private function getTrailForRoute(Route $route): array
+    {
+        $routeName = $route->getName();
+
+        if (!isset($this->trail[$routeName])) {
+            return [];
+        }
+
+        return array_merge([$routeName], $this->trail[$routeName]);
     }
 }
