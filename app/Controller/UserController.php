@@ -257,6 +257,8 @@ final class UserController
             }
 
             if ([] === $errorMessages = $this->validator->validateModel($user)) {
+                $user = $user->withUpdatedAt(new \DateTime());
+
                 $this->userRepository->update($user);
                 $this->session->addFlash(
                     $request,
