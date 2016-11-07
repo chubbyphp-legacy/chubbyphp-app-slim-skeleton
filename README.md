@@ -33,8 +33,8 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
 #### Download
 
 ```{.sh}
-wget https://github.com/chubbyphp/chubbyphp-app-slim-skeleton/archive/master.zip
-unzip chubbyphp-app-slim-skeleton.zip
+wget https://github.com/chubbyphp/chubbyphp-app-slim-skeleton/archive/master.zip chubbyphp-app-slim-skeleton.zip
+unzip master.zip
 mv chubbyphp-app-slim-skeleton <myproject>
 ```
 
