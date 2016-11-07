@@ -196,9 +196,9 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
      */
     public static function fromRow(array $data): ModelInterface
     {
-        $user = new self($data['id'], new \DateTime($data['created_at']));
+        $user = new self($data['id'], new \DateTime($data['createdAt']));
 
-        $user->updatedAt = null !== $data['updated_at'] ? new \DateTime($data['updated_at']) : null;
+        $user->updatedAt = null !== $data['updatedAt'] ? new \DateTime($data['updatedAt']) : null;
         $user->username = $data['username'];
         $user->email = $data['email'];
         $user->password = $data['password'];
@@ -214,8 +214,8 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     {
         return [
             'id' => $this->id,
-            'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updated_at' => null !== $this->updatedAt ? $this->updatedAt->format('Y-m-d H:i:s') : null,
+            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
+            'updatedAt' => null !== $this->updatedAt ? $this->updatedAt->format('Y-m-d H:i:s') : null,
             'username' => $this->username,
             'email' => $this->email,
             'password' => $this->password,
@@ -230,8 +230,8 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     {
         return [
             'id' => $this->id,
-            'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updated_at' => null !== $this->updatedAt ? $this->updatedAt->format('Y-m-d H:i:s') : null,
+            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
+            'updatedAt' => null !== $this->updatedAt ? $this->updatedAt->format('Y-m-d H:i:s') : null,
             'username' => $this->username,
             'email' => $this->email,
             'roles' => $this->roles,
