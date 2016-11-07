@@ -48,8 +48,8 @@ git init
 #### Install vagrant
 
 ```{.sh}
-git submodule update --init -- vagrant-php
-git submodule update --remote -- vagrant-php
+rm -r vagrant-php
+git submodule add -b 14.04 https://github.com/vagrant-php/ubuntu.git vagrant-php
 ```
 
 #### Start vagrant
