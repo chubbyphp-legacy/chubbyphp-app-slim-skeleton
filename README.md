@@ -30,39 +30,14 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
 
 ### With vagrant-php
 
-#### Download
+#### Install `create-slim3-project` command
+
+[create-slim3-project][19]
+
+#### Create project
 
 ```{.sh}
-wget https://github.com/chubbyphp/chubbyphp-app-slim-skeleton/archive/master.zip chubbyphp-app-slim-skeleton.zip
-unzip master.zip
-mv chubbyphp-app-slim-skeleton <myproject>
-```
-
-#### Initialize git
-
-```{.sh}
-cd <myproject>
-git init
-```
-
-#### Install vagrant
-
-```{.sh}
-rm -r vagrant-php
-git submodule add -b 14.04 https://github.com/vagrant-php/ubuntu.git vagrant-php
-```
-
-#### Start vagrant
-
-```{.sh}
-cd vagrant-php
-vagrant up
-```
-
-#### Install vendors
-
-```{.sh}
-vagrant ssh -c "composer.phar install"
+create-slim3-project --name=myproject --vagrantIp=10.15.10.15
 ```
 
 ### With php on host
@@ -113,3 +88,4 @@ admin@admin.admin // admin
 [16]: https://github.com/bitExpert/prophiler-psr7-middleware
 [17]: https://github.com/fabfuel/prophiler
 [18]: https://github.com/chubbyphp/chubbyphp-lazy
+[19]: https://github.com/vagrant-php/create-slim3-project
