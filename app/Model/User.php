@@ -17,12 +17,12 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     private $id;
 
     /**
-     * @var \DateTime
+     * @var string
      */
     private $createdAt;
 
     /**
-     * @var \DateTime
+     * @var string|null
      */
     private $updatedAt;
 
@@ -58,7 +58,16 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     public function __construct(string $id = null, \DateTime $createdAt = null)
     {
         $this->id = $id ?? (string) Uuid::uuid4();
-        $this->createdAt = $createdAt ?? new \DateTime();
+        $this->setCreatedAt($createdAt ?? new \DateTime());
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    private function setCreatedAt(\DateTime $createdAt)
+    {
+        $createdAt = $createdAt->format('Y-m-d H:i:s');
+        $this->createdAt = $createdAt;
     }
 
     /**
@@ -74,7 +83,7 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
      */
     public function getCreatedAt(): \DateTime
     {
-        return $this->createdAt;
+        return new \DateTime($this->createdAt);
     }
 
     /**
@@ -84,6 +93,7 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
      */
     public function withUpdatedAt(\DateTime $updatedAt): User
     {
+        $updatedAt = $updatedAt->format('Y-m-d H:i:s');
         $user = $this->cloneWithModification(__METHOD__, $updatedAt, $this->updatedAt);
         $user->updatedAt = $updatedAt;
 
@@ -91,11 +101,14 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     }
 
     /**
-     * @return string
+     * @return \DateTime|null
      */
-    public function getUpdatedAt(): string
+    public function getUpdatedAt()
     {
-        return $this->updatedAt;
+        if (null === $this->updatedAt) {
+            return null;
+        }
+        return new \DateTime($this->updatedAt);
     }
 
     /**
@@ -198,7 +211,7 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     {
         $user = new self($data['id'], new \DateTime($data['createdAt']));
 
-        $user->updatedAt = null !== $data['updatedAt'] ? new \DateTime($data['updatedAt']) : null;
+        $user->updatedAt = $data['updatedAt'];
         $user->username = $data['username'];
         $user->email = $data['email'];
         $user->password = $data['password'];
@@ -214,8 +227,8 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     {
         return [
             'id' => $this->id,
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updatedAt' => null !== $this->updatedAt ? $this->updatedAt->format('Y-m-d H:i:s') : null,
+            'createdAt' => $this->createdAt,
+            'updatedAt' => $this->updatedAt,
             'username' => $this->username,
             'email' => $this->email,
             'password' => $this->password,
@@ -230,8 +243,8 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     {
         return [
             'id' => $this->id,
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updatedAt' => null !== $this->updatedAt ? $this->updatedAt->format('Y-m-d H:i:s') : null,
+            'createdAt' => $this->createdAt,
+            'updatedAt' => $this->updatedAt,
             'username' => $this->username,
             'email' => $this->email,
             'roles' => $this->roles,
