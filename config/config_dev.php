@@ -7,6 +7,6 @@ return [
     ],
     'projectSettings' => [
         'debug' => true,
-        'monolog.level' => 'debug',
+        'monolog.level' => 'debug'
     ],
 ];

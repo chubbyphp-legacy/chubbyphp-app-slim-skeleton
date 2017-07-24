@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlimSkeleton\Command;
 
 use Chubbyphp\Security\Authentication\PasswordManagerInterface;
@@ -53,13 +55,13 @@ final class CreateUserCommand
         $password = $input->getArgument('password');
         $roles = $input->getArgument('roles');
 
-        $user = (new User())
-            ->withEmail($email)
-            ->withPassword($this->passwordManager->hash($password))
-            ->withRoles($roles)
+        $user = User::create()
+            ->setEmail($email)
+            ->setPassword($this->passwordManager->hash($password))
+            ->setRoles($roles)
         ;
 
-        $errors = $this->validator->validateModel($user);
+        $errors = $this->validator->validateObject($user);
         if ([] !== $errors) {
             foreach ($errors as $field => $errorsPerField) {
                 foreach ($errorsPerField as $errorPerField) {
@@ -70,7 +72,7 @@ final class CreateUserCommand
             return 1;
         }
 
-        $this->userRepository->insert($user);
+        $this->userRepository->persist($user);
 
         $output->writeln(
             sprintf(

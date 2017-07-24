@@ -1,5 +1,7 @@
 {% extends "@SlimSkeleton/baselayout.html.twig" %}
 
+{% block title %}{{ parent() }} - {{ ("error."~code~".title")|translate(locale) }}{% endblock %}
+
 {% block container %}
     <div class="row">
         <div class="col-xs-12">

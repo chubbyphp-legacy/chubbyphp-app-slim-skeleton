@@ -1,18 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlimSkeleton\Repository;
 
-use Chubbyphp\Model\AbstractDoctrineRepository;
+use Chubbyphp\Model\ModelInterface;
 use SlimSkeleton\Model\User;
 
-final class UserRepository extends AbstractDoctrineRepository
+final class UserRepository extends AbstractRepository
 {
     /**
-     * @return string
+     * @param string $modelClass
+     *
+     * @return bool
      */
-    public function getModelClass(): string
+    public function isResponsible(string $modelClass): bool
     {
-        return User::class;
+        return $modelClass === User::class;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return ModelInterface
+     */
+    protected function fromPersistence(array $row): ModelInterface
+    {
+        return User::fromPersistence($row);
     }
 
     /**

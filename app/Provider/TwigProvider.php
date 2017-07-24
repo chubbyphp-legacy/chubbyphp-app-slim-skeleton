@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlimSkeleton\Provider;
 
 use Pimple\Container;
@@ -26,9 +28,8 @@ final class TwigProvider implements ServiceProviderInterface
 
         $container['twig'] = function () use ($container) {
             $twig = new \Twig_Environment($container['twig.loader'], [
-                'cache' => $container['cacheDir'].'/twig',
+                'cache' => !$container['debug'] ? $container['cacheDir'].'/twig' : null,
                 'debug' => $container['debug'],
-                'auto_reload' => !$container['debug'] ? null : true,
             ]);
 
             foreach ($container['twig.extensions'] as $extension) {

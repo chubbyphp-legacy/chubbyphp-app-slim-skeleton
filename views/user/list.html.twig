@@ -1,5 +1,7 @@
 {% extends "@SlimSkeleton/baselayout.html.twig" %}
 
+{% block title %}{{ parent() }} - {{ "user.title.list"|translate(locale) }}{% endblock %}
+
 {% block container %}
     <div class="row">
         <div class="col-xs-12">
@@ -15,6 +17,7 @@
                     <tr>
                         <th>{{ "user.label.id"|translate(locale) }}</th>
                         <th>{{ "user.label.email"|translate(locale) }}</th>
+                        <th>{{ "user.label.roles"|translate(locale) }}</th>
                         <th>{{ "user.label.actions"|translate(locale) }}</th>
                     </tr>
                 </thead>
@@ -23,11 +26,12 @@
                         <tr>
                             <td>{{ user.id }}</td>
                             <td>{{ user.email }}</td>
+                            <td>{{ user.roles|join(', ') }}</td>
                             <td>
-                                <a href="{{ path_for('user_edit', {'locale': locale, 'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.edit"|translate(locale) }}">
+                                <a href="{{ path_for('user_update', {'locale': locale, 'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.update"|translate(locale) }}">
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
-                                <a href="{{ path_for('user_view', {'locale': locale, 'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.view"|translate(locale) }}">
+                                <a href="{{ path_for('user_read', {'locale': locale, 'id': user.id}) }}" type="button" class="btn btn-default btn-sm" title="{{ "user.action.read"|translate(locale) }}">
                                     <i class="glyphicon glyphicon-eye-open"></i>
                                 </a>
                                 <form action="{{ path_for('user_delete', {'locale': locale, 'id': user.id}) }}" method="post" class="inline-form">

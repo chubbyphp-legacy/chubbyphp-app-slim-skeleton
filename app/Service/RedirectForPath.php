@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlimSkeleton\Service;
 
 use Psr\Http\Message\ResponseInterface as Response;

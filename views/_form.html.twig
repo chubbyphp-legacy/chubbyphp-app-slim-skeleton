@@ -1,0 +1,242 @@
+{% macro renderInputHidden(parameters) %}
+    {% set model = parameters.model %}
+    {% set property = parameters.property %}
+    {% set id = parameters.id|default(property) %}
+    {% set name = parameters.name|default(property) %}
+
+    <input type="hidden" id="{{ id }}" name="{{ name }}" value="{{ model[property] }}">
+
+{% endmacro %}
+
+{% macro renderInputText(parameters) %}
+    {% set model = parameters.model %}
+    {% set property = parameters.property %}
+    {% set id = parameters.id|default(property) %}
+    {% set name = parameters.name|default(property) %}
+    {% set label = parameters.label|default(property) %}
+    {% set errorMessages = parameters.errorMessages|default([]) %}
+    {% set locale = parameters.locale|default('en') %}
+
+    <div class="form-group{% if errorMessages[property] is defined %} has-error{% endif %}">
+        <label class="control-label col-lg-2" for="{{ id }}">{{ label|translate(locale) }}</label>
+        <div class="col-lg-10">
+            <input type="text" id="{{ id }}" name="{{ name }}" value="{{ model[property] }}" class="form-control">
+            {% if errorMessages[property] is defined %}
+                {% for message in errorMessages[property] %}
+                    <span class="help-block">{{ message }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro renderInputDate(parameters) %}
+    {% set model = parameters.model %}
+    {% set property = parameters.property %}
+    {% set id = parameters.id|default(property) %}
+    {% set name = parameters.name|default(property) %}
+    {% set label = parameters.label|default(property) %}
+    {% set errorMessages = parameters.errorMessages|default([]) %}
+    {% set locale = parameters.locale|default('en') %}
+
+    <div class="form-group{% if errorMessages[property] is defined %} has-error{% endif %}">
+        <label class="control-label col-lg-2" for="{{ id }}">{{ label|translate(locale) }}</label>
+        <div class="col-lg-10">
+            <input type="text" id="{{ id }}" name="{{ name }}" value="{{ model[property] }}" data-provide="datepicker" data-date-format="yyyy-mm-dd" class="form-control">
+            {% if errorMessages[property] is defined %}
+                {% for message in errorMessages[property] %}
+                    <span class="help-block">{{ message }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro renderInputPassword(parameters) %}
+    {% set model = parameters.model %}
+    {% set property = parameters.property %}
+    {% set id = parameters.id|default(property) %}
+    {% set name = parameters.name|default(property) %}
+    {% set label = parameters.label|default(property) %}
+    {% set errorMessages = parameters.errorMessages|default([]) %}
+    {% set locale = parameters.locale|default('en') %}
+
+    <div class="form-group{% if errorMessages[property] is defined %} has-error{% endif %}">
+        <label class="control-label col-lg-2" for="{{ id }}">{{ label|translate(locale) }}</label>
+        <div class="col-lg-10">
+            <input type="password" id="{{ id }}" name="{{ name }}" value="" class="form-control">
+            {% if errorMessages[property] is defined %}
+                {% for message in errorMessages[property] %}
+                    <span class="help-block">{{ message }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro renderSelect(parameters) %}
+    {% set model = parameters.model %}
+    {% set property = parameters.property %}
+    {% set id = parameters.id|default(property) %}
+    {% set name = parameters.name|default(property) %}
+    {% set label = parameters.label|default(property) %}
+    {% set options = parameters.options|default([]) %}
+    {% set errorMessages = parameters.errorMessages|default([]) %}
+    {% set locale = parameters.locale|default('en') %}
+
+    <div class="form-group{% if errorMessages[property] is defined %} has-error{% endif %}">
+        <label class="control-label col-lg-2" for="{{ id }}">{{ label|translate(locale) }}</label>
+        <div class="col-lg-10">
+            <select id="{{ id }}" name="{{ name }}" class="form-control" data-placeholder="{{ (label~'._placeholder')|translate(locale) }}" placeholder="{{ (label~'._placeholder')|translate(locale) }}">
+                {% for labelKey, value in options %}
+                    <option value="{{ value }}"{% if value == model[property] %} selected="selected"{% endif %}>{{ (label~"."~labelKey)|translate(locale) }}</option>
+                {% endfor %}
+            </select>
+            {% if errorMessages[property] is defined %}
+                {% for message in errorMessages[property] %}
+                    <span class="help-block">{{ message }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro renderAjaxSelect(parameters) %}
+    {% set model = parameters.model %}
+    {% set property = parameters.property %}
+    {% set id = parameters.id|default(property) %}
+    {% set name = parameters.name|default(property) %}
+    {% set label = parameters.label|default(property) %}
+    {% set route = parameters.route|default('/') %}
+    {% set choiceLabel = parameters.choiceLabel|default('name') %}
+    {% set errorMessages = parameters.errorMessages|default([]) %}
+    {% set locale = parameters.locale|default('en') %}
+
+    <div class="form-group{% if errorMessages[property] is defined %} has-error{% endif %}">
+        <label class="control-label col-lg-2" for="{{ id }}">{{ label|translate(locale) }}</label>
+        <div class="col-lg-10">
+            <select id="{{ id }}" name="{{ name }}" class="form-control" data-ajax="1" data-select2-rendering="1" data-route="{{ route }}" data-choice-label="{{ choiceLabel }}" data-placeholder="{{ (label~'._placeholder')|translate(locale) }}" placeholder="{{ (label~'._placeholder')|translate(locale) }}">
+                {% if model[property] %}
+                    <option value="{{ model[property].id }}" selected="selected">{{ model[property][choiceLabel] }}</option>
+                {% endif %}
+            </select>
+            {% if errorMessages[property] is defined %}
+                {% for message in errorMessages[property] %}
+                    <span class="help-block">{{ message }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro renderSelectMultiple(parameters) %}
+    {% set model = parameters.model %}
+    {% set property = parameters.property %}
+    {% set id = parameters.id|default(property) %}
+    {% set name = parameters.name|default(property) %}
+    {% set label = parameters.label|default(property) %}
+    {% set options = parameters.options|default([]) %}
+    {% set errorMessages = parameters.errorMessages|default([]) %}
+    {% set locale = parameters.locale|default('en') %}
+
+    <div class="form-group{% if errorMessages[property] is defined %} has-error{% endif %}">
+        <label class="control-label col-lg-2" for="{{ id }}">{{ label|translate(locale) }}</label>
+        <div class="col-lg-10">
+            <select id="{{ id }}" name="{{ name }}[]" multiple="multiple" class="form-control" data-placeholder="{{ (label~'._placeholder')|translate(locale) }}" placeholder="{{ (label~'._placeholder')|translate(locale) }}">
+                {% for labelKey, value in options %}
+                    <option value="{{ value }}"{% if value in model[property] %} selected="selected"{% endif %}>{{ (label~"."~labelKey)|translate(locale) }}</option>
+                {% endfor %}
+            </select>
+            {% if errorMessages[property] is defined %}
+                {% for message in errorMessages[property] %}
+                    <span class="help-block">{{ message }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro renderCollection(parameters) %}
+    {% set model = parameters.model %}
+    {% set property = parameters.property %}
+    {% set id = parameters.id|default(property) %}
+    {% set name = parameters.name|default(property) %}
+    {% set label = parameters.label|default(property) %}
+    {% set fields = parameters.fields|default([]) %}
+    {% set prototypeName = parameters.prototypeName|default('__name__') %}
+    {% set errorMessages = parameters.errorMessages|default([]) %}
+    {% set locale = parameters.locale|default('en') %}
+
+    <div class="form-group{% if errorMessages[property]['_all'] is defined %} has-error{% endif %}">
+        <label class="control-label col-lg-2" for="{{ id }}">{{ label|translate(locale) }}</label>
+        <div class="col-lg-10">
+            {% if errorMessages[property]['_all'] is defined %}
+                {% for message in errorMessages[property]['_all'] %}
+                    <span class="help-block">{{ message }}</span>
+                {% endfor %}
+                <hr>
+            {% endif %}
+            <div id="{{ id }}" data-prototype="{{ _self.renderCollectionRow({
+                'model': value,
+                'id': (id~'_'~prototypeName),
+                'name': (name~'['~prototypeName~']'),
+                'label': label,
+                'fields': fields,
+                'errorMessages': errorMessages[property]|default([]),
+                'locale': locale
+            })|escape('html') }}">
+                <ul class="bc-collection list-unstyled">
+                    {% for key, value in model[property] %}
+                        <li>
+                            {{ _self.renderCollectionRow({
+                                'model': value,
+                                'id': (id~'_'~key),
+                                'name': (name~'['~key~']'),
+                                'label': label,
+                                'fields': fields,
+                                'errorMessages': errorMessages[property][key]|default([]),
+                                'locale': locale
+                            }) }}
+                        </li>
+                    {% endfor %}
+                </ul>
+                <a href="#" class="btn btn-primary btn-small" data-addfield="collection" data-collection="{{ id }}" data-prototype-name="{{ prototypeName }}">{{ (label~'._add')|translate(locale) }}</a>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro renderCollectionRow(parameters) %}
+    {% set model = parameters.model %}
+    {% set id = parameters.id %}
+    {% set name = parameters.name %}
+    {% set label = parameters.label %}
+    {% set fields = parameters.fields %}
+    {% set errorMessages = parameters.errorMessages %}
+    {% set locale = parameters.locale %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div id="{{ id }}" class="form-groups">
+                {% for field in fields %}
+                    {{ attribute(
+                        _self,
+                        field.macro,
+                        [
+                            field.parameters|merge({
+                                'model': model,
+                                'id': (id~'_'~(field.parameters.id|default(field.parameters.property))),
+                                'name': (name~'['~(field.parameters.name|default(field.parameters.property))~']'),
+                                'errorMessages': errorMessages|default([]),
+                                'locale': locale
+                            })
+                        ]
+                    ) }}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-xs-12 col-lg-offset-2">
+            <a href="#" class="btn btn-danger btn-small" data-removefield="collection" data-field="{{ id }}">{{ (label~'._remove')|translate(locale) }}</a>
+        </div>
+    </div>
+{% endmacro %}

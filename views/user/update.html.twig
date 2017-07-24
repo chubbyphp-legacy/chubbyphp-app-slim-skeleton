@@ -2,14 +2,18 @@
 
 {% import "@SlimSkeleton/_form.html.twig" as forms %}
 
+{% block title %}{{ parent() }} - {{ "user.title.update"|translate(locale) }}{% endblock %}
+
 {% block container %}
     <div class="row">
         <div class="col-xs-12">
-            <h1>{{ "user.title.create"|translate(locale) }}</h1>
-            <form action="{{ path_for('user_create', {'locale': locale}) }}" method="post" class="form-horizontal">
-                {{ forms.renderInputText(user, 'email', 'user.label.email', errorMessages, locale) }}
-                {{ forms.renderInputPassword(user, 'password', 'user.label.password', errorMessages, locale) }}
-                {{ forms.renderSelectMultiple(user, 'roles', 'user.label.roles', possibleRoles, errorMessages, locale) }}
+            <h1>{{ "user.title.update"|translate(locale) }}</h1>
+            <form action="{{ path_for('user_update', {'locale': locale, 'id': user.id}) }}" method="post" class="form-horizontal">
+                {{ forms.renderInputText({'model': user, 'property': 'email', 'label': 'user.label.email', 'errorMessages': errorMessages, 'locale': locale}) }}
+                {{ forms.renderInputPassword({'model': user, 'property': 'password', 'label': 'user.label.password', 'errorMessages': errorMessages, 'locale': locale}) }}
+                {% if authenticatedUser.id != user.id %}
+                    {{ forms.renderSelectMultiple({'model': user, 'property': 'roles', 'label': 'user.label.roles', 'options': possibleRoles, 'errorMessages': errorMessages, 'locale': locale}) }}
+                {% endif %}
                 <input type="hidden" name="csrf" value="{{ csrf }}">
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">

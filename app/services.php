@@ -1,8 +1,10 @@
 <?php
 
 use Chubbyphp\Csrf\CsrfProvider;
-use Chubbyphp\ErrorHandler\SimpleErrorHandlerProvider;
-use Chubbyphp\Model\Cache\ModelCache;
+use Chubbyphp\Deserialization\Mapping\LazyObjectMapping as DeserializationLazyObjectMapping;
+use Chubbyphp\Deserialization\Provider\DeserializationProvider;
+use Chubbyphp\Model\StorageCache\ArrayStorageCache;
+use Chubbyphp\Model\Resolver;
 use Chubbyphp\Security\Authentication\AuthenticationProvider;
 use Chubbyphp\Security\Authentication\FormAuthentication;
 use Chubbyphp\Security\Authorization\AuthorizationProvider;
@@ -11,34 +13,45 @@ use Chubbyphp\Session\SessionProvider;
 use Chubbyphp\Translation\LocaleTranslationProvider;
 use Chubbyphp\Translation\TranslationProvider;
 use Chubbyphp\Translation\TranslationTwigExtension;
-use Chubbyphp\Validation\Requirements\Repository;
-use Chubbyphp\Validation\ValidationProvider;
+use Chubbyphp\Validation\Mapping\LazyObjectMapping as ValidationLazyObjectMapping;
+use Chubbyphp\Validation\Provider\ValidationProvider;
+use SlimSkeleton\Csrf\CsrfErrorHandler;
+use SlimSkeleton\Deserialization\ComestibleMapping as DeserializationComestibleMapping;
+use SlimSkeleton\Deserialization\ComestibleWithinDayMapping as DeserializationComestibleWithinDayMapping;
+use SlimSkeleton\Deserialization\DateRangeMapping as DeserializationDateRangeMapping;
+use SlimSkeleton\Deserialization\DayMapping as DeserializationDayMapping;
+use SlimSkeleton\Deserialization\UserMapping as DeserializationUserMapping;
+use SlimSkeleton\ErrorHandler\ErrorResponseHandler;
+use SlimSkeleton\Model\Comestible;
+use SlimSkeleton\Model\ComestibleWithinDay;
+use SlimSkeleton\Model\DateRange;
+use SlimSkeleton\Model\Day;
+use SlimSkeleton\Model\User;
+use SlimSkeleton\Provider\TwigProvider;
+use SlimSkeleton\Repository\DayRepository;
+use SlimSkeleton\Repository\ComestibleRepository;
+use SlimSkeleton\Repository\ComestibleWithinDayRepository;
+use SlimSkeleton\Repository\UserRepository;
+use SlimSkeleton\Security\AuthenticationErrorHandler;
+use SlimSkeleton\Service\RedirectForPath;
+use SlimSkeleton\Service\TwigRender;
+use SlimSkeleton\Twig\NumericExtension;
+use SlimSkeleton\Twig\RouterExtension;
+use SlimSkeleton\Validation\ComestibleMapping as ValidationComestibleMapping;
+use SlimSkeleton\Validation\ComestibleWithinDayMapping as ValidationComestibleWithinDayMapping;
+use SlimSkeleton\Validation\DayMapping as ValidationDayMapping;
+use SlimSkeleton\Validation\UserMapping as ValidationUserMapping;
 use Negotiation\LanguageNegotiator;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Slim\Container;
-use SlimSkeleton\Command\CreateDatabaseCommand;
-use SlimSkeleton\Command\CreateUserCommand;
-use SlimSkeleton\Command\RunSqlCommand;
-use SlimSkeleton\Command\SchemaUpdateCommand;
-use SlimSkeleton\Controller\AuthController;
-use SlimSkeleton\Controller\HomeController;
-use SlimSkeleton\Controller\UserController;
-use SlimSkeleton\ErrorHandler\HtmlErrorResponseProvider;
-use SlimSkeleton\Middleware\LocaleMiddleware;
-use SlimSkeleton\Provider\TwigProvider;
-use SlimSkeleton\Repository\UserRepository;
-use SlimSkeleton\Service\RedirectForPath;
-use SlimSkeleton\Service\TemplateData;
-use SlimSkeleton\Service\TwigRender;
-use SlimSkeleton\Twig\RouterExtension;
 
 /* @var Container $container */
 $container->register(new AuthenticationProvider());
 $container->register(new AuthorizationProvider());
 $container->register(new CsrfProvider());
+$container->register(new DeserializationProvider());
 $container->register(new DoctrineServiceProvider());
-$container->register(new SimpleErrorHandlerProvider());
 $container->register(new MonologServiceProvider());
 $container->register(new SessionProvider());
 $container->register(new TranslationProvider());
@@ -46,9 +59,25 @@ $container->register(new TwigProvider());
 $container->register(new ValidationProvider());
 
 // extend providers
-$container['errorHandler.defaultProvider'] = function () use ($container) {
-    return $container[HtmlErrorResponseProvider::class];
+$container['security.authentication.errorResponseHandler'] = function () use ($container) {
+    return new AuthenticationErrorHandler($container[ErrorResponseHandler::class]);
 };
+
+$container['csrf.errorResponseHandler'] = function () use ($container) {
+    return new CsrfErrorHandler($container['session']);
+};
+
+$container['deserializer.emptystringtonull'] = true;
+
+$container->extend('deserializer.objectmappings', function (array $objectMappings) use ($container) {
+    $objectMappings[] = new DeserializationLazyObjectMapping(
+        $container,
+        DeserializationUserMapping::class,
+        User::class
+    );
+
+    return $objectMappings;
+});
 
 $container->extend('security.authentication.authentications', function (array $authentications) use ($container) {
     $authentications[] = $container[FormAuthentication::class];
@@ -70,20 +99,20 @@ $container->extend('security.authorization.rolehierarchy', function (array $role
 });
 
 $container->extend('translator.providers', function (array $providers) use ($container) {
-    $translationDir = $container['appDir'].'/Resources/translations';
-    $providers[] = new LocaleTranslationProvider('de', require $translationDir.'/de.php');
-    $providers[] = new LocaleTranslationProvider('en', require $translationDir.'/en.php');
+    $providers[] = new LocaleTranslationProvider('de', require $container['translationDir'].'/de.php');
+    $providers[] = new LocaleTranslationProvider('en', require $container['translationDir'].'/en.php');
 
     return $providers;
 });
 
 $container->extend('twig.namespaces', function (array $namespaces) use ($container) {
-    $namespaces['SlimSkeleton'] = $container['appDir'].'/Resources/views';
+    $namespaces['SlimSkeleton'] = $container['viewDir'];
 
     return $namespaces;
 });
 
 $container->extend('twig.extensions', function (array $extensions) use ($container) {
+    $extensions[] = new NumericExtension();
     $extensions[] = new RouterExtension($container['router']);
     $extensions[] = new TranslationTwigExtension($container['translator']);
     if ($container['debug']) {
@@ -93,90 +122,55 @@ $container->extend('twig.extensions', function (array $extensions) use ($contain
     return $extensions;
 });
 
-$container->extend('validator.helpers', function (array $helpers) use ($container) {
-    $helpers[] = $container[Repository::class.'User'];
+$container->extend('validator.objectmappings', function (array $objectMappings) use ($container) {
+    $objectMappings[] = new ValidationLazyObjectMapping(
+        $container,
+        ValidationUserMapping::class,
+        User::class
+    );
 
-    return $helpers;
+    return $objectMappings;
 });
 
-// commands
-$container[CreateDatabaseCommand::class] = function () use ($container) {
-    return new CreateDatabaseCommand($container['db']);
-};
-
-$container[CreateUserCommand::class] = function () use ($container) {
-    return new CreateUserCommand(
+// deserializer
+$container[DeserializationUserMapping::class] = function () use ($container) {
+    return new DeserializationUserMapping(
         $container['security.authentication.passwordmanager'],
-        $container[UserRepository::class],
-        $container['validator']
-    );
-};
-
-$container[RunSqlCommand::class] = function () use ($container) {
-    return new RunSqlCommand($container['db']);
-};
-
-$container[SchemaUpdateCommand::class] = function () use ($container) {
-    return new SchemaUpdateCommand($container['db'], $container['appDir'].'/schema.php');
-};
-
-// controllers
-$container[HomeController::class] = function () use ($container) {
-    return new HomeController($container[TemplateData::class], $container[TwigRender::class]);
-};
-
-$container[AuthController::class] = function () use ($container) {
-    return new AuthController(
-        $container[FormAuthentication::class], // need cause login/logout
-        $container[RedirectForPath::class],
-        $container['session']
-    );
-};
-
-$container[UserController::class] = function () use ($container) {
-    return new UserController(
-        $container['security.authentication'],
-        $container['security.authorization'],
-        $container['security.authentication.passwordmanager'],
-        $container[RedirectForPath::class],
-        $container['security.authorization.rolehierarchyresolver'],
-        $container['session'],
-        $container[TemplateData::class],
-        $container[TwigRender::class],
-        $container[UserRepository::class],
-        $container['validator']
-    );
-};
-
-// middlewares
-$container[LocaleMiddleware::class] = function () use ($container) {
-    return new LocaleMiddleware(
-        $container[LanguageNegotiator::class],
-        $container['localeFallback'],
-        $container['locales']
+        $container['security.authorization.rolehierarchyresolver']
     );
 };
 
 // repositories
+$container[ArrayStorageCache::class] = function () {
+    return new ArrayStorageCache();
+};
+
 $container[UserRepository::class] = function () use ($container) {
-    return new UserRepository($container['db'], new ModelCache(), $container['logger']);
+    return new UserRepository(
+        $container['db'],
+        $container[Resolver::class],
+        $container[ArrayStorageCache::class],
+        $container['logger']
+    );
+};
+
+$container[Resolver::class] = function () use ($container) {
+    return new Resolver($container, [
+        UserRepository::class,
+    ]);
 };
 
 // services
+$container[ErrorResponseHandler::class] = function () use ($container) {
+    return new ErrorResponseHandler($container[TwigRender::class]);
+};
+
 $container[FormAuthentication::class] = function ($container) {
     return new FormAuthentication(
         $container['security.authentication.passwordmanager'],
         $container['session'],
         $container[UserRepository::class],
         $container['logger']
-    );
-};
-
-$container[HtmlErrorResponseProvider::class] = function () use ($container) {
-    return new HtmlErrorResponseProvider(
-        $container['errorHandler'],
-        $container[TemplateData::class],
-        $container[TwigRender::class]
     );
 };
 
@@ -188,29 +182,28 @@ $container[RedirectForPath::class] = function () use ($container) {
     return new RedirectForPath($container['router']);
 };
 
-$container[Repository::class.'User'] = function () use ($container) {
-    return new Repository($container[UserRepository::class]);
-};
-
 $container[RoleAuthorization::class] = function ($container) {
     return new RoleAuthorization($container['security.authorization.rolehierarchyresolver'], $container['logger']);
 };
 
-$container[TemplateData::class] = function () use ($container) {
-    return new TemplateData(
+$container[TwigRender::class] = function () use ($container) {
+    return new TwigRender(
         $container['security.authentication'],
         $container['debug'],
         $container['session'],
         [
             'user_create' => ['user_list'],
             'user_delete' => ['user_list'],
-            'user_edit' => ['user_list'],
+            'user_update' => ['user_list'],
             'user_list' => [],
-            'user_view' => ['user_list'],
-        ]
+            'user_read' => ['user_list'],
+        ],
+        $container['translator'],
+        $container['twig']
     );
 };
 
-$container[TwigRender::class] = function () use ($container) {
-    return new TwigRender($container['twig']);
+// validation
+$container[ValidationUserMapping::class] = function () use ($container) {
+    return new ValidationUserMapping($container[Resolver::class]);
 };

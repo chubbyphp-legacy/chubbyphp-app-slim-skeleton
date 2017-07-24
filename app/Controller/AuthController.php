@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlimSkeleton\Controller;
 
 use Chubbyphp\Security\Authentication\Exception\AuthenticationExceptionInterface;

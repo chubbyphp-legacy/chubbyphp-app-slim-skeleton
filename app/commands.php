@@ -1,30 +1,51 @@
 <?php
 
 use Chubbyphp\Lazy\LazyCommand;
-use Slim\Container;
-use SlimSkeleton\Command\CreateDatabaseCommand;
+use Chubbyphp\Model\Doctrine\DBAL\Command\CreateDatabaseCommand;
+use Chubbyphp\Model\Doctrine\DBAL\Command\RunSqlCommand;
+use Chubbyphp\Model\Doctrine\DBAL\Command\SchemaUpdateCommand;
 use SlimSkeleton\Command\CreateUserCommand;
-use SlimSkeleton\Command\RunSqlCommand;
-use SlimSkeleton\Command\SchemaUpdateCommand;
 use SlimSkeleton\Provider\ConsoleProvider;
+use SlimSkeleton\Repository\UserRepository;
+use Slim\Container;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /* @var Container $container */
 $container->register(new ConsoleProvider());
 
+$container[CreateDatabaseCommand::class] = function () use ($container) {
+    return new CreateDatabaseCommand($container['db']);
+};
+
+$container[CreateUserCommand::class] = function () use ($container) {
+    return new CreateUserCommand(
+        $container['security.authentication.passwordmanager'],
+        $container[UserRepository::class],
+        $container['validator']
+    );
+};
+
+$container[RunSqlCommand::class] = function () use ($container) {
+    return new RunSqlCommand($container['db']);
+};
+
+$container[SchemaUpdateCommand::class] = function () use ($container) {
+    return new SchemaUpdateCommand($container['db'], __DIR__.'/schema.php');
+};
+
 /* @var Container $container */
 $container->extend('console.commands', function (array $commands) use ($container) {
     $commands[] = new LazyCommand(
         $container,
         CreateDatabaseCommand::class,
-        'slim-skeleton:database:create'
+        'chubbyphp:model:dbal:database:create'
     );
 
     $commands[] = new LazyCommand(
         $container,
         RunSqlCommand::class,
-        'slim-skeleton:database:run:sql',
+        'chubbyphp:model:dbal:database:run:sql',
         [
             new InputArgument('sql', InputArgument::REQUIRED, 'The SQL statement to execute.'),
             new InputOption('depth', null, InputOption::VALUE_REQUIRED, 'Dumping depth of result set.', 7),
@@ -34,7 +55,7 @@ $container->extend('console.commands', function (array $commands) use ($containe
     $commands[] = new LazyCommand(
         $container,
         SchemaUpdateCommand::class,
-        'slim-skeleton:database:schema:update',
+        'chubbyphp:model:dbal:database:schema:update',
         [
             new InputOption('dump', null, InputOption::VALUE_NONE, 'Dumps the generated SQL statements'),
             new InputOption('force', 'f', InputOption::VALUE_NONE, 'Executes the generated SQL statements.'),

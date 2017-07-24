@@ -1,7 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-use Slim\App;
 use Slim\Container;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -17,11 +16,8 @@ $input = new ArgvInput();
 
 $env = $input->getParameterOption([$envOption->getName(), $envOption->getShortcut()], $envOption->getDefault());
 
-/** @var App $app */
-$app = require_once __DIR__ . '/../app/app.php';
-
 /** @var Container $container */
-$container = $app->getContainer();
+$container = require_once __DIR__ . '/../app/bootstrap.php';
 
 require_once __DIR__ . '/../app/commands.php';
 

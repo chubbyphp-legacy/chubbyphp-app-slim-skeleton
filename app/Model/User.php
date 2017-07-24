@@ -4,27 +4,12 @@ namespace SlimSkeleton\Model;
 
 use Chubbyphp\Model\ModelInterface;
 use Chubbyphp\Security\Authentication\UserPasswordInterface;
-use Chubbyphp\Validation\Rules\UniqueModelRule;
-use Chubbyphp\Validation\ValidatableModelInterface;
+use SlimSkeleton\Model\Traits\IdTrait;
 use Ramsey\Uuid\Uuid;
-use Respect\Validation\Validator as v;
 
-final class User implements \JsonSerializable, UserPasswordInterface, ValidatableModelInterface
+final class User implements UserPasswordInterface, \JsonSerializable
 {
-    /**
-     * @var string
-     */
-    private $id;
-
-    /**
-     * @var string
-     */
-    private $createdAt;
-
-    /**
-     * @var string|null
-     */
-    private $updatedAt;
+    use IdTrait;
 
     /**
      * @var string
@@ -47,68 +32,20 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     private $roles;
 
     /**
-     * @var array
-     */
-    private $__modifications = [];
-
-    /**
-     * @param string|null    $id
-     * @param \DateTime|null $createdAt
-     */
-    public function __construct(string $id = null, \DateTime $createdAt = null)
-    {
-        $this->id = $id ?? (string) Uuid::uuid4();
-        $this->setCreatedAt($createdAt ?? new \DateTime());
-    }
-
-    /**
-     * @param \DateTime $createdAt
-     */
-    private function setCreatedAt(\DateTime $createdAt)
-    {
-        $createdAt = $createdAt->format('Y-m-d H:i:s');
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt(): \DateTime
-    {
-        return new \DateTime($this->createdAt);
-    }
-
-    /**
-     * @param \DateTime $updatedAt
+     * @param string|null $id
      *
      * @return User
      */
-    public function withUpdatedAt(\DateTime $updatedAt): User
+    public static function create(string $id = null): User
     {
-        $updatedAt = $updatedAt->format('Y-m-d H:i:s');
-        $user = $this->cloneWithModification(__METHOD__, $updatedAt, $this->updatedAt);
-        $user->updatedAt = $updatedAt;
+        $user = new self();
+        $user->id = $id ?? (string) Uuid::uuid4();
 
         return $user;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getUpdatedAt()
+    private function __construct()
     {
-        if (null === $this->updatedAt) {
-            return null;
-        }
-        return new \DateTime($this->updatedAt);
     }
 
     /**
@@ -124,13 +61,12 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
      *
      * @return User
      */
-    public function withEmail(string $email): User
+    public function setEmail(string $email): User
     {
-        $user = $this->cloneWithModification(__METHOD__, $email, $this->email);
-        $user->email = $email;
-        $user->username = $email;
+        $this->email = $email;
+        $this->username = $email;
 
-        return $user;
+        return $this;
     }
 
     /**
@@ -146,12 +82,11 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
      *
      * @return User
      */
-    public function withPassword(string $password): User
+    public function setPassword(string $password): User
     {
-        $user = $this->cloneWithModification(__METHOD__, $password, $this->password);
-        $user->password = $password;
+        $this->password = $password;
 
-        return $user;
+        return $this;
     }
 
     /**
@@ -175,31 +110,11 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
      *
      * @return User
      */
-    public function withRoles(array $roles): User
+    public function setRoles(array $roles): User
     {
-        $user = $this->cloneWithModification(__METHOD__, $roles, $this->roles);
-        $user->roles = $roles;
+        $this->roles = $roles;
 
-        return $user;
-    }
-
-    /**
-     * @param string $method
-     * @param mixed  $new
-     * @param mixed  $old
-     *
-     * @return User
-     */
-    private function cloneWithModification(string $method, $new, $old): User
-    {
-        $user = clone $this;
-        $user->__modifications[] = [
-            'method' => $method,
-            'new' => $new,
-            'old' => $old,
-        ];
-
-        return $user;
+        return $this;
     }
 
     /**
@@ -207,11 +122,11 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
      *
      * @return User|ModelInterface
      */
-    public static function fromRow(array $data): ModelInterface
+    public static function fromPersistence(array $data): ModelInterface
     {
-        $user = new self($data['id'], new \DateTime($data['createdAt']));
+        $user = new self();
 
-        $user->updatedAt = $data['updatedAt'];
+        $user->id = $data['id'];
         $user->username = $data['username'];
         $user->email = $data['email'];
         $user->password = $data['password'];
@@ -223,12 +138,10 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     /**
      * @return array
      */
-    public function toRow(): array
+    public function toPersistence(): array
     {
         return [
             'id' => $this->id,
-            'createdAt' => $this->createdAt,
-            'updatedAt' => $this->updatedAt,
             'username' => $this->username,
             'email' => $this->email,
             'password' => $this->password,
@@ -243,32 +156,9 @@ final class User implements \JsonSerializable, UserPasswordInterface, Validatabl
     {
         return [
             'id' => $this->id,
-            'createdAt' => $this->createdAt,
-            'updatedAt' => $this->updatedAt,
             'username' => $this->username,
             'email' => $this->email,
             'roles' => $this->roles,
-        ];
-    }
-
-    /**
-     * @return v|null
-     */
-    public function getModelValidator()
-    {
-        return v::create()->addRule(new UniqueModelRule(['username', 'email']));
-    }
-
-    /**
-     * @return v[]|array
-     */
-    public function getPropertyValidators(): array
-    {
-        return [
-            'username' => v::notBlank()->email(),
-            'email' => v::notBlank()->email(),
-            'password' => v::notBlank(),
-            'roles' => v::notEmpty(),
         ];
     }
 }
