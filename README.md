@@ -16,8 +16,8 @@ A slim 3 skeleton to build web applications (not apis) with authentication, crud
  * [chubbyphp/chubbyphp-session][7]: ~1.0
  * [chubbyphp/chubbyphp-security][8]: ~1.1
  * [chubbyphp/chubbyphp-translation][9]: ~1.1
- * [chubbyphp/chubbyphp-validation][10]: ~2.0
- * [chubbyphp/chubbyphp-validation-model][11]: ~1.0
+ * [chubbyphp/chubbyphp-validation][10]: ^2.0.3
+ * [chubbyphp/chubbyphp-validation-model][11]: ^1.0.2
  * [doctrine/dbal][12]: ^2.5.5
  * [monolog/monolog][13]: ~1.21
  * [ramsey/uuid][14]: ~3.5
