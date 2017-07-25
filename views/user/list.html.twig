@@ -16,7 +16,6 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>{{ "user.label.id"|translate(locale) }}</th>
                         <th>{{ "user.label.email"|translate(locale) }}</th>
                         <th>{{ "user.label.roles"|translate(locale) }}</th>
                         <th>{{ "user.label.actions"|translate(locale) }}</th>
@@ -25,7 +24,6 @@
                 <tbody>
                     {% for user in users %}
                         <tr>
-                            <td>{{ user.id }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.roles|join(', ') }}</td>
                             <td>
