@@ -11,6 +11,7 @@ $container['logDir'] = __DIR__.'/../var/log';
 $container['publicDir'] = __DIR__.'/../public';
 $container['translationDir'] = __DIR__.'/../translations';
 $container['viewDir'] = __DIR__.'/../views';
+$container['vendorDir'] = __DIR__.'/../vendor';
 
 require_once __DIR__.'/functions.php';
 

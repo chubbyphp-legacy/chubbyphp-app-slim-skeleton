@@ -16,31 +16,20 @@ use Chubbyphp\Translation\TranslationTwigExtension;
 use Chubbyphp\Validation\Mapping\LazyObjectMapping as ValidationLazyObjectMapping;
 use Chubbyphp\Validation\Provider\ValidationProvider;
 use SlimSkeleton\Csrf\CsrfErrorHandler;
-use SlimSkeleton\Deserialization\ComestibleMapping as DeserializationComestibleMapping;
-use SlimSkeleton\Deserialization\ComestibleWithinDayMapping as DeserializationComestibleWithinDayMapping;
-use SlimSkeleton\Deserialization\DateRangeMapping as DeserializationDateRangeMapping;
-use SlimSkeleton\Deserialization\DayMapping as DeserializationDayMapping;
 use SlimSkeleton\Deserialization\UserMapping as DeserializationUserMapping;
+use SlimSkeleton\Deserialization\UserSearchMapping as DeserializationUserSearchMapping;
 use SlimSkeleton\ErrorHandler\ErrorResponseHandler;
-use SlimSkeleton\Model\Comestible;
-use SlimSkeleton\Model\ComestibleWithinDay;
-use SlimSkeleton\Model\DateRange;
-use SlimSkeleton\Model\Day;
 use SlimSkeleton\Model\User;
 use SlimSkeleton\Provider\TwigProvider;
-use SlimSkeleton\Repository\DayRepository;
-use SlimSkeleton\Repository\ComestibleRepository;
-use SlimSkeleton\Repository\ComestibleWithinDayRepository;
 use SlimSkeleton\Repository\UserRepository;
+use SlimSkeleton\Search\UserSearch;
 use SlimSkeleton\Security\AuthenticationErrorHandler;
 use SlimSkeleton\Service\RedirectForPath;
 use SlimSkeleton\Service\TwigRender;
 use SlimSkeleton\Twig\NumericExtension;
 use SlimSkeleton\Twig\RouterExtension;
-use SlimSkeleton\Validation\ComestibleMapping as ValidationComestibleMapping;
-use SlimSkeleton\Validation\ComestibleWithinDayMapping as ValidationComestibleWithinDayMapping;
-use SlimSkeleton\Validation\DayMapping as ValidationDayMapping;
 use SlimSkeleton\Validation\UserMapping as ValidationUserMapping;
+use SlimSkeleton\Validation\UserSearchMapping as ValidationUserSearchMapping;
 use Negotiation\LanguageNegotiator;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\MonologServiceProvider;
@@ -75,6 +64,11 @@ $container->extend('deserializer.objectmappings', function (array $objectMapping
         DeserializationUserMapping::class,
         User::class
     );
+    $objectMappings[] = new DeserializationLazyObjectMapping(
+        $container,
+        DeserializationUserSearchMapping::class,
+        UserSearch::class
+    );
 
     return $objectMappings;
 });
@@ -99,8 +93,22 @@ $container->extend('security.authorization.rolehierarchy', function (array $role
 });
 
 $container->extend('translator.providers', function (array $providers) use ($container) {
-    $providers[] = new LocaleTranslationProvider('de', require $container['translationDir'].'/de.php');
-    $providers[] = new LocaleTranslationProvider('en', require $container['translationDir'].'/en.php');
+    $providers[] = new LocaleTranslationProvider(
+        'de',
+        array_replace(
+            require $container['vendorDir'].'/chubbyphp/chubbyphp-validation/translations/de.php',
+            require $container['vendorDir'].'/chubbyphp/chubbyphp-validation-model/translations/de.php',
+            require $container['translationDir'].'/de.php'
+        )
+    );
+    $providers[] = new LocaleTranslationProvider(
+        'en',
+        array_replace(
+            require $container['vendorDir'].'/chubbyphp/chubbyphp-validation/translations/en.php',
+            require $container['vendorDir'].'/chubbyphp/chubbyphp-validation-model/translations/en.php',
+            require $container['translationDir'].'/en.php'
+        )
+    );
 
     return $providers;
 });
@@ -128,6 +136,11 @@ $container->extend('validator.objectmappings', function (array $objectMappings) 
         ValidationUserMapping::class,
         User::class
     );
+    $objectMappings[] = new ValidationLazyObjectMapping(
+        $container,
+        ValidationUserSearchMapping::class,
+        UserSearch::class
+    );
 
     return $objectMappings;
 });
@@ -138,6 +151,10 @@ $container[DeserializationUserMapping::class] = function () use ($container) {
         $container['security.authentication.passwordmanager'],
         $container['security.authorization.rolehierarchyresolver']
     );
+};
+
+$container[DeserializationUserSearchMapping::class] = function () use ($container) {
+    return new DeserializationUserSearchMapping();
 };
 
 // repositories
@@ -206,4 +223,8 @@ $container[TwigRender::class] = function () use ($container) {
 // validation
 $container[ValidationUserMapping::class] = function () use ($container) {
     return new ValidationUserMapping($container[Resolver::class]);
+};
+
+$container[ValidationUserSearchMapping::class] = function () use ($container) {
+    return new ValidationUserSearchMapping();
 };

@@ -105,7 +105,9 @@ final class TwigRender
             'debug' => $this->debug,
             'flashMessage' => $this->session->getFlash($request),
             'locale' => $locale,
+            'routeName' => $route->getName(),
             'trail' => $this->getTrailForRoute($route),
+            'queryParams' => $request->getQueryParams(),
         ], $variables);
     }
 

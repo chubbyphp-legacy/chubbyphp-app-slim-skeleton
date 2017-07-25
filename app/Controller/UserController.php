@@ -12,6 +12,7 @@ use Chubbyphp\Security\Authorization\RoleHierarchyResolverInterface;
 use Chubbyphp\Validation\ValidatorInterface;
 use SlimSkeleton\ErrorHandler\ErrorResponseHandler;
 use SlimSkeleton\Repository\UserRepository;
+use SlimSkeleton\Search\UserSearch;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use SlimSkeleton\Model\User;
@@ -22,6 +23,11 @@ use SlimSkeleton\Service\TwigRender;
 
 final class UserController
 {
+    /**
+     * @var string
+     */
+    private $searchClass;
+
     /**
      * @var AuthenticationInterface
      */
@@ -73,6 +79,7 @@ final class UserController
     private $validator;
 
     /**
+     * @param string                         $searchClass
      * @param AuthenticationInterface        $authentication
      * @param AuthorizationInterface         $authorization
      * @param DeserializerInterface          $deserializer
@@ -85,6 +92,7 @@ final class UserController
      * @param ValidatorInterface             $validator
      */
     public function __construct(
+        string $searchClass,
         AuthenticationInterface $authentication,
         AuthorizationInterface $authorization,
         DeserializerInterface $deserializer,
@@ -96,6 +104,7 @@ final class UserController
         UserRepository $userRepository,
         ValidatorInterface $validator
     ) {
+        $this->searchClass = $searchClass;
         $this->authentication = $authentication;
         $this->authorization = $authorization;
         $this->deserializer = $deserializer;
@@ -120,12 +129,26 @@ final class UserController
             return $this->errorResponseHandler->errorReponse($request, $response, 403, 'user.error.permissiondenied');
         }
 
-        $users = $this->userRepository->findBy([]);
+        /** @var UserSearch $search */
+        $search = $this->deserializer->deserializeByClass($request->getQueryParams(), $this->searchClass);
+
+        $errorMessages = [];
+        if ([] !== $errors = $this->validator->validateObject($search)) {
+            $errorMessages = $this->twig->getErrorMessages($request->getAttribute('locale'), $errors);
+
+            $this->session->addFlash(
+                $request,
+                new FlashMessage(FlashMessage::TYPE_DANGER, 'user.flash.list.failed')
+            );
+        } else {
+            $search = $this->userRepository->search($search);
+        }
 
         return $this->twig->render($response, '@SlimSkeleton/user/list.html.twig',
-            $this->twig->aggregate($request, [
-                'users' => prepareForView($users),
-            ])
+            $this->twig->aggregate($request, array_replace_recursive(
+                prepareForView($search),
+                ['errorMessages' => $errorMessages]
+            ))
         );
     }
 

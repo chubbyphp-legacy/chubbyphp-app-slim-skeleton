@@ -2,11 +2,11 @@
 
 use Chubbyphp\Security\Authentication\FormAuthentication;
 use SlimSkeleton\Controller\AuthController;
-
 use SlimSkeleton\Controller\HomeController;
 use SlimSkeleton\Controller\UserController;
 use SlimSkeleton\ErrorHandler\ErrorResponseHandler;
 use SlimSkeleton\Repository\UserRepository;
+use SlimSkeleton\Search\UserSearch;
 use SlimSkeleton\Service\RedirectForPath;
 use SlimSkeleton\Service\TwigRender;
 use Slim\App;
@@ -29,6 +29,7 @@ $container[HomeController::class] = function () use ($container) {
 
 $container[UserController::class] = function () use ($container) {
     return new UserController(
+        UserSearch::class,
         $container['security.authentication'],
         $container['security.authorization'],
         $container['deserializer'],

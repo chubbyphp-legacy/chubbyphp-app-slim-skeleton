@@ -3,6 +3,7 @@
 {% block title %}{{ parent() }} - {{ "user.title.list"|translate(locale) }}{% endblock %}
 
 {% block container %}
+    {% set users = elements %}
     <div class="row">
         <div class="col-xs-12">
             <h1>{{ "user.title.list"|translate(locale) }}</h1>
@@ -45,6 +46,7 @@
                     {% endfor %}
                 </tbody>
             </table>
+            {% include "@SlimSkeleton/_pagination.html.twig" %}
         </div>
     </div>
 {% endblock %}

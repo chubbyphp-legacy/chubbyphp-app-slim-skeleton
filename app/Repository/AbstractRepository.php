@@ -29,4 +29,28 @@ abstract class AbstractRepository extends AbstractDoctrineRepository
 
         parent::update($id, $row);
     }
+
+    /**
+     * @param array $criteria
+     *
+     * @return int
+     */
+    public function countBy(array $criteria): int
+    {
+        $table = $this->getTable();
+
+        $this->logger->info(
+            'model: count rows within table {table} with criteria {criteria}',
+            ['table' => $table, 'criteria' => $criteria]
+        );
+
+        $qb = $this->connection->createQueryBuilder()
+            ->select('COUNT(id) AS rows')
+            ->from($table)
+        ;
+
+        $this->addCriteriaToQueryBuilder($qb, $criteria);
+
+        return (int) $qb->execute()->fetchColumn();
+    }
 }

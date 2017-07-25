@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace SlimSkeleton\Controller\UserRelatedCrud;
 
+use Chubbyphp\Deserialization\DeserializerInterface;
 use Chubbyphp\Model\RepositoryInterface;
 use Chubbyphp\Security\Authentication\AuthenticationInterface;
 use Chubbyphp\Security\Authorization\AuthorizationInterface;
+use Chubbyphp\Session\FlashMessage;
+use Chubbyphp\Session\SessionInterface;
+use Chubbyphp\Validation\ValidatorInterface;
 use SlimSkeleton\ErrorHandler\ErrorResponseHandler;
 use SlimSkeleton\Service\TwigRender;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -20,6 +24,11 @@ final class ListController
     private $type;
 
     /**
+     * @var string
+     */
+    private $searchClass;
+
+    /**
      * @var AuthenticationInterface
      */
     private $authentication;
@@ -28,6 +37,11 @@ final class ListController
      * @var AuthorizationInterface
      */
     private $authorization;
+
+    /**
+     * @var DeserializerInterface
+     */
+    private $deserializer;
 
     /**
      * @var ErrorResponseHandler
@@ -40,32 +54,54 @@ final class ListController
     private $repository;
 
     /**
+     * @var SessionInterface
+     */
+    private $session;
+
+    /**
      * @var TwigRender
      */
     private $twig;
 
     /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    /**
      * @param string                  $type
+     * @param string                  $searchClass
      * @param AuthenticationInterface $authentication
      * @param AuthorizationInterface  $authorization
+     * @param DeserializerInterface   $deserializer
      * @param ErrorResponseHandler    $errorResponseHandler
      * @param RepositoryInterface     $repository
+     * @param SessionInterface        $session
      * @param TwigRender              $twig
+     * @param ValidatorInterface      $validator
      */
     public function __construct(
         string $type,
+        string $searchClass,
         AuthenticationInterface $authentication,
         AuthorizationInterface $authorization,
+        DeserializerInterface $deserializer,
         ErrorResponseHandler $errorResponseHandler,
         RepositoryInterface $repository,
-        TwigRender $twig
+        SessionInterface $session,
+        TwigRender $twig,
+        ValidatorInterface $validator
     ) {
+        $this->type = $type;
+        $this->searchClass = $searchClass;
         $this->authentication = $authentication;
         $this->authorization = $authorization;
+        $this->deserializer = $deserializer;
         $this->errorResponseHandler = $errorResponseHandler;
         $this->repository = $repository;
-        $this->type = $type;
+        $this->session = $session;
         $this->twig = $twig;
+        $this->validator = $validator;
     }
 
     /**
@@ -90,12 +126,26 @@ final class ListController
             );
         }
 
-        $elements = $this->repository->findBy(['userId' => $authenticatedUser->getId()]);
+        $search = $this->deserializer->deserializeByClass($request->getQueryParams(), $this->searchClass);
+        $search = $search->setUserId($authenticatedUser->getId());
+
+        $errorMessages = [];
+        if ([] !== $errors = $this->validator->validateObject($search)) {
+            $errorMessages = $this->twig->getErrorMessages($request->getAttribute('locale'), $errors);
+
+            $this->session->addFlash(
+                $request,
+                new FlashMessage(FlashMessage::TYPE_DANGER, sprintf('%s.flash.list.failed', $typeLower))
+            );
+        } else {
+            $search = $this->repository->search($search);
+        }
 
         return $this->twig->render($response, sprintf('@SlimSkeleton/%s/list.html.twig', $typeLower),
-            $this->twig->aggregate($request, [
-                'elements' => prepareForView($elements),
-            ])
+            $this->twig->aggregate($request, array_replace_recursive(
+                prepareForView($search),
+                ['errorMessages' => $errorMessages]
+            ))
         );
     }
 }
