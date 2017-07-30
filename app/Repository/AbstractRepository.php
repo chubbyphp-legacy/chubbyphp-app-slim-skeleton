@@ -45,7 +45,7 @@ abstract class AbstractRepository extends AbstractDoctrineRepository
         );
 
         $qb = $this->connection->createQueryBuilder()
-            ->select('COUNT(id) AS rows')
+            ->select('COUNT(id) AS rowCount')
             ->from($table)
         ;
 
