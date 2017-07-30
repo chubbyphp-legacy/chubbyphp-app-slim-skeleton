@@ -1,6 +1,5 @@
 ---
 hostname: slim-skeleton.dev
 application: slim3
-phpversion: 7.0
 network:
   ip: 10.11.12.15
