@@ -10,11 +10,9 @@ set_time_limit(0);
 
 $loader = require_once __DIR__.'/../app/autoload.php';
 
-$envOption = new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'The Environment name.', 'dev');
-
 $input = new ArgvInput();
 
-$env = $input->getParameterOption([$envOption->getName(), $envOption->getShortcut()], $envOption->getDefault());
+$env = $input->getParameterOption(['--env', '-e'], 'dev');
 
 /** @var Container $container */
 $container = require_once __DIR__ . '/../app/bootstrap.php';
@@ -23,7 +21,11 @@ require_once __DIR__ . '/../app/commands.php';
 
 $console = new Application($container['console.name'], $container['console.version']);
 
-foreach ([$envOption] as $inputOption) {
+$inputOptions = [
+    new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'The Environment name.', 'dev')
+];
+
+foreach ($inputOptions as $inputOption) {
     $console->getDefinition()->addOption($inputOption);
 }
 
